@@ -4,7 +4,7 @@ import Chat from './components/Chat';
 function App() {
   return (
     <div>
-      <h1> AI Chat App </h1>
+      <h1> Validly </h1>
       <Chat />
     </div>
   );
