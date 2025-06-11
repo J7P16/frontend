@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { FiClipboard, FiZap } from 'react-icons/fi';
+import { FiClipboard} from 'react-icons/fi';
 
 const ValidatePage = () => {
   const [message, setMessage] = useState('');
