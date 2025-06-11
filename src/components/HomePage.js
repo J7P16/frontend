@@ -1,56 +1,115 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FiTrendingUp, FiUsers, FiUserCheck, FiZap, FiShield, FiBarChart2 } from 'react-icons/fi';
+import logo from '../Clean_Validly_Logo.png';
+import { FiTwitter, FiLinkedin, FiGithub } from 'react-icons/fi';
 
 const HomePage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="homepage-container">
-      <div className="homepage-hero">
-        <h1>Create Powerful Startups With Data-Driven Validation</h1>
-        <p>Validate your crazy startup ideas in real-time to improve growth, deliverability, reduce competition, and take over markets.</p>
-        <div className="homepage-hero-buttons">
-          <button className="primary" onClick={() => navigate('/validate')}>Get started →</button>
-          <button className="secondary">Learn more →</button>
+    <>
+      {/* Navigation Bar */}
+      <nav className="navbar">
+        <div className="navbar-left">
+          <img src={logo} alt="Validly Logo" className="navbar-logo" />
+          <span className="navbar-title">Validly</span>
         </div>
-      </div>
-      <div className="homepage-features-section">
-        <h2>Everything you need to validate your startup</h2>
-        <p>Comprehensive validation tools powered by data and market intelligence</p>
-        <div className="homepage-features-grid">
-          <div className="feature-card">
-            <div className="feature-icon">↗️</div>
-            <h3>Market Analysis</h3>
-            <p>Get comprehensive market research and trend analysis for your startup idea in seconds.</p>
-          </div>
-          <div className="feature-card">
-            <div className="feature-icon">🧠</div>
-            <h3>Competitor Intelligence</h3>
-            <p>Discover your competition, their strengths, weaknesses, and market positioning.</p>
-          </div>
-          <div className="feature-card">
-            <div className="feature-icon">👤</div>
-            <h3>Target Audience Insights</h3>
-            <p>Identify and understand your ideal customers with detailed demographic analysis.</p>
-          </div>
-          <div className="feature-card">
-            <div className="feature-icon">⚡</div>
-            <h3>MVP Roadmap</h3>
-            <p>Get a prioritized feature list and development roadmap for your minimum viable product.</p>
-          </div>
-          <div className="feature-card">
-            <div className="feature-icon">🛡️</div>
-            <h3>Risk Assessment</h3>
-            <p>Understand potential challenges and risks before you invest time and money.</p>
-          </div>
-          <div className="feature-card">
-            <div className="feature-icon">✔️</div>
-            <h3>Validation Score</h3>
-            <p>Receive a comprehensive score based on market demand, competition, and feasibility.</p>
+        <div className="navbar-right">
+          <a className="navbar-link" href="/">Product</a>
+          <a className="navbar-link" href="/">Company</a>
+          <button className="navbar-signout">Sign Out</button>
+        </div>
+      </nav>
+
+      {/* Homepage Content */}
+      <div className="homepage-container">
+
+        {/* Homepage Content */}
+        <div className="homepage-hero">
+          <h1>
+            Launch Your Startup Idea <br /> With <span className="gradient-text">AI-Powered Validation</span>
+          </h1>
+          <p>Validate your crazy startup ideas in real-time to improve growth, deliverability, reduce competition, and take over markets.</p>
+          <div className="homepage-hero-buttons">
+            <button className="primary" onClick={() => navigate('/validate')}>Get started →</button>
+            <button className="secondary">Learn more →</button>
           </div>
         </div>
+
+        {/* Features Section */}
+        <div className="homepage-features-section">
+          <h2>Everything You Need To Validate Your Startup</h2>
+          <p>Comprehensive validation tools powered by data and market intelligence</p>
+          <div className="homepage-features-grid">
+            <div className="feature-card">
+              <div className="feature-icon"><FiTrendingUp color="#2563eb" /></div>
+              <h3>Market Analysis</h3>
+              <p>Get comprehensive market research and trend analysis for your startup idea in seconds.</p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon"><FiUsers color="#16a34a" /></div>
+              <h3>Competitor Intelligence</h3>
+              <p>Discover your competition, their strengths, weaknesses, and market positioning.</p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon"><FiUserCheck color="#9333ea" /></div>
+              <h3>Target Audience Insights</h3>
+              <p>Identify and understand your ideal customers with detailed demographic analysis.</p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon"><FiZap color="#eab308" /></div>
+              <h3>MVP Roadmap</h3>
+              <p>Get a prioritized feature list and development roadmap for your minimum viable product.</p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon"><FiShield color="#dc2626" /></div>
+              <h3>Risk Assessment</h3>
+              <p>Understand potential challenges and risks before you invest time and money.</p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon"><FiBarChart2 color="#6366f1" /></div>
+              <h3>Validation Score</h3>
+              <p>Receive a comprehensive score based on market demand, competition, and feasibility.</p>
+            </div>
+          </div>
+        </div>
+
       </div>
-    </div>
+
+      {/* Footer */}
+      <footer className="footer">
+        <div className="footer-content">
+          <div className="footer-col footer-brand">
+            <div className="footer-logo-row">
+              <img src={logo} alt="Validly Logo" className="footer-logo" />
+              <span className="footer-title">Validly</span>
+            </div>
+            <p className="footer-desc">Validate your startup idea in seconds with AI-powered insights, competitor analysis, and MVP recommendations.</p>
+            <div className="footer-socials">
+              <a href="/" className="footer-social"><FiTwitter /></a>
+              <a href="/" className="footer-social"><FiLinkedin /></a>
+              <a href="/" className="footer-social"><FiGithub /></a>
+            </div>
+          </div>
+          <div className="footer-col footer-links">
+            <div className="footer-links-title">Product</div>
+            <a href="/" className="footer-link">Features</a>
+            <a href="/" className="footer-link">Pricing</a>
+            <a href="/" className="footer-link">Examples</a>
+          </div>
+          <div className="footer-col footer-links">
+            <div className="footer-links-title">Company</div>
+            <a href="/" className="footer-link">About</a>
+            <a href="/" className="footer-link">Privacy Policy</a>
+            <a href="/" className="footer-link">Terms of Service</a>
+          </div>
+        </div>
+        <div className="footer-bottom">
+          <span>© 2025 Validly. All rights reserved.</span>
+        </div>
+      </footer>
+    </>
   );
 };
 

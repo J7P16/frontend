@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { FiClipboard, FiZap } from 'react-icons/fi';
 
 const ValidatePage = () => {
   const [message, setMessage] = useState('');
@@ -28,7 +29,9 @@ const ValidatePage = () => {
       <a className="back-link" href="/">← Back to Home</a>
       <div className="validate-card">
         <div className="validate-header">
-          <div className="validate-icon">💡</div>
+          <div className="validate-icon">
+            <FiClipboard className="validate-icon-bg" />
+          </div>
           <h2>Describe Your Startup Idea</h2>
           <p>Share your vision and let our AI provide comprehensive validation insights</p>
         </div>
