@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { FiDownload, FiTrendingUp, FiTarget, FiUsers, FiCheckCircle, FiDollarSign, FiExternalLink } from 'react-icons/fi';
+import { FiDownload, FiTrendingUp, FiTarget, FiUsers, FiCheckCircle, FiDollarSign, FiExternalLink, FiAlertCircle, FiLink } from 'react-icons/fi';
 
 const ResultsPage = () => {
   const location = useLocation();
@@ -32,7 +32,7 @@ const ResultsPage = () => {
       <div className="results-section competitors">
         <div className="competitors-header">
           <span className="competitors-icon-bg"><FiTarget className="competitors-icon" /></span>
-          <h3>Top 3 Competitors</h3>
+          <h3>Top Potential Competitors</h3>
         </div>
         {analysis.competitors.map((comp, idx) => (
           <div className="competitor-card" key={idx}>
@@ -42,6 +42,30 @@ const ResultsPage = () => {
             </div>
             <div className="competitor-desc">{comp.description}</div>
             <div className="competitor-meta">{comp.locations} • {comp.pricing}</div>
+            <div className="competitor-analysis">
+              <div className="analysis-section">
+                <h4>Strengths</h4>
+                <ul className="analysis-list">
+                  {comp.pros.map((pro, proIdx) => (
+                    <li key={proIdx} className="pro-item">
+                      <FiCheckCircle className="pro-icon" />
+                      <span>{pro}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="analysis-section">
+                <h4>Weaknesses</h4>
+                <ul className="analysis-list">
+                  {comp.weaknesses.map((weakness, weakIdx) => (
+                    <li key={weakIdx} className="weakness-item">
+                      <FiAlertCircle className="weakness-icon" />
+                      <span>{weakness}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </div>
         ))}
       </div>
@@ -50,14 +74,43 @@ const ResultsPage = () => {
           <span className="target-audience-icon-bg"><FiUsers className="target-audience-icon" /></span>
           <h3>Target Audience</h3>
         </div>
-        <ul className="target-audience-list">
+        <div className="target-audience-list">
           {analysis.targetAudience.map((aud, idx) => (
-            <li className="target-audience-item" key={idx}>
-              <FiCheckCircle className="target-audience-check" />
-              <span>{aud}</span>
-            </li>
+            <div className="target-audience-item" key={idx}>
+              <div className="target-audience-group">
+                <FiCheckCircle className="target-audience-check" />
+                <span className="target-group-name">{aud.group}</span>
+              </div>
+              <div className="online-destinations">
+                <h4>Find this audience online:</h4>
+                <div className="destination-buttons">
+                  {aud.onlineDestinations.map((dest, destIdx) => (
+                    <a
+                      key={destIdx}
+                      href={dest.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`destination-button ${dest.type.toLowerCase().replace(' ', '-')}`}
+                    >
+                      <span className="destination-icon">
+                        {dest.type === 'Reddit' && <FiLink />}
+                        {dest.type === 'Discord' && <FiLink />}
+                        {dest.type === 'Forum' && <FiLink />}
+                        {dest.type === 'Facebook Group' && <FiLink />}
+                        {dest.type === 'LinkedIn Group' && <FiLink />}
+                        {dest.type === 'Other' && <FiLink />}
+                      </span>
+                      <div className="destination-info">
+                        <span className="destination-name">{dest.name}</span>
+                        <span className="destination-type">{dest.type}</span>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
       <div className="results-section revenue-models">
         <div className="revenue-models-header">
@@ -95,7 +148,7 @@ const ResultsPage = () => {
       </div>
       <div className="results-actions">
         <button className="validate-another-btn" onClick={() => navigate('/validate')}>Validate Another Idea</button>
-        <button className="download-btn"><FiDownload style={{marginRight: 8, fontSize: '1.2em'}} />Download Full Report</button>
+        <button className="download-btn"><FiDownload style={{marginRight: 8, fontSize: '1.2em'}} />Download PDF Report</button>
       </div>
     </div>
   );

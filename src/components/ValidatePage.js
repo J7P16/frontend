@@ -50,12 +50,12 @@ const ValidatePage = () => {
         <div className="validate-whatyouget">
           <h3>What you'll get:</h3>
           <ul>
-            <li>Market demand analysis</li>
-            <li>Top 3 competitor breakdown</li>
-            <li>Target audience insights</li>
-            <li>Revenue model suggestions</li>
-            <li>MVP feature prioritization</li>
-            <li>Downloadable PDF report</li>
+            <li>Market Demand Analysis</li>
+            <li>Top Competitor Breakdown</li>
+            <li>Target Audience Insights</li>
+            <li>Revenue Model Suggestions</li>
+            <li>MVP Feature Prioritization</li>
+            <li>Downloadable PDF Report</li>
           </ul>
         </div>
       </div>
