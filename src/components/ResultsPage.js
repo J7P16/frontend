@@ -1,11 +1,18 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { FiDownload, FiTrendingUp, FiTarget, FiUsers, FiCheckCircle, FiDollarSign, FiExternalLink, FiAlertCircle, FiLink } from 'react-icons/fi';
+import { FiDownload, FiTrendingUp, FiTarget, FiUsers, FiCheckCircle, FiDollarSign, FiExternalLink, FiAlertCircle, FiLink, FiMessageSquare, FiCopy, FiClock } from 'react-icons/fi';
 
 const ResultsPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { analysis, input } = location.state || {};
+
+  const handleCopyPitch = () => {
+    if (analysis?.pitch) {
+      navigator.clipboard.writeText(analysis.pitch);
+      // You could add a toast notification here to show the copy was successful
+    }
+  };
 
   if (!analysis) {
     return <div className="results-container"><p>No results to display. Please validate an idea first.</p></div>;
@@ -28,6 +35,46 @@ const ResultsPage = () => {
         </div>
         <p className="market-demand-summary">{analysis.marketDemand.summary}</p>
         <p className="market-demand-details">{analysis.marketDemand.details}</p>
+
+        {/* Customer Pain Points Subsection */}
+        <div className="subsection-divider" />
+        <div className="pain-points-section">
+          <div className="pain-points-header">
+            <FiAlertCircle className="pain-points-icon" />
+            <span>Customer Pain Points</span>
+          </div>
+          <div className="pain-points-content">
+            <div className="pain-point-card">
+              <strong>Primary Pain Point:</strong> {analysis.marketDemand.painPoints.primaryPainPoint}
+            </div>
+            <div className="pain-point-card">
+              <strong>Problem Urgency:</strong> {analysis.marketDemand.painPoints.urgency}
+            </div>
+            <div className="pain-point-card">
+              <strong>Evidence of Demand:</strong> {analysis.marketDemand.painPoints.evidence}
+            </div>
+          </div>
+        </div>
+
+        {/* Market Timing & Trends Subsection */}
+        <div className="subsection-divider" />
+        <div className="timing-trends-section">
+          <div className="timing-trends-header">
+            <FiClock className="timing-trends-icon" />
+            <span>Market Timing & Trends</span>
+          </div>
+          <div className="timing-trends-content">
+            <div className="timing-trend-card">
+              <strong>Market Readiness:</strong> {analysis.marketDemand.timingTrends.marketReadiness}
+            </div>
+            <div className="timing-trend-card">
+              <strong>Emerging Trends:</strong> {analysis.marketDemand.timingTrends.emergingTrends}
+            </div>
+            <div className="timing-trend-card">
+              <strong>Timing Assessment:</strong> {analysis.marketDemand.timingTrends.timingAssessment}
+            </div>
+          </div>
+        </div>
       </div>
       <div className="results-section competitors">
         <div className="competitors-header">
@@ -111,6 +158,18 @@ const ResultsPage = () => {
             </div>
           ))}
         </div>
+        <div className="pitch-section">
+          <div className="pitch-header">
+            <span className="pitch-icon-bg"><FiMessageSquare className="pitch-icon" /></span>
+            <h3>Professional Pitch - Share to the Online Community!</h3>
+            <button className="copy-pitch-btn" onClick={handleCopyPitch} title="Copy Pitch to Clipboard">
+              <FiCopy className="copy-icon" />
+            </button>
+          </div>
+          <div className="pitch-content">
+            <p className="pitch-paragraph">{analysis.pitch}</p>
+          </div>
+        </div>
       </div>
       <div className="results-section revenue-models">
         <div className="revenue-models-header">
@@ -130,6 +189,10 @@ const ResultsPage = () => {
         <div className="mvp-features-header">
           <span className="mvp-features-icon-bg"><FiExternalLink className="mvp-features-icon" /></span>
           <h3>MVP Feature Set</h3>
+        </div>
+        <div className="mvp-design-section">
+          <div className="mvp-design-title">Suggested MVP Design</div>
+          <div className="mvp-design-card">{analysis.mvpDesign}</div>
         </div>
         <ul className="mvp-features-list">
           {analysis.mvpFeatures.map((feat, idx) => (

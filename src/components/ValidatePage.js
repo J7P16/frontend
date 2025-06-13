@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { FiClipboard} from 'react-icons/fi';
+import { FiClipboard } from 'react-icons/fi';
 
 const ValidatePage = () => {
   const [message, setMessage] = useState('');
@@ -44,7 +44,9 @@ const ValidatePage = () => {
             required
           />
           <div className="validate-tip">💡 Tip: Include your target audience, key features, and what problem you're solving</div>
-          <button className="validate-btn" type="submit" disabled={loading}>{loading ? 'Validating...' : 'Validate Idea'}</button>
+          <button className="validate-btn" type="submit" disabled={loading}>
+            {loading ? 'Validating...' : 'Validate Idea'}
+          </button>
           {error && <div className="validate-error">{error}</div>}
         </form>
         <div className="validate-whatyouget">

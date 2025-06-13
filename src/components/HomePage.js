@@ -1,11 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiTrendingUp, FiUsers, FiUserCheck, FiZap, FiShield, FiBarChart2 } from 'react-icons/fi';
 import logo from '../Clean_Validly_Logo.png';
 import { FiTwitter, FiLinkedin, FiGithub } from 'react-icons/fi';
+import { supabase } from '../supabaseClient';
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setUser(data?.user || null));
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+    });
+    return () => { listener?.subscription.unsubscribe(); };
+  }, []);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    // Stay on homepage after sign out
+    // No navigation needed
+  };
 
   return (
     <>
@@ -18,7 +35,11 @@ const HomePage = () => {
         <div className="navbar-right">
           <a className="navbar-link" href="/">Product</a>
           <a className="navbar-link" href="/">Company</a>
-          <button className="navbar-signout">Sign Out</button>
+          {user ? (
+            <button className="navbar-signout" onClick={handleSignOut}>Sign Out</button>
+          ) : (
+            <button className="navbar-signout" onClick={() => navigate('/signin')}>Login</button>
+          )}
         </div>
       </nav>
 
@@ -32,7 +53,7 @@ const HomePage = () => {
           </h1>
           <p>Validate your crazy startup ideas in real-time to improve growth, deliverability, reduce competition, and take over markets.</p>
           <div className="homepage-hero-buttons">
-            <button className="primary" onClick={() => navigate('/validate')}>Get started →</button>
+            <button className="primary" onClick={() => user ? navigate('/validate') : navigate('/signup')}>Get started →</button>
             <button className="secondary">Learn more →</button>
           </div>
         </div>
