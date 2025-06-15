@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiTrendingUp, FiUsers, FiUserCheck, FiZap, FiShield, FiBarChart2 } from 'react-icons/fi';
+import { FiTrendingUp, FiUsers, FiUserCheck, FiZap, FiShield, FiBarChart2, FiUser } from 'react-icons/fi';
 import logo from '../Clean_Validly_Logo.png';
 import { FiTwitter, FiLinkedin, FiGithub } from 'react-icons/fi';
 import { supabase } from '../supabaseClient';
@@ -33,8 +33,15 @@ const HomePage = () => {
           <span className="navbar-title">Validly</span>
         </div>
         <div className="navbar-right">
-          <a className="navbar-link" href="/">Product</a>
-          <a className="navbar-link" href="/">Company</a>
+          {user && (
+            <button
+              className="navbar-profile-btn"
+              title="Profile"
+              onClick={() => navigate('/profile')}
+            >
+              <FiUser className="navbar-profile-icon" />
+            </button>
+          )}
           {user ? (
             <button className="navbar-signout" onClick={handleSignOut}>Sign Out</button>
           ) : (
@@ -116,7 +123,7 @@ const HomePage = () => {
           <div className="footer-col footer-links">
             <div className="footer-links-title">Product</div>
             <a href="/" className="footer-link">Features</a>
-            <a href="/" className="footer-link">Pricing</a>
+            <a href="/pricing" className="footer-link" onClick={e => { e.preventDefault(); navigate('/pricing'); }}>Pricing</a>
             <a href="/" className="footer-link">Examples</a>
           </div>
           <div className="footer-col footer-links">

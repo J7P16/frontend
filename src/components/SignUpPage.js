@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { signUp, supabase } from '../supabaseClient';
+import { supabase } from '../supabaseClient';
 import './SignUpPage.css';
 
 const SignUpPage = () => {
-  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', password: '' });
+  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', password: '', confirmPassword: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -19,19 +19,25 @@ const SignUpPage = () => {
     setLoading(true);
     setError('');
     setSuccess('');
-    const { email, password, firstName, lastName } = form;
-    const { data, error } = await signUp({ email, password, firstName, lastName });
-    if (error) {
-      setError(error.message);
+    const { email, password, confirmPassword, firstName, lastName } = form;
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.');
       setLoading(false);
       return;
     }
-    // Insert into profiles table
-    const { error: profileError } = await supabase.from('profiles').insert([
-      { id: data.user?.id, email, first_name: firstName, last_name: lastName }
-    ]);
-    if (profileError) {
-      setError(profileError.message);
+    // Pass metadata to Supabase Auth signUp
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          firstName,
+          lastName
+        }
+      }
+    });
+    if (error) {
+      setError(error.message);
       setLoading(false);
       return;
     }
@@ -48,6 +54,7 @@ const SignUpPage = () => {
         <input name="lastName" type="text" placeholder="Last Name" value={form.lastName} onChange={handleChange} required />
         <input name="email" type="email" placeholder="Email" value={form.email} onChange={handleChange} required />
         <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} required />
+        <input name="confirmPassword" type="password" placeholder="Confirm Password" value={form.confirmPassword} onChange={handleChange} required />
         <button type="submit" disabled={loading}>{loading ? 'Signing Up...' : 'Sign Up'}</button>
         {error && <div className="auth-error">{error}</div>}
         {success && <div className="auth-success">{success}</div>}

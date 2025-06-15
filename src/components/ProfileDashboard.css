@@ -1,0 +1,118 @@
+.profile-bg {
+  min-height: 100vh;
+  background: #f6faff;
+  padding: 32px 0;
+}
+.profile-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+.profile-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 18px;
+  margin-top: 0;
+  color: #181c23;
+  line-height: 1.2;
+}
+.profile-title-sub {
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: #6366f1;
+}
+.profile-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 28px;
+  margin-top: 18px;
+}
+@media (max-width: 900px) {
+  .profile-cards {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+}
+.profile-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(30,34,90,0.07);
+  padding: 28px 24px 24px 24px;
+  min-width: 0;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 1.08rem;
+  border: 1.5px solid #e5e7eb;
+}
+.profile-card h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #181c23;
+}
+.profile-plan-badge {
+  display: inline-block;
+  background: #2563eb;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 4px 16px;
+  margin-bottom: 8px;
+}
+.profile-plan-desc {
+  color: #6b7280;
+  font-size: 1.05rem;
+  margin-bottom: 16px;
+}
+.profile-manage-btn {
+  width: 100%;
+  background: #fff;
+  color: #22336b;
+  border: 1.5px solid #2563eb;
+  border-radius: 10px;
+  padding: 12px 0;
+  font-size: 1.08rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.18s, color 0.18s, border 0.18s;
+}
+.profile-manage-btn:hover {
+  background: #2563eb;
+  color: #fff;
+}
+.back-link {
+  color: #22336b;
+  text-decoration: none;
+  font-size: 1rem;
+  margin-bottom: 18px;
+  display: inline-block;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  padding: 0;
+}
+.back-link:hover {
+  text-decoration: underline;
+}
+.profile-gradient {
+  background: linear-gradient(90deg, #3b82f6 0%, #6366f1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  font-weight: inherit;
+}
+.profile-title-black {
+  color: #181c23;
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  font-family: inherit;
+  display: block;
+  margin-top: 0.2em;
+} 
