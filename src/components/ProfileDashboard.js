@@ -57,6 +57,7 @@ export default function ProfileDashboard() {
             <div><b>User ID:</b> {userId}</div>
             <div><b>Member Since:</b> {memberSince}</div>
             <div><b>Stored Ideas:</b> 0</div>
+            <button className="profile-delete-btn">Delete Account</button>
           </div>
         </div>
       </div>

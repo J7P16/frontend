@@ -1,0 +1,7 @@
+{
+  "United States": ["New York", "Los Angeles", "Chicago", "San Francisco", "Houston"],
+  "Canada": ["Toronto", "Vancouver", "Montreal", "Calgary", "Ottawa"],
+  "United Kingdom": ["London", "Manchester", "Birmingham", "Liverpool", "Leeds"],
+  "Australia": ["Sydney", "Melbourne", "Brisbane", "Perth", "Adelaide"],
+  "India": ["Mumbai", "Delhi", "Bangalore", "Hyderabad", "Chennai"]
+} 

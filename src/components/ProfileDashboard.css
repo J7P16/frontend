@@ -115,4 +115,23 @@
   font-family: inherit;
   display: block;
   margin-top: 0.2em;
+}
+
+.profile-delete-btn {
+  width: 100%;
+  background: #fff;
+  color: #dc2626;
+  border: 1.5px solid #dc2626;
+  border-radius: 10px;
+  padding: 12px 0;
+  font-size: 1.08rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 16px;
+  transition: background 0.18s, color 0.18s;
+}
+
+.profile-delete-btn:hover {
+  background: #dc2626;
+  color: #fff;
 } 
