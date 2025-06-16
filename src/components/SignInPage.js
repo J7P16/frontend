@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { signIn } from '../supabaseClient';
+import { supabase } from '../supabaseClient';
 import './SignInPage.css';
 
 const SignInPage = () => {
@@ -18,15 +18,49 @@ const SignInPage = () => {
     setLoading(true);
     setError('');
     const { email, password } = form;
-    const { error } = await signIn({ email, password });
-    if (error) {
-      setError(error.message);
-      setLoading(false);
-      return;
-    }
-    setLoading(false);
-    navigate('/');
-  };
+    
+    try {
+      // 1. Sign in
+      const { data: { user }, error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (signInError) throw signInError;
+
+      // 2. Check if profile exists
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError && profileError.code !== 'PGRST116') { // PGRST116 is "not found" error
+        throw profileError;
+      }
+
+      // Passing the metadata to the profiles table
+      const { firstName, lastName, country, state, city, educationLevel } = user.user_metadata;
+      const { error: upsertError } = await supabase
+        .from('profiles')
+        .upsert([{
+          id: user.id,
+          first_name: firstName,
+          last_name: lastName,
+          country,
+          state,
+          city,
+          education_level: educationLevel
+        }]);
+      if (upsertError) throw upsertError;
+
+            navigate('/');
+          } catch (err) {
+            setError(err.message);
+          } finally {
+            setLoading(false);
+          }
+        };
 
   return (
     <div className="auth-container">

@@ -10,6 +10,7 @@ const SignUpPage = () => {
     firstName: '', 
     lastName: '', 
     country: '',
+    state: '',
     city: '',
     educationLevel: '',
     email: '', 
@@ -20,37 +21,75 @@ const SignUpPage = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [countryOptions, setCountryOptions] = useState([]);
+  const [stateOptions, setStateOptions] = useState([]);
   const [cityOptions, setCityOptions] = useState([]);
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+  const [showStateDropdown, setShowStateDropdown] = useState(false);
   const [showCityDropdown, setShowCityDropdown] = useState(false);
   const countryInputRef = useRef(null);
+  const stateInputRef = useRef(null);
   const cityInputRef = useRef(null);
   const navigate = useNavigate();
 
   // Filter countries as user types
   const handleCountryChange = (e) => {
     const value = e.target.value;
-    setForm({ ...form, country: value, city: '' });
+    setForm({ ...form, country: value, state: '', city: '' });
     if (value.length === 0) {
       setCountryOptions([]);
       setShowCountryDropdown(false);
+      setStateOptions([]);
       setCityOptions([]);
       return;
     }
     const filtered = countries.filter(c => c.toLowerCase().startsWith(value.toLowerCase()));
     setCountryOptions(filtered);
     setShowCountryDropdown(true);
-    // Reset city if country changes
+    // Reset state and city if country changes
+    setStateOptions([]);
     setCityOptions([]);
   };
 
   // When a country is selected
   const handleCountrySelect = (country) => {
-    setForm({ ...form, country, city: '' });
+    setForm({ ...form, country, state: '', city: '' });
     setCountryOptions([]);
     setShowCountryDropdown(false);
-    // Set city options for this country
-    const cities = citiesData[country] || [];
+    // Set state options if US is selected
+    if (country === 'United States') {
+      setStateOptions(Object.keys(citiesData['United States']));
+    }
+    // Reset city options
+    setCityOptions([]);
+  };
+
+  // Filter states as user types
+  const handleStateChange = (e) => {
+    const value = e.target.value;
+    setForm({ ...form, state: value, city: '' });
+    if (!form.country || form.country !== 'United States') {
+      setStateOptions([]);
+      setShowStateDropdown(false);
+      return;
+    }
+    if (value.length === 0) {
+      setStateOptions(Object.keys(citiesData['United States']));
+      setShowStateDropdown(true);
+      return;
+    }
+    const filtered = Object.keys(citiesData['United States']).filter(state => 
+      state.toLowerCase().startsWith(value.toLowerCase())
+    );
+    setStateOptions(filtered);
+    setShowStateDropdown(true);
+  };
+
+  // When a state is selected
+  const handleStateSelect = (state) => {
+    setForm({ ...form, state, city: '' });
+    setShowStateDropdown(false);
+    // Set city options for this state
+    const cities = citiesData['United States'][state] || [];
     setCityOptions(cities);
   };
 
@@ -64,11 +103,24 @@ const SignUpPage = () => {
       return;
     }
     if (value.length === 0) {
-      setCityOptions(citiesData[form.country]);
+      if (form.country === 'United States' && form.state) {
+        setCityOptions(citiesData['United States'][form.state] || []);
+      } else {
+        setCityOptions(citiesData[form.country]);
+      }
       setShowCityDropdown(true);
       return;
     }
-    const filtered = citiesData[form.country].filter(city => city.toLowerCase().startsWith(value.toLowerCase()));
+    let filtered;
+    if (form.country === 'United States' && form.state) {
+      filtered = (citiesData['United States'][form.state] || []).filter(city => 
+        city.toLowerCase().startsWith(value.toLowerCase())
+      );
+    } else {
+      filtered = citiesData[form.country].filter(city => 
+        city.toLowerCase().startsWith(value.toLowerCase())
+      );
+    }
     setCityOptions(filtered);
     setShowCityDropdown(true);
   };
@@ -81,10 +133,12 @@ const SignUpPage = () => {
 
   // Hide dropdowns on blur
   const handleCountryBlur = () => setTimeout(() => setShowCountryDropdown(false), 100);
+  const handleStateBlur = () => setTimeout(() => setShowStateDropdown(false), 100);
   const handleCityBlur = () => setTimeout(() => setShowCityDropdown(false), 100);
 
   const handleChange = (e) => {
     if (e.target.name === 'country') return handleCountryChange(e);
+    if (e.target.name === 'state') return handleStateChange(e);
     if (e.target.name === 'city') return handleCityChange(e);
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -94,7 +148,7 @@ const SignUpPage = () => {
     setLoading(true);
     setError('');
     setSuccess('');
-    const { email, password, confirmPassword, firstName, lastName, country, city, educationLevel } = form;
+    const { email, password, confirmPassword, firstName, lastName, country, state, city, educationLevel } = form;
     if (password !== confirmPassword) {
       setError('Passwords do not match.');
       setLoading(false);
@@ -106,7 +160,16 @@ const SignUpPage = () => {
       setLoading(false);
       return;
     }
-    if (country && citiesData[country] && !citiesData[country].includes(city)) {
+    if (country === 'United States' && !state) {
+      setError('Please select a state.');
+      setLoading(false);
+      return;
+    }
+    if (country === 'United States' && !citiesData['United States'][state]?.includes(city)) {
+      setError('Please select a valid city from the list.');
+      setLoading(false);
+      return;
+    } else if (country !== 'United States' && !citiesData[country]?.includes(city)) {
       setError('Please select a valid city from the list.');
       setLoading(false);
       return;
@@ -116,20 +179,25 @@ const SignUpPage = () => {
       email,
       password,
       options: {
+        emailRedirectTo: `${window.location.origin}/signin`,
         data: {
           firstName,
           lastName,
           country,
+          state,
           city,
           educationLevel
         }
       }
     });
+
     if (error) {
+      console.error('Sign up error:', error);
       setError(error.message);
       setLoading(false);
       return;
     }
+
     setSuccess('Sign up successful! Please check your email to confirm your account.');
     setLoading(false);
     setTimeout(() => navigate('/signin'), 2500);
@@ -163,35 +231,61 @@ const SignUpPage = () => {
               </ul>
             )}
           </div>
-          <div className="autocomplete-wrapper">
-            <input
-              name="city"
-              type="text"
-              placeholder="City"
-              value={form.city}
-              onChange={handleCityChange}
-              onFocus={handleCityChange}
-              onBlur={handleCityBlur}
-              autoComplete="off"
-              ref={cityInputRef}
-              required
-              disabled={!form.country || !countries.includes(form.country)}
-            />
-            {showCityDropdown && cityOptions.length > 0 && (
-              <ul className="autocomplete-dropdown">
-                {cityOptions.map((city) => (
-                  <li key={city} onMouseDown={() => handleCitySelect(city)}>{city}</li>
-                ))}
-              </ul>
-            )}
-          </div>
+          
+          {form.country === 'United States' && (
+            <div className="autocomplete-wrapper">
+              <input
+                name="state"
+                type="text"
+                placeholder="State"
+                value={form.state}
+                onChange={handleStateChange}
+                onFocus={handleStateChange}
+                onBlur={handleStateBlur}
+                autoComplete="off"
+                ref={stateInputRef}
+                required
+              />
+              {showStateDropdown && stateOptions.length > 0 && (
+                <ul className="autocomplete-dropdown">
+                  {stateOptions.map((state) => (
+                    <li key={state} onMouseDown={() => handleStateSelect(state)}>{state}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
         </div>
+        
+        <div className="autocomplete-wrapper">
+          <input
+            name="city"
+            type="text"
+            placeholder="City"
+            value={form.city}
+            onChange={handleCityChange}
+            onFocus={handleCityChange}
+            onBlur={handleCityBlur}
+            autoComplete="off"
+            ref={cityInputRef}
+            required
+            disabled={!form.country || (form.country === 'United States' && !form.state)}
+          />
+          {showCityDropdown && cityOptions.length > 0 && (
+            <ul className="autocomplete-dropdown">
+              {cityOptions.map((city) => (
+                <li key={city} onMouseDown={() => handleCitySelect(city)}>{city}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+        
         <select name="educationLevel" value={form.educationLevel} onChange={handleChange} required className="education-select">
           <option value="">Select Education Level</option>
-          <option value="high_school">High School</option>
-          <option value="undergrad">Undergraduate</option>
-          <option value="grad">Graduate</option>
-          <option value="professional">Professional</option>
+          <option value="High School">High School</option>
+          <option value="Undergraduate">Undergraduate</option>
+          <option value="Graduate">Graduate</option>
+          <option value="Professional">Professional</option>
         </select>
         <input name="email" type="email" placeholder="Email" value={form.email} onChange={handleChange} required />
         <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} required />
@@ -200,6 +294,7 @@ const SignUpPage = () => {
         <button type="submit" disabled={loading}>{loading ? 'Signing Up...' : 'Sign Up'}</button>
         {error && <div className="auth-error">{error}</div>}
         {success && <div className="auth-success">{success}</div>}
+        
         <div className="auth-link-row">
           <span>Already have an account? </span>
           <Link to="/signin">Sign in</Link>
