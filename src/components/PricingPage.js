@@ -23,7 +23,7 @@ const planData = (billing) => ([
   },
   {
     name: 'Pro',
-    price: billing === 'monthly' ? '$9' : '$81',
+    price: billing === 'monthly' ? '$9.99' : '$89.99',
     period: billing === 'monthly' ? '/month' : '/year',
     features: [
       'Everything in Free Plan',
@@ -42,7 +42,7 @@ const planData = (billing) => ([
   },
   {
     name: 'Founder',
-    price: billing === 'monthly' ? '$20' : '$180',
+    price: billing === 'monthly' ? '$24.99' : '$224.99',
     period: billing === 'monthly' ? '/month' : '/year',
     features: [
       'Everything in Pro Plan',

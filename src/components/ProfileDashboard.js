@@ -10,6 +10,15 @@ export default function ProfileDashboard() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteError, setDeleteError] = useState('');
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState({
+    country: '',
+    state: '',
+    city: '',
+    educationLevel: ''
+  });
+  const [editLoading, setEditLoading] = useState(false);
+  const [editError, setEditError] = useState('');
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data?.user || null));
@@ -24,6 +33,14 @@ export default function ProfileDashboard() {
           .eq('id', user.id)
           .single();
         setProfile(profileData);
+        if (profileData) {
+          setEditForm({
+            country: profileData.country || '',
+            state: profileData.state || '',
+            city: profileData.city || '',
+            educationLevel: profileData.education_level || ''
+          });
+        }
       }
     };
     fetchProfile();
@@ -38,6 +55,56 @@ export default function ProfileDashboard() {
   const state = profile?.state;
   const city = profile?.city;
   const educationLevel = profile?.education_level;
+
+  const handleEdit = () => {
+    setIsEditing(true);
+    setEditError('');
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setEditForm({
+      country: profile?.country || '',
+      state: profile?.state || '',
+      city: profile?.city || '',
+      educationLevel: profile?.education_level || ''
+    });
+    setEditError('');
+  };
+
+  const handleSave = async () => {
+    setEditLoading(true);
+    setEditError('');
+    
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          country: editForm.country,
+          state: editForm.state,
+          city: editForm.city,
+          education_level: editForm.educationLevel
+        })
+        .eq('id', user.id);
+
+      if (error) throw error;
+
+      // Update local profile state
+      setProfile({
+        ...profile,
+        country: editForm.country,
+        state: editForm.state,
+        city: editForm.city,
+        education_level: editForm.educationLevel
+      });
+
+      setIsEditing(false);
+    } catch (err) {
+      setEditError(err.message || 'Failed to update profile.');
+    } finally {
+      setEditLoading(false);
+    }
+  };
 
   const handleDeleteAccount = async () => {
     setDeleteLoading(true);
@@ -75,11 +142,84 @@ export default function ProfileDashboard() {
         </h1>
         <div className="profile-cards">
           <div className="profile-card">
-            <h2>Personal Information</h2>
-            <div><b>Email:</b> {email}</div>
-            <div><b>Name:</b> {firstName}{lastName ? ` ${lastName}` : ''}</div>
-            <div><b>Location:</b> {city}{state ? `, ${state}` : ''}{country ? `, ${country}` : ''}</div>
-            <div><b>Education Level:</b> {educationLevel ? educationLevel.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : '-'}</div>
+            <div className="profile-card-header">
+              <h2>Personal Information</h2>
+              {!isEditing && (
+                <button className="profile-edit-btn" onClick={handleEdit}>
+                  Edit
+                </button>
+              )}
+            </div>
+            {!isEditing ? (
+              <>
+                <div><b>Email:</b> {email}</div>
+                <div><b>Name:</b> {firstName}{lastName ? ` ${lastName}` : ''}</div>
+                <div><b>Location:</b> {city}{state ? `, ${state}` : ''}{country ? `, ${country}` : ''}</div>
+                <div><b>Education Level:</b> {educationLevel ? educationLevel.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : '-'}</div>
+              </>
+            ) : (
+              <div className="profile-edit-form">
+                <div><b>Email:</b> {email}</div>
+                <div><b>Name:</b> {firstName}{lastName ? ` ${lastName}` : ''}</div>
+                <div className="edit-field">
+                  <label><b>Country:</b></label>
+                  <input
+                    type="text"
+                    value={editForm.country}
+                    onChange={(e) => setEditForm({...editForm, country: e.target.value})}
+                    placeholder="Enter country"
+                  />
+                </div>
+                <div className="edit-field">
+                  <label><b>State:</b></label>
+                  <input
+                    type="text"
+                    value={editForm.state}
+                    onChange={(e) => setEditForm({...editForm, state: e.target.value})}
+                    placeholder="Enter state"
+                  />
+                </div>
+                <div className="edit-field">
+                  <label><b>City:</b></label>
+                  <input
+                    type="text"
+                    value={editForm.city}
+                    onChange={(e) => setEditForm({...editForm, city: e.target.value})}
+                    placeholder="Enter city"
+                  />
+                </div>
+                <div className="edit-field">
+                  <label><b>Education Level:</b></label>
+                  <select
+                    value={editForm.educationLevel}
+                    onChange={(e) => setEditForm({...editForm, educationLevel: e.target.value})}
+                  >
+                    <option value="">Select Education Level</option>
+                    <option value="High School">High School</option>
+                    <option value="Undergraduate">Undergraduate</option>
+                    <option value="Graduate">Graduate</option>
+                    <option value="Professional">Professional</option>
+                  </select>
+                </div>
+                {editError && <div className="auth-error">{editError}</div>}
+                <div className="edit-actions">
+                  <button 
+                    className="profile-save-btn" 
+                    onClick={handleSave}
+                    disabled={editLoading}
+                  >
+                    {editLoading ? 'Saving...' : 'Save'}
+                  </button>
+                  <button 
+                    className="profile-cancel-btn" 
+                    onClick={handleCancel}
+                    disabled={editLoading}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
           <div className="profile-card">
             <h2>Pricing Plan</h2>
