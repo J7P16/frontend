@@ -63,18 +63,25 @@ const SignInPage = () => {
         };
 
   return (
-    <div className="auth-container">
-      <form className="auth-card" onSubmit={handleSubmit}>
-        <h2 className="auth-title">Sign In</h2>
-        <input name="email" type="email" placeholder="Email" value={form.email} onChange={handleChange} required />
-        <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} required />
-        <button type="submit" disabled={loading}>{loading ? 'Signing In...' : 'Sign In'}</button>
-        {error && <div className="auth-error">{error}</div>}
-        <div className="auth-link-row">
-          <span>Don't have an account? </span>
-          <Link to="/signup">Sign up</Link>
-        </div>
-      </form>
+    <div className="signin-wrapper">
+      <button className="signin-back-link" onClick={() => navigate('/')}>← Back to Home</button>
+      <div className="auth-container">
+        <form className="auth-card" onSubmit={handleSubmit}>
+          <h2 className="auth-title">Sign In</h2>
+          <input name="email" type="email" placeholder="Email" value={form.email} onChange={handleChange} required />
+          <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} required />
+          <button type="submit" disabled={loading}>{loading ? 'Signing In...' : 'Sign In'}</button>
+          {error && <div className="auth-error">{error}</div>}
+          <div className="auth-link-row">
+            <span>Don't have an account? </span>
+            <Link to="/signup">Sign up</Link>
+          </div>
+          <div className="auth-link-row">
+            <span>Forgot your password? </span>
+            <Link to="/forgot-password">Click here</Link>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
