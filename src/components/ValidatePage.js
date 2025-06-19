@@ -2,15 +2,17 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FiClipboard, FiChevronDown } from 'react-icons/fi';
+import { supabase } from '../supabaseClient';
 
 const modelList = [
   'Compound',
   'Deepseek',
   'Gemma',
-  'Llama3',
-  'Llama4',
+  'Llama 3',
+  'Llama 4',
   'Mistral',
   'Qwen',
+  'GPT-4',
 ];
 
 const ValidatePage = () => {
@@ -22,6 +24,7 @@ const ValidatePage = () => {
   const [personalized, setPersonalized] = useState(false);
   const [selectedModel, setSelectedModel] = useState(modelList[0]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
   const maxWords = 100;
@@ -41,6 +44,26 @@ const ValidatePage = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showDropdown]);
 
+  // Fetch user profile data
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('first_name, last_name, country, state, city, education_level')
+            .eq('id', user.id)
+            .single();
+          setUserProfile(profileData);
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    };
+    fetchUserProfile();
+  }, []);
+
   const countWords = (text) => {
     return text.trim().split(/\s+/).filter(word => word.length > 0).length;
   };
@@ -58,11 +81,27 @@ const ValidatePage = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.post('http://localhost:5000/api/chat', {
+      const requestBody = {
         message,
         model: selectedModel,
         personalized
-      });
+      };
+
+      // Include user profile data if personalized analysis is enabled
+      if (personalized && userProfile) {
+        requestBody.userProfile = {
+          firstName: userProfile.first_name,
+          lastName: userProfile.last_name,
+          location: {
+            country: userProfile.country,
+            state: userProfile.state,
+            city: userProfile.city
+          },
+          educationLevel: userProfile.education_level
+        };
+      }
+
+      const response = await axios.post('http://localhost:5000/api/chat', requestBody);
       const parsed = JSON.parse(response.data.reply);
       setLoading(false);
       navigate('/results', { state: { analysis: parsed, input: message } });
@@ -114,7 +153,7 @@ const ValidatePage = () => {
               <div className="model-dropdown-group" ref={dropdownRef}>
                 <button
                   type="button"
-                  className="model-dropdown-btn"
+                  className={`model-dropdown-btn ${selectedModel === 'GPT-4' ? 'gpt-4-selected' : ''}`}
                   onClick={() => setShowDropdown(v => !v)}
                 >
                   {selectedModel}
@@ -125,7 +164,7 @@ const ValidatePage = () => {
                     {modelList.map((model) => (
                       <li
                         key={model}
-                        className={model === selectedModel ? 'selected' : ''}
+                        className={`${model === selectedModel ? 'selected' : ''} ${model === 'GPT-4' ? 'gpt-4' : ''}`}
                         onClick={() => {
                           setSelectedModel(model);
                           setShowDropdown(false);
@@ -139,6 +178,11 @@ const ValidatePage = () => {
               </div>
             </div>
           </div>
+          {personalized && (
+            <div className="personalized-explanation">
+              <small>💡 Personalized analysis considers your location, education, and background to provide more relevant startup insights tailored to your specific context.</small>
+            </div>
+          )}
         </div>
         <form onSubmit={handleSubmit} className="validate-form">
           <textarea

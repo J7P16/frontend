@@ -1,6 +1,8 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FiDownload, FiTrendingUp, FiTarget, FiUsers, FiCheckCircle, FiDollarSign, FiExternalLink, FiAlertCircle, FiLink, FiMessageSquare, FiCopy, FiClock } from 'react-icons/fi';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const ResultsPage = () => {
   const location = useLocation();
@@ -11,6 +13,204 @@ const ResultsPage = () => {
     if (analysis?.pitch) {
       navigator.clipboard.writeText(analysis.pitch);
       // You could add a toast notification here to show the copy was successful
+    }
+  };
+
+  const generatePDF = async () => {
+    const currentDate = new Date().toLocaleDateString();
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = 210;
+    const pageHeight = 297;
+    const margin = 10;
+    
+    // Create a temporary div to hold the PDF content
+    const pdfContainer = document.createElement('div');
+    pdfContainer.style.position = 'fixed';
+    pdfContainer.style.left = '0';
+    pdfContainer.style.top = '0';
+    pdfContainer.style.width = '794px'; // A4 at 96dpi
+    pdfContainer.style.padding = '40px';
+    pdfContainer.style.backgroundColor = '#ffffff';
+    pdfContainer.style.fontFamily = 'Arial, sans-serif';
+    pdfContainer.style.lineHeight = '1.6';
+    pdfContainer.style.color = '#333';
+    pdfContainer.style.zIndex = '10000';
+    
+    pdfContainer.innerHTML = `
+      <div style="text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 3px solid #2563eb;">
+        <h1 style="color: #2563eb; font-size: 32px; margin: 0 0 10px 0; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Your Validly Startup Report</h1>
+        <div style="color: #666; font-size: 16px;">Generated on ${currentDate}</div>
+      </div>
+
+      <div style="background: #f8fafc; border-left: 4px solid #2563eb; padding: 20px; margin-bottom: 30px; border-radius: 8px;">
+        <h2 style="color: #2563eb; margin: 0 0 10px 0; font-size: 20px;">Startup Idea</h2>
+        <p style="margin: 0; font-style: italic; color: #555;">"${input}"</p>
+      </div>
+
+      <div style="margin-bottom: 40px;">
+        <h2 style="color: #2563eb; font-size: 24px; margin: 0 0 20px 0; padding-bottom: 10px; border-bottom: 2px solid #e5e7eb;">
+          Market Demand 
+          <span style="display: inline-block; background: #2563eb; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 16px; margin-left: 15px;">${analysis.marketDemand.score}/10</span>
+        </h2>
+        <p><strong>Summary:</strong> ${analysis.marketDemand.summary}</p>
+        <p><strong>Details:</strong> ${analysis.marketDemand.details}</p>
+        
+        <div style="margin: 20px 0; padding: 15px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+          <h3 style="color: #374151; margin: 0 0 10px 0; font-size: 18px;">Customer Pain Points</h3>
+          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px; margin: 10px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <strong>Primary Pain Point:</strong> ${analysis.marketDemand.painPoints.primaryPainPoint}
+          </div>
+          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px; margin: 10px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <strong>Problem Urgency:</strong> ${analysis.marketDemand.painPoints.urgency}
+          </div>
+          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px; margin: 10px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <strong>Evidence of Demand:</strong> ${analysis.marketDemand.painPoints.evidence}
+          </div>
+        </div>
+
+        <div style="margin: 20px 0; padding: 15px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+          <h3 style="color: #374151; margin: 0 0 10px 0; font-size: 18px;">Market Timing & Trends</h3>
+          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px; margin: 10px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <strong>Market Readiness:</strong> ${analysis.marketDemand.timingTrends.marketReadiness}
+          </div>
+          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px; margin: 10px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <strong>Emerging Trends:</strong> ${analysis.marketDemand.timingTrends.emergingTrends}
+          </div>
+          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px; margin: 10px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <strong>Timing Assessment:</strong> ${analysis.marketDemand.timingTrends.timingAssessment}
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 40px;">
+        <h2 style="color: #2563eb; font-size: 24px; margin: 0 0 20px 0; padding-bottom: 10px; border-bottom: 2px solid #e5e7eb;">Top Potential Competitors</h2>
+        ${analysis.competitors.map(comp => `
+          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin: 15px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <span style="font-weight: bold; font-size: 18px; color: #2563eb;">${comp.name}</span>
+              <span style="background: ${comp.popularity.toLowerCase() === 'high' ? '#dc2626' : comp.popularity.toLowerCase() === 'medium' ? '#f59e0b' : '#16a34a'}; color: white; padding: 4px 12px; border-radius: 15px; font-size: 14px; font-weight: bold;">${comp.popularity} Popularity</span>
+            </div>
+            <p><strong>Description:</strong> ${comp.description}</p>
+            <p><strong>Location:</strong> ${comp.locations} • <strong>Pricing:</strong> ${comp.pricing}</p>
+            
+            <div style="display: flex; gap: 20px; margin-top: 15px;">
+              <div style="flex: 1;">
+                <h4 style="color: #374151; margin: 0 0 10px 0;">Strengths</h4>
+                <ul style="list-style: none; padding: 0;">
+                  ${comp.pros.map(pro => `<li style="padding: 5px 0; border-bottom: 1px solid #f3f4f6;">✓ ${pro}</li>`).join('')}
+                </ul>
+              </div>
+              <div style="flex: 1;">
+                <h4 style="color: #374151; margin: 0 0 10px 0;">Weaknesses</h4>
+                <ul style="list-style: none; padding: 0;">
+                  ${comp.weaknesses.map(weakness => `<li style="padding: 5px 0; border-bottom: 1px solid #f3f4f6;">⚠ ${weakness}</li>`).join('')}
+                </ul>
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      <div style="margin-bottom: 40px;">
+        <h2 style="color: #2563eb; font-size: 24px; margin: 0 0 20px 0; padding-bottom: 10px; border-bottom: 2px solid #e5e7eb;">Target Audience</h2>
+        ${analysis.targetAudience.map(aud => `
+          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px; margin: 10px 0;">
+            <div style="font-weight: bold; color: #2563eb; font-size: 18px;">${aud.group}</div>
+            <div style="margin-top: 10px;">
+              <strong>Online Destinations:</strong>
+              <ul style="margin: 5px 0; padding-left: 20px;">
+                ${aud.onlineDestinations.map(dest => `
+                  <li>${dest.name} (${dest.type}) - ${dest.description}</li>
+                `).join('')}
+              </ul>
+            </div>
+          </div>
+        `).join('')}
+
+        <div style="background: #f0f9ff; border: 2px solid #bae6fd; border-radius: 8px; padding: 20px; margin: 20px 0;">
+          <h3 style="color: #0369a1; margin: 0 0 15px 0; font-size: 20px;">Professional Pitch</h3>
+          <div style="font-style: italic; color: #1e40af; line-height: 1.8;">${analysis.pitch}</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 40px;">
+        <h2 style="color: #2563eb; font-size: 24px; margin: 0 0 20px 0; padding-bottom: 10px; border-bottom: 2px solid #e5e7eb;">Revenue Model Suggestions</h2>
+        <ul style="list-style: none; padding: 0;">
+          ${analysis.revenueModels.map(model => `<li style="padding: 8px 0; border-bottom: 1px solid #f3f4f6;">${model}</li>`).join('')}
+        </ul>
+      </div>
+
+      <div style="margin-bottom: 40px;">
+        <h2 style="color: #2563eb; font-size: 24px; margin: 0 0 20px 0; padding-bottom: 10px; border-bottom: 2px solid #e5e7eb;">MVP Feature Set</h2>
+        <div style="margin: 20px 0; padding: 15px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+          <h3 style="color: #374151; margin: 0 0 10px 0; font-size: 18px;">Suggested MVP Design</h3>
+          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px; margin: 10px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">${analysis.mvpDesign}</div>
+        </div>
+        
+        <h3 style="color: #374151; margin: 20px 0 10px 0; font-size: 18px;">Feature Prioritization</h3>
+        <ul style="list-style: none; padding: 0;">
+          ${analysis.mvpFeatures.map(feat => `
+            <li style="padding: 8px 0; border-bottom: 1px solid #f3f4f6;">
+              ${feat.feature}
+              <span style="display: inline-block; margin-left: 10px;">
+                <span style="background: ${feat.priority.toLowerCase() === 'high' ? '#dc2626' : feat.priority.toLowerCase() === 'medium' ? '#f59e0b' : '#16a34a'}; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; margin-left: 5px;">${feat.priority} Priority</span>
+                <span style="background: ${feat.effort.toLowerCase() === 'high' ? '#dc2626' : feat.effort.toLowerCase() === 'medium' ? '#f59e0b' : '#16a34a'}; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; margin-left: 5px;">${feat.effort} Effort</span>
+              </span>
+            </li>
+          `).join('')}
+        </ul>
+      </div>
+
+      <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; color: #666; font-size: 14px;">
+        <p>Report generated by Validly - Professional Startup Validation Platform</p>
+        <p>For more insights and validation tools, visit our platform</p>
+      </div>
+    `;
+
+    // Add the container to the document
+    document.body.appendChild(pdfContainer);
+
+    try {
+      // Convert the HTML to canvas
+      const canvas = await html2canvas(pdfContainer, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        scrollY: 0,
+        scrollX: 0
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pageWidth - 2 * margin;
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+      let heightLeft = pdfHeight;
+      let position = 0;
+
+      // Add first page
+      pdf.addImage(imgData, 'PNG', margin, position, pdfWidth, pdfHeight);
+      heightLeft -= pageHeight;
+
+      // Add additional pages if needed
+      while (heightLeft > 0) {
+        position = heightLeft - pdfHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', margin, position, pdfWidth, pdfHeight);
+        heightLeft -= pageHeight;
+      }
+
+      // Generate filename with current date
+      const dateStr = new Date().toISOString().split('T')[0];
+      const filename = `validly-report-${dateStr}.pdf`;
+      pdf.save(filename);
+
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Error generating PDF. Please try again.');
+    } finally {
+      // Clean up
+      document.body.removeChild(pdfContainer);
     }
   };
 
@@ -211,7 +411,7 @@ const ResultsPage = () => {
       </div>
       <div className="results-actions">
         <button className="validate-another-btn" onClick={() => navigate('/validate')}>Validate Another Idea</button>
-        <button className="download-btn"><FiDownload style={{marginRight: 8, fontSize: '1.2em'}} />Download PDF Report</button>
+        <button className="download-btn" onClick={generatePDF}><FiDownload style={{marginRight: 8, fontSize: '1.2em'}} />Download PDF Report</button>
       </div>
     </div>
   );

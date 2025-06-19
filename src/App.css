@@ -1469,6 +1469,31 @@ button.secondary:hover {
   color: #22336b;
   font-weight: 500;
 }
+.personalized-info {
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 6px;
+  padding: 4px 8px;
+  color: #0369a1;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+.personalized-info small {
+  color: #0369a1;
+}
+.personalized-explanation {
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-top: 8px;
+  color: #92400e;
+}
+.personalized-explanation small {
+  color: #92400e;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
 .switch {
   position: relative;
   display: inline-block;
@@ -1531,6 +1556,19 @@ input:checked + .slider:before {
   background: #e0eaff;
   border-color: #b7aaff;
 }
+.model-dropdown-btn.gpt-4-selected {
+  background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  border-color: #4f46e5;
+}
+.model-dropdown-btn.gpt-4-selected:hover {
+  background: #e0eaff;
+  -webkit-text-fill-color: #2563eb;
+  background-clip: unset;
+}
 .model-dropdown-list {
   position: absolute;
   top: 110%;
@@ -1558,4 +1596,17 @@ input:checked + .slider:before {
   background: #e0eaff;
   color: #2563eb;
   font-weight: 600;
+}
+.model-dropdown-list li.gpt-4 {
+  background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  position: relative;
+}
+.model-dropdown-list li.gpt-4:hover {
+  background: #e0eaff;
+  -webkit-text-fill-color: #2563eb;
+  background-clip: unset;
 }
