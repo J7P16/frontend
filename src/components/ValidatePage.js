@@ -29,7 +29,7 @@ const ValidatePage = () => {
   const navigate = useNavigate();
   const maxWords = 100;
   const maxChars = 750;
-  let parsed;
+  let parsed; // its here because the error block cant access it otherwise 
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -111,8 +111,11 @@ const ValidatePage = () => {
       if (parsed = 'INAPPROPRIATECONTENT') {
         setError('Your content has been flagged for inappropriate content.')
       }
+      else if (parsed = 'TOKENSEXCEEDED') {
+        setError('Your content has exceeded the number of allocated tokens. Please upgrade your plan or revise your prompt.')
+      }
       else {
-        setError('Model is in high use or the content was flagged. Please try again.');
+        setError('Server may be in high use or down due to maintenance.');
       }
     }
   };
