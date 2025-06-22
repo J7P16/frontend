@@ -108,10 +108,10 @@ const ValidatePage = () => {
       navigate('/results', { state: { analysis: parsed, input: message } });
     } catch (err) {
       setLoading(false);
-      if (parsed = 'INAPPROPRIATECONTENT') {
+      if (parsed === 'INAPPROPRIATECONTENT') {
         setError('Your content has been flagged for inappropriate content.')
       }
-      else if (parsed = 'TOKENSEXCEEDED') {
+      else if (parsed === 'TOKENSEXCEEDED') {
         setError('Your content has exceeded the number of allocated tokens. Please upgrade your plan or revise your prompt.')
       }
       else {
