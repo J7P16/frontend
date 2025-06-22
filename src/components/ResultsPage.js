@@ -265,6 +265,17 @@ const ResultsPage = () => {
     return <div className="results-container"><p>No results to display. Please validate an idea first.</p></div>;
   }
 
+  // score badge function 
+  const getScoreColor = () => {
+    if (analysis.marketDemand.score >= 7) {
+      return 'score-badge-green';
+    } else if (analysis.marketDemand.score >= 4) {
+      return 'score-badge-yellow';
+    } else {
+      return 'score-badge-red';
+    }
+  };
+
   return (
     <div className="results-container">
       <a className="back-link" href="/validate">← Validate Another Idea</a>
@@ -281,7 +292,7 @@ const ResultsPage = () => {
         <div className="market-demand-header">
           <span className="market-demand-icon-bg"><FiTrendingUp className="market-demand-icon" /></span>
           <h3>Market Demand</h3>
-          <span className="score-badge">{analysis.marketDemand.score}/10</span>
+          <span className={getScoreColor()}>{analysis.marketDemand.score}/10</span>
         </div>
         <p className="market-demand-summary">{analysis.marketDemand.summary}</p>
         <p className="market-demand-details">{analysis.marketDemand.details}</p>
