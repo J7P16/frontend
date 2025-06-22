@@ -29,6 +29,7 @@ const ValidatePage = () => {
   const navigate = useNavigate();
   const maxWords = 100;
   const maxChars = 750;
+  let parsed;
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -102,12 +103,17 @@ const ValidatePage = () => {
       }
 
       const response = await axios.post('http://localhost:5000/api/chat', requestBody);
-      const parsed = JSON.parse(response.data.reply);
+      parsed = JSON.parse(response.data.reply);
       setLoading(false);
       navigate('/results', { state: { analysis: parsed, input: message } });
     } catch (err) {
       setLoading(false);
-      setError('Something went wrong. Please try again.');
+      if (parsed = 'INAPPROPRIATECONTENT') {
+        setError('Your content has been flagged for inappropriate content.')
+      }
+      else {
+        setError('Model is in high use or the content was flagged. Please try again.');
+      }
     }
   };
 
