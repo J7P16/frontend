@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import './ProfileDashboard.css';
+import { FiChevronDown, FiChevronUp, FiTrash2, FiBriefcase, FiDollarSign, FiAlertTriangle, FiBarChart2, FiCheckCircle, FiTrendingUp, FiTarget, FiUsers, FiMessageSquare, FiExternalLink } from 'react-icons/fi';
 
 const industryOptions = [
   'Technology', 'Healthcare', 'Finance', 'Education', 'Retail', 'Entertainment', 'Other'
@@ -47,6 +48,10 @@ export default function ProfileDashboard() {
   });
   const [editLoading, setEditLoading] = useState(false);
   const [editError, setEditError] = useState('');
+  const [ideas, setIdeas] = useState([]);
+  const [ideasLoading, setIdeasLoading] = useState(true);
+  const [expandedIdea, setExpandedIdea] = useState(null);
+  const [expandedSections, setExpandedSections] = useState({});
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data?.user || null));
@@ -84,6 +89,30 @@ export default function ProfileDashboard() {
       }
     };
     fetchProfile();
+  }, [user]);
+
+  useEffect(() => {
+    const fetchIdeas = async () => {
+      if (user?.id) {
+        setIdeasLoading(true);
+        const { data, error } = await supabase
+          .from('startup_ideas')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('Error fetching ideas:', error);
+        } else {
+          setIdeas(data);
+        }
+        setIdeasLoading(false);
+      }
+    };
+
+    if (user) {
+      fetchIdeas();
+    }
   }, [user]);
 
   const firstName = profile?.first_name;
@@ -186,6 +215,35 @@ export default function ProfileDashboard() {
     } finally {
       setDeleteLoading(false);
     }
+  };
+
+  const handleDeleteIdea = async (ideaId) => {
+    const confirmation = window.confirm('Are you sure you want to delete this idea?');
+    if (!confirmation) return;
+
+    const { error } = await supabase
+      .from('startup_ideas')
+      .delete()
+      .eq('id', ideaId);
+
+    if (error) {
+      console.error('Error deleting idea:', error);
+      alert('Failed to delete idea.');
+    } else {
+      setIdeas(ideas.filter(idea => idea.id !== ideaId));
+    }
+  };
+
+  const toggleIdea = (ideaId) => {
+    setExpandedIdea(expandedIdea === ideaId ? null : ideaId);
+    setExpandedSections({}); // Reset subsections when toggling main card
+  };
+
+  const toggleSection = (sectionName) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [sectionName]: !prev[sectionName]
+    }));
   };
 
   return (
@@ -410,6 +468,215 @@ export default function ProfileDashboard() {
               </div>
             </div>
             {editError && <div className="auth-error">{editError}</div>}
+        </div>
+
+        <div className="startup-ideas-section">
+          <h2 className="startup-ideas-title">Your Startup Ideas</h2>
+          {ideasLoading ? (
+            <p>Loading ideas...</p>
+          ) : ideas.length === 0 ? (
+            <div className="no-ideas-card">
+              <p>You haven't saved any startup ideas yet.</p>
+              <button onClick={() => navigate('/validate')}>Validate Your First Idea</button>
+            </div>
+          ) : (
+            <div className="ideas-list">
+              {ideas.map((idea) => (
+                <div key={idea.id} className="idea-card">
+                  <div className="idea-card-header" onClick={() => toggleIdea(idea.id)}>
+                    <div className="idea-card-title-group">
+                      <h3>{idea.title}</h3>
+                      <span>{new Date(idea.created_at).toLocaleString()}</span>
+                    </div>
+                    <div className="idea-card-actions">
+                      <button className="idea-delete-btn" onClick={(e) => { e.stopPropagation(); handleDeleteIdea(idea.id); }}>
+                        <FiTrash2 />
+                      </button>
+                      {expandedIdea === idea.id ? <FiChevronUp /> : <FiChevronDown />}
+                    </div>
+                  </div>
+                  {expandedIdea === idea.id && (
+                    <div className="idea-card-content">
+                      <div className="idea-question-box">
+                        <h4>Your Question</h4>
+                        <p>"{idea.question}"</p>
+                      </div>
+
+                      <h4>AI Analysis</h4>
+
+                      {/* Overview Section */}
+                      <div className="analysis-section">
+                        <div className="analysis-section-header" onClick={() => toggleSection('overview')}>
+                          <div className="analysis-section-title">
+                            <FiBriefcase className="section-icon" />
+                            <span>Overview</span>
+                          </div>
+                          {expandedSections.overview ? <FiChevronUp /> : <FiChevronDown />}
+                        </div>
+                        {expandedSections.overview && (
+                          <div className="analysis-section-content">
+                            <p>{idea.analysis.overview}</p>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Market Demand Section */}
+                      <div className="analysis-section">
+                        <div className="analysis-section-header" onClick={() => toggleSection('marketDemand')}>
+                          <div className="analysis-section-title">
+                            <FiTrendingUp className="section-icon" />
+                            <span>Market Demand</span>
+                            <span className="score-badge-sm">{idea.analysis.marketDemand.score}/10</span>
+                          </div>
+                          {expandedSections.marketDemand ? <FiChevronUp /> : <FiChevronDown />}
+                        </div>
+                        {expandedSections.marketDemand && (
+                          <div className="analysis-section-content">
+                            <p><strong>Summary:</strong> {idea.analysis.marketDemand.summary}</p>
+                            <p><strong>Details:</strong> {idea.analysis.marketDemand.details}</p>
+                             <div className="subsection">
+                                <h5>Customer Pain Points</h5>
+                                <p><strong>Primary:</strong> {idea.analysis.marketDemand.painPoints.primaryPainPoint}</p>
+                                <p><strong>Urgency:</strong> {idea.analysis.marketDemand.painPoints.urgency}</p>
+                                <p><strong>Evidence:</strong> {idea.analysis.marketDemand.painPoints.evidence}</p>
+                            </div>
+                             <div className="subsection">
+                                <h5>Market Timing & Trends</h5>
+                                <p><strong>Readiness:</strong> {idea.analysis.marketDemand.timingTrends.marketReadiness}</p>
+                                <p><strong>Trends:</strong> {idea.analysis.marketDemand.timingTrends.emergingTrends}</p>
+                                <p><strong>Assessment:</strong> {idea.analysis.marketDemand.timingTrends.timingAssessment}</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Competitors Section */}
+                      <div className="analysis-section">
+                        <div className="analysis-section-header" onClick={() => toggleSection('competitors')}>
+                          <div className="analysis-section-title">
+                            <FiTarget className="section-icon" />
+                            <span>Top Potential Competitors</span>
+                          </div>
+                          {expandedSections.competitors ? <FiChevronUp /> : <FiChevronDown />}
+                        </div>
+                        {expandedSections.competitors && (
+                          <div className="analysis-section-content">
+                            {idea.analysis.competitors.map((comp, i) => (
+                                <div key={i} className="subsection competitor-item">
+                                    <div className="competitor-title">
+                                        <strong>{comp.name}</strong>
+                                        <span className={`popularity-badge-sm ${comp.popularity?.toLowerCase()}`}>{comp.popularity} Pop.</span>
+                                    </div>
+                                    <p>{comp.description}</p>
+                                    <p><strong>Pricing:</strong> {comp.pricing}</p>
+                                    <h5>Strengths</h5>
+                                    <ul>{comp.pros.map((pro, j) => <li key={j}>{pro}</li>)}</ul>
+                                    <h5>Weaknesses</h5>
+                                    <ul>{comp.weaknesses.map((weak, j) => <li key={j}>{weak}</li>)}</ul>
+                                </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Target Audience Section */}
+                      <div className="analysis-section">
+                        <div className="analysis-section-header" onClick={() => toggleSection('targetAudience')}>
+                          <div className="analysis-section-title">
+                            <FiUsers className="section-icon" />
+                            <span>Target Audience</span>
+                          </div>
+                          {expandedSections.targetAudience ? <FiChevronUp /> : <FiChevronDown />}
+                        </div>
+                        {expandedSections.targetAudience && (
+                          <div className="analysis-section-content">
+                            {idea.analysis.targetAudience.map((aud, i) => (
+                                <div key={i} className="subsection">
+                                    <h5>{aud.group}</h5>
+                                    <h6>Potential Online Hangouts:</h6>
+                                    <ul>
+                                        {aud.onlineDestinations.map((dest, j) => (
+                                            <li key={j}>{dest.name} ({dest.type}) - {dest.description}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Pitch Section */}
+                      <div className="analysis-section">
+                        <div className="analysis-section-header" onClick={() => toggleSection('pitch')}>
+                          <div className="analysis-section-title">
+                            <FiMessageSquare className="section-icon" />
+                            <span>Professional Pitch</span>
+                          </div>
+                          {expandedSections.pitch ? <FiChevronUp /> : <FiChevronDown />}
+                        </div>
+                        {expandedSections.pitch && (
+                          <div className="analysis-section-content">
+                            <p>{idea.analysis.pitch}</p>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Revenue Model Section */}
+                      <div className="analysis-section">
+                        <div className="analysis-section-header" onClick={() => toggleSection('revenueModels')}>
+                          <div className="analysis-section-title">
+                            <FiDollarSign className="section-icon" />
+                            <span>Revenue Model Suggestions</span>
+                          </div>
+                          {expandedSections.revenueModels ? <FiChevronUp /> : <FiChevronDown />}
+                        </div>
+                        {expandedSections.revenueModels && (
+                          <div className="analysis-section-content">
+                            <ul>
+                              {idea.analysis.revenueModels.map((model, i) => <li key={i}>{model}</li>)}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* MVP Section */}
+                      <div className="analysis-section">
+                        <div className="analysis-section-header" onClick={() => toggleSection('mvp')}>
+                          <div className="analysis-section-title">
+                            <FiExternalLink className="section-icon" />
+                            <span>MVP Feature Set</span>
+                          </div>
+                          {expandedSections.mvp ? <FiChevronUp /> : <FiChevronDown />}
+                        </div>
+                        {expandedSections.mvp && (
+                          <div className="analysis-section-content">
+                            <div className="subsection">
+                                <h5>Suggested MVP Design</h5>
+                                <p>{idea.analysis.mvpDesign}</p>
+                            </div>
+                            <div className="subsection">
+                                <h5>Feature Prioritization</h5>
+                                <ul className="mvp-feature-list">
+                                    {idea.analysis.mvpFeatures.map((feat, i) => (
+                                        <li key={i}>
+                                            <span>{feat.feature}</span>
+                                            <div className="mvp-badges">
+                                                <span className={`mvp-badge priority-${feat.priority?.toLowerCase()}`}>{feat.priority} Priority</span>
+                                                <span className={`mvp-badge effort-${feat.effort?.toLowerCase()}`}>{feat.effort} Effort</span>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

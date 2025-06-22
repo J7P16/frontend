@@ -1,13 +1,60 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { FiDownload, FiTrendingUp, FiTarget, FiUsers, FiCheckCircle, FiDollarSign, FiExternalLink, FiAlertCircle, FiLink, FiMessageSquare, FiCopy, FiClock } from 'react-icons/fi';
+import { FiDownload, FiTrendingUp, FiTarget, FiUsers, FiCheckCircle, FiDollarSign, FiExternalLink, FiAlertCircle, FiLink, FiMessageSquare, FiCopy, FiClock, FiSave } from 'react-icons/fi';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { supabase } from '../supabaseClient';
 
 const ResultsPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { analysis, input } = location.state || {};
+  const [user, setUser] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [saveError, setSaveError] = useState('');
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    fetchUser();
+  }, []);
+
+  const handleSaveIdea = async () => {
+    if (!user) {
+      setSaveError('You must be logged in to save an idea.');
+      return;
+    }
+    if (!analysis || !input) {
+      setSaveError('No analysis to save.');
+      return;
+    }
+
+    setIsSaving(true);
+    setSaveError('');
+    setSaveSuccess(false);
+
+    const ideaData = {
+      user_id: user.id,
+      title: analysis.title || 'Untitled Idea',
+      question: input,
+      analysis: analysis, // The entire analysis object
+    };
+
+    const { error } = await supabase.from('startup_ideas').insert([ideaData]);
+
+    if (error) {
+      console.error('Error saving idea:', error);
+      setSaveError('Failed to save idea. Please try again.');
+    } else {
+      setSaveSuccess(true);
+      // Don't reset saveSuccess - keep it permanently saved
+    }
+
+    setIsSaving(false);
+  };
 
   const handleCopyPitch = () => {
     if (analysis?.pitch) {
@@ -226,6 +273,9 @@ const ResultsPage = () => {
           <h2>Validation Results</h2>
           <div className="results-input">"{input}"</div>
         </div>
+        <div className="results-header-right">
+          {saveError && <div className="save-error-message">{saveError}</div>}
+        </div>
       </div>
       <div className="results-section market-demand">
         <div className="market-demand-header">
@@ -411,6 +461,10 @@ const ResultsPage = () => {
       </div>
       <div className="results-actions">
         <button className="validate-another-btn" onClick={() => navigate('/validate')}>Validate Another Idea</button>
+        <button className={`save-idea-btn ${saveSuccess ? 'saved' : ''}`} onClick={handleSaveIdea} disabled={isSaving || saveSuccess}>
+            <FiSave style={{ marginRight: 8 }} />
+            {isSaving ? 'Saving...' : saveSuccess ? 'Saved!' : 'Save Idea'}
+        </button>
         <button className="download-btn" onClick={generatePDF}><FiDownload style={{marginRight: 8, fontSize: '1.2em'}} />Download PDF Report</button>
       </div>
     </div>

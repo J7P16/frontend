@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiTrendingUp, FiUsers, FiUserCheck, FiZap, FiShield, FiBarChart2, FiUser } from 'react-icons/fi';
 import logo from '../Clean_Validly_Logo.png';
+import validlyBanner from '../validly_banner.png';
 import { FiTwitter, FiLinkedin, FiGithub } from 'react-icons/fi';
 import { supabase } from '../supabaseClient';
 
@@ -52,9 +53,12 @@ const HomePage = () => {
 
       {/* Homepage Content */}
       <div className="homepage-container">
-
         {/* Homepage Content */}
         <div className="homepage-hero">
+          {/* Validly Banner */}
+          <div className="validly-banner-container">
+            <img src={validlyBanner} alt="Validly Banner" className="validly-banner" />
+          </div>
           <h1>
             Launch Your Startup Idea <br /> With <span className="gradient-text">AI-Powered Validation</span>
           </h1>

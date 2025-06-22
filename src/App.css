@@ -25,11 +25,14 @@ body, html, #root {
 
 .homepage-hero {
   text-align: center;
-  margin-bottom: 64px;
+  margin-bottom: 192px;
   height: 70vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  min-height: 70vh;
 }
 
 .homepage-hero h1 {
@@ -96,7 +99,6 @@ button.secondary:hover {
 
 .homepage-features-section {
   text-align: center;
-  margin-top: 64px;
 }
 
 .homepage-features-section h2 {
@@ -1609,4 +1611,71 @@ input:checked + .slider:before {
   background: #e0eaff;
   -webkit-text-fill-color: #2563eb;
   background-clip: unset;
+}
+
+.save-idea-btn {
+  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 32px;
+  font-size: 1.08rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background 0.18s;
+  box-shadow: none;
+}
+
+.save-idea-btn:hover:not(:disabled) {
+  background: linear-gradient(90deg, #34d399 0%, #10b981 100%);
+}
+
+.save-idea-btn:disabled {
+  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+  cursor: default;
+  opacity: 0.8;
+}
+
+.save-idea-btn.saved {
+  background: linear-gradient(90deg, #059669 0%, #047857 100%);
+  cursor: default;
+  opacity: 0.9;
+}
+
+.save-error-message {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.validly-banner-container {
+  margin-bottom: 32px;
+  margin-top: 100px;
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 100px;
+}
+
+.validly-banner {
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  object-fit: contain;
+}
+
+@media (max-width: 768px) {
+  .validly-banner-container {
+    max-width: 90%;
+  }
+  
+  .validly-banner {
+    max-height: 150px;
+  }
 }
