@@ -383,7 +383,7 @@ button.secondary:hover {
 }
 .score-badge {
   background: #e0f7e9;
-  color: #1a7f37;
+  color: #2cdb5d;
   border-radius: 8px;
   padding: 2px 10px;
   font-size: 1rem;
@@ -780,7 +780,30 @@ button.secondary:hover {
   color: #222;
   margin: 0 8px 0 0;
 }
-.score-badge {
+
+.score-badge-red {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-radius: 999px;
+  padding: 4px 14px;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-left: 4px;
+  display: inline-block;
+}
+
+.score-badge-yellow {
+  background: #fef3c7;
+  color: #b45309;
+  border-radius: 999px;
+  padding: 4px 14px;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-left: 4px;
+  display: inline-block;
+}
+
+.score-badge-green {
   background: #bbf7d0;
   color: #15803d;
   border-radius: 999px;

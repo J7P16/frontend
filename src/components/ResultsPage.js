@@ -276,6 +276,17 @@ const ResultsPage = () => {
     return <div className="results-container"><p>No results to display. Please validate an idea first.</p></div>;
   }
 
+  // score badge function 
+  const getScoreColor = () => {
+    if (analysis.marketDemand.score >= 7) {
+      return 'score-badge-green';
+    } else if (analysis.marketDemand.score >= 4) {
+      return 'score-badge-yellow';
+    } else {
+      return 'score-badge-red';
+    }
+  };
+
   // Add safety checks for required properties
   const marketDemand = analysis.marketDemand || {};
   const painPoints = marketDemand.painPoints || {};
@@ -309,7 +320,7 @@ const ResultsPage = () => {
         <div className="market-demand-header">
           <span className="market-demand-icon-bg"><FiTrendingUp className="market-demand-icon" /></span>
           <h3>Market Demand</h3>
-          <span className="score-badge">{analysis.score || 'N/A'}/10</span>
+          <span className="score-badge">{analysis.marketDemand.score}/10</span>
         </div>
         <p className="market-demand-summary">{analysis.summary || 'No summary available'}</p>
         <p className="market-demand-details">{analysis.details || 'No details available'}</p>
