@@ -3,29 +3,26 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FiClipboard, FiChevronDown } from 'react-icons/fi';
 import { supabase } from '../supabaseClient';
+import '../styles/ValidatePage.css';
 
-const modelList = [
-  'Compound',
-  'Deepseek',
-  'Gemma',
-  'Llama 3',
-  'Llama 4',
-  'Mistral',
-  'Qwen',
-  'GPT-4',
+const modeList = [
+  'Quick Search',
+  'Deep Research'
 ];
 
 const ValidatePage = () => {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
   const [wordCount, setWordCount] = useState(0);
   const [charCount, setCharCount] = useState(0);
   const [personalized, setPersonalized] = useState(false);
-  const [selectedModel, setSelectedModel] = useState(modelList[0]);
+  const [selectedModel, setSelectedModel] = useState(modeList[0]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
   const dropdownRef = useRef(null);
+  const progressIntervalRef = useRef(null);
   const navigate = useNavigate();
   const maxWords = 100;
   const maxChars = 750;
@@ -53,7 +50,7 @@ const ValidatePage = () => {
         if (user) {
           const { data: profileData } = await supabase
             .from('profiles')
-            .select('first_name, last_name, country, state, city, education_level')
+            .select('first_name, last_name, country, state, city, education_level, background, technical_skills, previous_experience, startup_name, startup_description, industry, customer_type, stage, team_size, tech_stack, funding')
             .eq('id', user.id)
             .single();
           setUserProfile(profileData);
@@ -63,6 +60,15 @@ const ValidatePage = () => {
       }
     };
     fetchUserProfile();
+  }, []);
+
+  // Cleanup progress interval on unmount
+  useEffect(() => {
+    return () => {
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+      }
+    };
   }, []);
 
   const countWords = (text) => {
@@ -76,11 +82,46 @@ const ValidatePage = () => {
     setCharCount(newMessage.length);
   };
 
+  const getWordCountColor = () => {
+    if (wordCount > maxWords) return '#dc2626'; // red
+    if (wordCount > maxWords * 0.8) return '#f59e0b'; // amber
+    return '#6b7280'; // gray
+  };
+
+  const getCharCountColor = () => {
+    if (charCount > maxChars) return '#dc2626'; // red
+    if (charCount > maxChars * 0.8) return '#f59e0b'; // amber
+    return '#6b7280'; // gray
+  };
+
+  const startProgressSimulation = () => {
+    setProgress(0);
+    progressIntervalRef.current = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 90) {
+          clearInterval(progressIntervalRef.current);
+          return 90; // Cap at 90% until we get the actual response
+        }
+        return prev + Math.random() * 15; // Random increment between 0-15
+      });
+    }, 500); // Update every 500ms
+  };
+
+  const stopProgressSimulation = () => {
+    if (progressIntervalRef.current) {
+      clearInterval(progressIntervalRef.current);
+      progressIntervalRef.current = null;
+    }
+    setProgress(100);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (wordCount > maxWords) return;
     setLoading(true);
     setError(null);
+    startProgressSimulation();
+    
     try {
       const requestBody = {
         message,
@@ -98,15 +139,44 @@ const ValidatePage = () => {
             state: userProfile.state,
             city: userProfile.city
           },
-          educationLevel: userProfile.education_level
+          background: userProfile.background,
+          technicalSkills: userProfile.technical_skills,
+          previousExperience: userProfile.previous_experience,
+          startupName: userProfile.startup_name,
+          startupDescription: userProfile.startup_description,
+          industry: userProfile.industry,
+          customerType: userProfile.customer_type,
+          stage: userProfile.stage,
+          teamSize: userProfile.team_size,
+          techStack: userProfile.tech_stack,
+          funding: userProfile.funding
         };
       }
 
       const response = await axios.post('http://localhost:5000/api/chat', requestBody);
-      parsed = JSON.parse(response.data.reply);
+      let parsed = response.data.reply;
+
+      if (typeof parsed === 'string') {
+        try {
+          parsed = JSON.parse(parsed);
+        } catch (e) {
+          console.error('Error parsing response:', e);
+          setError('Received invalid response format.');
+          setLoading(false);
+          stopProgressSimulation();
+          return;
+        }
+      }
+      if (parsed?.title && parsed?.marketDemand && parsed?.competitors) {
+        navigate('/results', { state: { analysis: parsed, input: message } });
+      } else {
+        setError('The validation result was incomplete or malformed.');
+      }
+      stopProgressSimulation();
       setLoading(false);
       navigate('/results', { state: { analysis: parsed, input: message } });
     } catch (err) {
+      stopProgressSimulation();
       setLoading(false);
       if (parsed === 'INAPPROPRIATECONTENT') {
         setError('Your content has been flagged for inappropriate content.')
@@ -118,18 +188,6 @@ const ValidatePage = () => {
         setError('Server may be in high use or down due to maintenance.');
       }
     }
-  };
-
-  const getWordCountColor = () => {
-    if (wordCount > maxWords) return '#dc2626'; // red
-    if (wordCount > maxWords * 0.8) return '#f59e0b'; // amber
-    return '#6b7280'; // gray
-  };
-
-  const getCharCountColor = () => {
-    if (charCount > maxChars) return '#dc2626'; // red
-    if (charCount > maxChars * 0.8) return '#f59e0b'; // amber
-    return '#6b7280'; // gray
   };
 
   return (
@@ -162,7 +220,7 @@ const ValidatePage = () => {
               <div className="model-dropdown-group" ref={dropdownRef}>
                 <button
                   type="button"
-                  className={`model-dropdown-btn ${selectedModel === 'GPT-4' ? 'gpt-4-selected' : ''}`}
+                  className={`model-dropdown-btn ${selectedModel === 'Quick Search' ? 'quick-search-selected' : ''} ${selectedModel === 'Deep Research' ? 'deep-search-selected' : ''}`}
                   onClick={() => setShowDropdown(v => !v)}
                 >
                   {selectedModel}
@@ -170,10 +228,10 @@ const ValidatePage = () => {
                 </button>
                 {showDropdown && (
                   <ul className="model-dropdown-list">
-                    {modelList.map((model) => (
+                    {modeList.map((model) => (
                       <li
                         key={model}
-                        className={`${model === selectedModel ? 'selected' : ''} ${model === 'GPT-4' ? 'gpt-4' : ''}`}
+                        className={`${model === selectedModel ? 'selected' : ''} ${model === 'Quick Search' ? 'quick-search' : ''} ${model === 'Deep Research' ? 'deep-search' : ''}`}
                         onClick={() => {
                           setSelectedModel(model);
                           setShowDropdown(false);
@@ -205,6 +263,26 @@ const ValidatePage = () => {
           <button className="validate-btn" type="submit" disabled={loading || wordCount > maxWords || charCount > maxChars}>
             {loading ? 'Validating...' : 'Validate Idea'}
           </button>
+          {loading && (
+            <div className="loading-bar-container">
+              <div className="loading-bar">
+                <div 
+                  className="loading-bar-fill" 
+                  style={{ width: `${progress}%` }}
+                ></div>
+              </div>
+              <div className="loading-text">
+                {progress < 12.5 && 'Analyzing your startup idea...'}
+                {progress >= 12.5 && progress < 25 && 'Researching market demand...'}
+                {progress >= 25 && progress < 37.5 && 'Searching for competitors...'}
+                {progress >= 37.5 && progress < 50 && 'Finding audience in need...'}
+                {progress >= 50 && progress < 62.5 && 'Optimizing revenue model suggestions...'}
+                {progress >= 62.5 && progress < 75 && 'Designing the perfect MVP...'}
+                {progress >= 75 && progress < 85 && 'Generating comprehensive insights...'}
+                {progress >= 85 && 'Finalizing your validation report (may take a minute)...'}
+              </div>
+            </div>
+          )}
           {error && <div className="validate-error">{error}</div>}
         </form>
         <div className="validate-whatyouget">

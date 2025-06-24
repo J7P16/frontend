@@ -8,11 +8,11 @@ const planData = (billing) => ([
     price: '$0',
     period: '',
     features: [
-      'Unlimited Basic Validations',
-      'Basic Market Analysis',
+      'Basic Idea Analysis',
+      '50 Quick Searches Per Month',
       'Competitor Overview',
       'MVP Feature Suggestions',
-      'Community Support',
+      { text: 'Idea/Product Storage', unavailable: true },
       { text: 'Downloadable PDF Exports', unavailable: true },
       { text: 'Priority AI Processing', unavailable: true },
       { text: 'Advanced Insights', unavailable: true },
@@ -27,13 +27,13 @@ const planData = (billing) => ([
     period: billing === 'monthly' ? '/month' : '/year',
     features: [
       'Everything in Free Plan',
-      '100 Advanced Validations Per Month',
-      'In-Depth Market Analysis',
+      '200 Quick Searches Per Month',
+      'Personalized Search Results',
       'Downloadable PDF Exports',
       'Priority AI Processing',
-      'Stronger AI Engine Access',
+      'Idea/Product Storage (100)',
       'Advanced Profile Dashboard',
-      'Personalized Scaling Strategies',
+      { text: 'Deep Research Engine', unavailable: true },
     ],
     button: 'Upgrade to Pro',
     highlight: true,
@@ -46,13 +46,13 @@ const planData = (billing) => ([
     period: billing === 'monthly' ? '/month' : '/year',
     features: [
       'Everything in Pro Plan',
-      '500 Advanced Validations Per Month',
+      'Access to Deep Research Engine',
+      '500 Quick Searches Per Month',
+      '50 Deep Searches Per Month',
       'Highest Priority AI Processing',
-      'Real-time Pitch Editor/Grader',
-      'Strongest AI Engine Access',
+      'Idea/Product Storage (500)',
       'Specifc API Selections',
-      'Startup Roadmap Generator',
-      'GTM Strategy Builder',
+      'Early Access to New Features',
     ],
     button: 'Become a Founder',
     highlight: false,
@@ -125,9 +125,9 @@ export default function PricingPage() {
               <span className="pricing-icon">{plan.icon}</span>
               <h2 className="pricing-plan-name">{plan.name}</h2>
               <div className="pricing-plan-desc">
-                {plan.name === 'Free' && 'Perfect for exploring your first startup idea'}
-                {plan.name === 'Pro' && 'For serious entrepreneurs validating multiple ideas'}
-                {plan.name === 'Founder' && 'Complete validation suite for launching founders'}
+                {plan.name === 'Free' && 'Perfect for drafting your first startup idea'}
+                {plan.name === 'Pro' && 'For serious entrepreneurs searching for product-market fit'}
+                {plan.name === 'Founder' && 'Complete product validation suite for existing companies'}
               </div>
               <div className="pricing-price-row">
                 <span className="pricing-price">{plan.price}</span>

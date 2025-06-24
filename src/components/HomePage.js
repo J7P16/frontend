@@ -60,7 +60,7 @@ const HomePage = () => {
             <img src={validlyBanner} alt="Validly Banner" className="validly-banner" />
           </div>
           <h1>
-            Launch Your Startup Idea <br /> With <span className="gradient-text">AI-Powered Validation</span>
+            Launch Your Startup Idea <br /> With <span className="gradient-text">Hour-Saving Validation</span>
           </h1>
           <p>Validate your crazy startup ideas in real-time to improve growth, deliverability, reduce competition, and take over markets.</p>
           <div className="homepage-hero-buttons">

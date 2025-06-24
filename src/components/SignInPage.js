@@ -35,7 +35,7 @@ const SignInPage = () => {
         .eq('id', user.id)
         .single();
 
-      if (profileError && profileError.code !== 'PGRST116') { // PGRST116 is "not found" error
+      if (profileError && profileError.code && profileError.code !== 'PGRST116') { // PGRST116 is "not found" error
         throw profileError;
       }
 

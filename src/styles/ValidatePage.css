@@ -29,4 +29,46 @@
   outline: none;
   border-color: #007bff;
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* Loading Bar Styles */
+.loading-bar-container {
+  margin-top: 1rem;
+  text-align: center;
+  width: 100%;
+}
+
+.loading-bar {
+  width: 100%;
+  height: 8px;
+  background-color: #f3f4f6;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.loading-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
+  background-size: 200% 100%;
+  border-radius: 8px;
+  transition: width 0.3s ease;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.loading-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+  margin-top: 0.25rem;
 } 

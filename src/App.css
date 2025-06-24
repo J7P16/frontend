@@ -1542,7 +1542,6 @@ input:checked + .slider:before {
 }
 .model-dropdown-btn {
   background: #f3f4f6;
-  color: #22336b;
   border: 1.5px solid #e5e7eb;
   border-radius: 8px;
   padding: 7px 18px 7px 14px;
@@ -1558,7 +1557,20 @@ input:checked + .slider:before {
   background: #e0eaff;
   border-color: #b7aaff;
 }
-.model-dropdown-btn.gpt-4-selected {
+.model-dropdown-btn.quick-search-selected {
+  background: linear-gradient(90deg, #000000 0%, #000000 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  border-color: #000000;
+}
+.model-dropdown-btn.quick-search-selected:hover {
+  background: #e0eaff;
+  -webkit-text-fill-color: #000000;
+  background-clip: unset;
+}
+.model-dropdown-btn.deep-search-selected {
   background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -1566,9 +1578,9 @@ input:checked + .slider:before {
   font-weight: 700;
   border-color: #4f46e5;
 }
-.model-dropdown-btn.gpt-4-selected:hover {
+.model-dropdown-btn.deep-search-selected:hover {
   background: #e0eaff;
-  -webkit-text-fill-color: #2563eb;
+  -webkit-text-fill-color: #4f46e5;
   background-clip: unset;
 }
 .model-dropdown-list {
@@ -1610,6 +1622,32 @@ input:checked + .slider:before {
 .model-dropdown-list li.gpt-4:hover {
   background: #e0eaff;
   -webkit-text-fill-color: #2563eb;
+  background-clip: unset;
+}
+.model-dropdown-list li.quick-search {
+  background: linear-gradient(90deg, #000000 0%, #000000 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  position: relative;
+}
+.model-dropdown-list li.quick-search:hover {
+  background: #e0eaff;
+  -webkit-text-fill-color: #000000;
+  background-clip: unset;
+}
+.model-dropdown-list li.deep-search {
+  background: linear-gradient(90deg, #2f25f3 0%, #8745f8 50%, #2f25f3 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  position: relative;
+}
+.model-dropdown-list li.deep-search:hover {
+  background: #e0eaff;
+  -webkit-text-fill-color: #4f46e5;
   background-clip: unset;
 }
 

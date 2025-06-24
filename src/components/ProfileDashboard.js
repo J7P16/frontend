@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import './ProfileDashboard.css';
-import { FiChevronDown, FiChevronUp, FiTrash2, FiBriefcase, FiDollarSign, FiAlertTriangle, FiBarChart2, FiCheckCircle, FiTrendingUp, FiTarget, FiUsers, FiMessageSquare, FiExternalLink } from 'react-icons/fi';
+import { FiChevronDown, FiChevronUp, FiTrash2, FiBriefcase, FiDollarSign, FiTrendingUp, FiTarget, FiUsers, FiMessageSquare, FiExternalLink } from 'react-icons/fi';
 
 const industryOptions = [
   'Technology', 'Healthcare', 'Finance', 'Education', 'Retail', 'Entertainment', 'Other'
@@ -265,7 +265,7 @@ export default function ProfileDashboard() {
             <h2>Account Details</h2>
             <div><b>User ID:</b> {userId}</div>
             <div><b>Member Since:</b> {memberSince}</div>
-            <div><b>Stored Ideas:</b> 0</div>
+            <div><b>Stored Ideas:</b> {ideas.length}</div>
             <button
               className="profile-delete-btn"
               onClick={() => setShowDeleteConfirm(true)}
@@ -526,25 +526,25 @@ export default function ProfileDashboard() {
                           <div className="analysis-section-title">
                             <FiTrendingUp className="section-icon" />
                             <span>Market Demand</span>
-                            <span className="score-badge-sm">{idea.analysis.marketDemand.score}/10</span>
+                            <span className="score-badge-sm">{idea.analysis?.score || 'N/A'}/10</span>
                           </div>
                           {expandedSections.marketDemand ? <FiChevronUp /> : <FiChevronDown />}
                         </div>
                         {expandedSections.marketDemand && (
                           <div className="analysis-section-content">
-                            <p><strong>Summary:</strong> {idea.analysis.marketDemand.summary}</p>
-                            <p><strong>Details:</strong> {idea.analysis.marketDemand.details}</p>
+                            <p><strong>Summary:</strong> {idea.analysis?.summary || 'No summary available'}</p>
+                            <p><strong>Details:</strong> {idea.analysis?.details || 'No details available'}</p>
                              <div className="subsection">
                                 <h5>Customer Pain Points</h5>
-                                <p><strong>Primary:</strong> {idea.analysis.marketDemand.painPoints.primaryPainPoint}</p>
-                                <p><strong>Urgency:</strong> {idea.analysis.marketDemand.painPoints.urgency}</p>
-                                <p><strong>Evidence:</strong> {idea.analysis.marketDemand.painPoints.evidence}</p>
+                                <p><strong>Primary:</strong> {idea.analysis.marketDemand?.painPoints?.primaryPainPoint || 'Not specified'}</p>
+                                <p><strong>Urgency:</strong> {idea.analysis.marketDemand?.painPoints?.urgency || 'Not specified'}</p>
+                                <p><strong>Evidence:</strong> {idea.analysis.marketDemand?.painPoints?.evidence || 'Not specified'}</p>
                             </div>
                              <div className="subsection">
                                 <h5>Market Timing & Trends</h5>
-                                <p><strong>Readiness:</strong> {idea.analysis.marketDemand.timingTrends.marketReadiness}</p>
-                                <p><strong>Trends:</strong> {idea.analysis.marketDemand.timingTrends.emergingTrends}</p>
-                                <p><strong>Assessment:</strong> {idea.analysis.marketDemand.timingTrends.timingAssessment}</p>
+                                <p><strong>Readiness:</strong> {idea.analysis.marketDemand?.timingTrends?.marketReadiness || 'Not specified'}</p>
+                                <p><strong>Trends:</strong> {idea.analysis.marketDemand?.timingTrends?.emergingTrends || 'Not specified'}</p>
+                                <p><strong>Assessment:</strong> {idea.analysis.marketDemand?.timingTrends?.timingAssessment || 'Not specified'}</p>
                             </div>
                           </div>
                         )}

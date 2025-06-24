@@ -73,41 +73,41 @@ const Chat = () => {
             {analysis && (
                 <div>
                     <h2>Market Demand</h2>
-                    <p><strong>Score:</strong> {analysis.marketDemand.score}</p>
-                    <p><strong>Summary:</strong> {analysis.marketDemand.summary}</p>
-                    <p><strong>Details:</strong> {analysis.marketDemand.details}</p>
+                    <p><strong>Score:</strong> {analysis.marketDemand?.score || 'N/A'}</p>
+                    <p><strong>Summary:</strong> {analysis.marketDemand?.summary || 'No summary available'}</p>
+                    <p><strong>Details:</strong> {analysis.marketDemand?.details || 'No details available'}</p>
 
                     <h2>Competitors</h2>
-                    {analysis.competitors.map((comp, idx) => (
+                    {(analysis.competitors || []).map((comp, idx) => (
                         <div key={idx}>
-                            <p><strong>Name:</strong> {comp.name}</p>
-                            <p><strong>Description:</strong> {comp.description}</p>
-                            <p><strong>Popularity:</strong> {comp.popularity}</p>
-                            <p><strong>Locations:</strong> {comp.locations}</p>
-                            <p><strong>Pricing:</strong> {comp.pricing}</p>
+                            <p><strong>Name:</strong> {comp.name || 'Unknown'}</p>
+                            <p><strong>Description:</strong> {comp.description || 'No description available'}</p>
+                            <p><strong>Popularity:</strong> {comp.popularity || 'Unknown'}</p>
+                            <p><strong>Locations:</strong> {comp.locations || 'Unknown'}</p>
+                            <p><strong>Pricing:</strong> {comp.pricing || 'Unknown'}</p>
                         </div>
                     ))}
 
                     <h2>Target Audience</h2>
                     <ul>
-                        {analysis.targetAudience.map((aud, idx) => (
-                            <li key={idx}>{aud}</li>
+                        {(analysis.targetAudience || []).map((aud, idx) => (
+                            <li key={idx}>{aud.group || 'Unknown group'}</li>
                         ))}
                     </ul>
 
                     <h2>Revenue Models</h2>
                     <ul>
-                        {analysis.revenueModels.map((model, idx) => (
+                        {(analysis.revenueModels || []).map((model, idx) => (
                             <li key={idx}>{model}</li>
                         ))}
                     </ul>
 
                     <h2>MVP Features</h2>
-                    {analysis.mvpFeatures.map((feat, idx) => (
+                    {(analysis.mvpFeatures || []).map((feat, idx) => (
                         <div key={idx}>
-                            <p><strong>Feature:</strong> {feat.feature}</p>
-                            <p><strong>Priority:</strong> {feat.priority}</p>
-                            <p><strong>Effort:</strong> {feat.effort}</p>
+                            <p><strong>Feature:</strong> {feat.feature || 'Unknown feature'}</p>
+                            <p><strong>Priority:</strong> {feat.priority || 'Unknown'}</p>
+                            <p><strong>Effort:</strong> {feat.effort || 'Unknown'}</p>
                         </div>
                     ))}
                 </div>
