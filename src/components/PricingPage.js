@@ -148,13 +148,21 @@ export default function PricingPage() {
                   )
                 )}
               </ul>
-              <button className={
-                plan.highlight || plan.name === 'Founder'
-                  ? 'pricing-btn gradient-btn'
-                  : 'pricing-btn'
-              }>
-                {plan.button}
-              </button>
+              {plan.name === 'Pro' || plan.name === 'Founder' ? (
+                <button
+                  className={
+                    plan.highlight || plan.name === 'Founder'
+                      ? 'pricing-btn gradient-btn'
+                      : 'pricing-btn'
+                  }
+                  disabled
+                  title="Payment temporarily unavailable"
+                >
+                  {plan.button}
+                </button>
+              ) : (
+                <button className="pricing-btn">{plan.button}</button>
+              )}
             </div>
           ))}
         </div>

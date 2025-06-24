@@ -320,7 +320,7 @@ const ResultsPage = () => {
         <div className="market-demand-header">
           <span className="market-demand-icon-bg"><FiTrendingUp className="market-demand-icon" /></span>
           <h3>Market Demand</h3>
-          <span className="score-badge">{analysis.score}/10</span>
+          <span className={`score-badge ${getScoreColor()}`}>{analysis.score}/10</span>
         </div>
         <p className="market-demand-summary">{analysis.summary || 'No summary available'}</p>
         <p className="market-demand-details">{analysis.details || 'No details available'}</p>
