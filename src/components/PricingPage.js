@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './PricingPage.css';
+import { supabase } from '../supabaseClient';
 import { FiUser, FiZap, FiCalendar, FiStar, FiCircle } from 'react-icons/fi';
 
-const planData = (billing) => ([
+const planData = (billing, userEmail = '') => ([
   {
     name: 'Free',
     price: '$0',
@@ -20,6 +21,7 @@ const planData = (billing) => ([
     button: 'Start for Free',
     highlight: false,
     icon: <span className="plan-icon-bg free large"><FiUser className="plan-icon-svg large" /></span>,
+    paymentLink: null,
   },
   {
     name: 'Pro',
@@ -39,6 +41,10 @@ const planData = (billing) => ([
     highlight: true,
     badge: 'Most Popular',
     icon: <span className="plan-icon-bg pro large"><FiZap className="plan-icon-svg large" /></span>,
+    productId: 'prod_SYknpEzXHNaC6J',
+    paymentLink: billing === 'monthly' 
+      ? 'https://buy.stripe.com/test_6oU3cxa8R1EefecdWA38400' + (userEmail ? '?prefilled_email=' + userEmail : '')
+      : 'https://buy.stripe.com/test_3cI14p1Cl0Aaea89Gk38401' + (userEmail ? '?prefilled_email=' + userEmail : ''),
   },
   {
     name: 'Founder',
@@ -57,6 +63,10 @@ const planData = (billing) => ([
     button: 'Become a Founder',
     highlight: false,
     icon: <span className="plan-icon-bg founder large"><FiCalendar className="plan-icon-svg large" /></span>,
+    productId: 'prod_SYkobvntWhJWQ8',
+    paymentLink: billing === 'monthly'
+      ? 'https://buy.stripe.com/test_7sYaEZ80J2Ii4zyaKo38402' + (userEmail ? '?prefilled_email=' + userEmail : '')      
+      : 'https://buy.stripe.com/test_aFa5kFftb0Aa6HGdWA38403' + (userEmail ? '?prefilled_email=' + userEmail : ''),
   },
 ]);
 
@@ -77,7 +87,36 @@ const infoPoints = [
 
 export default function PricingPage() {
   const [billing, setBilling] = useState('monthly');
-  const plans = planData(billing);
+  const [userEmail, setUserEmail] = useState('');
+  const plans = planData(billing, userEmail);
+
+  useEffect(() => {
+    const getUserEmail = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user && user.email) {
+          setUserEmail(user.email);
+        }
+      } catch (error) {
+        console.error('Error getting user email:', error);
+      }
+    };
+
+    getUserEmail();
+  }, []);
+
+  const handlePlanClick = (plan) => {
+    if (plan.name === 'Free') {
+      // Handle free plan - could redirect to sign up or dashboard
+      window.location.href = '/validate';
+      return;
+    }
+    
+    if (plan.paymentLink) {
+      // Redirect to Stripe checkout
+      window.open(plan.paymentLink, '_blank');
+    }
+  };
 
   return (
     <div className="pricing-bg">
@@ -148,21 +187,16 @@ export default function PricingPage() {
                   )
                 )}
               </ul>
-              {plan.name === 'Pro' || plan.name === 'Founder' ? (
-                <button
-                  className={
-                    plan.highlight || plan.name === 'Founder'
-                      ? 'pricing-btn gradient-btn'
-                      : 'pricing-btn'
-                  }
-                  disabled
-                  title="Payment temporarily unavailable"
-                >
-                  {plan.button}
-                </button>
-              ) : (
-                <button className="pricing-btn">{plan.button}</button>
-              )}
+              <button
+                className={
+                  plan.highlight || plan.name === 'Founder'
+                    ? 'pricing-btn gradient-btn'
+                    : 'pricing-btn'
+                }
+                onClick={() => handlePlanClick(plan)}
+              >
+                {plan.button}
+              </button>
             </div>
           ))}
         </div>
