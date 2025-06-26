@@ -65,7 +65,7 @@ const HomePage = () => {
           <p>Validate your crazy startup ideas in real-time to improve growth, deliverability, reduce competition, and take over markets.</p>
           <div className="homepage-hero-buttons">
             <button className="primary" onClick={() => user ? navigate('/validate') : navigate('/signup')}>Get started →</button>
-            <button className="secondary">Learn more →</button>
+            <button className="secondary" onClick= {() => navigate('/under-construction')}>Learn more →</button>
           </div>
         </div>
 
@@ -126,15 +126,15 @@ const HomePage = () => {
           </div>
           <div className="footer-col footer-links">
             <div className="footer-links-title">Product</div>
-            <a href="/" className="footer-link">Features</a>
+            <a href="/under-construction" className="footer-link">Features</a>
             <a href="/pricing" className="footer-link" onClick={e => { e.preventDefault(); navigate('/pricing'); }}>Pricing</a>
-            <a href="/" className="footer-link">Examples</a>
+            <a href="/under-construction" className="footer-link">Examples</a>
           </div>
           <div className="footer-col footer-links">
             <div className="footer-links-title">Company</div>
-            <a href="/" className="footer-link">About</a>
-            <a href="/" className="footer-link">Privacy Policy</a>
-            <a href="/" className="footer-link">Terms of Service</a>
+            <a href="/under-construction" className="footer-link">About</a>
+            <a href="/under-construction" className="footer-link">Privacy Policy</a>
+            <a href="/under-construction" className="footer-link">Terms of Service</a>
           </div>
         </div>
         <div className="footer-bottom">
