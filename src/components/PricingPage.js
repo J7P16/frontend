@@ -3,73 +3,6 @@ import './PricingPage.css';
 import { supabase } from '../supabaseClient';
 import { FiUser, FiZap, FiCalendar, FiStar, FiCircle } from 'react-icons/fi';
 
-const planData = (billing, userEmail = '') => ([
-  {
-    name: 'Free',
-    price: '$0',
-    period: '',
-    features: [
-      'Basic Idea Analysis',
-      '50 Quick Searches Per Month',
-      'Competitor Overview',
-      'MVP Feature Suggestions',
-      { text: 'Idea/Product Storage', unavailable: true },
-      { text: 'Downloadable PDF Exports', unavailable: true },
-      { text: 'Priority AI Processing', unavailable: true },
-      { text: 'Advanced Insights', unavailable: true },
-    ],
-    button: 'Start for Free',
-    highlight: false,
-    icon: <span className="plan-icon-bg free large"><FiUser className="plan-icon-svg large" /></span>,
-    paymentLink: null,
-  },
-  {
-    name: 'Pro',
-    price: billing === 'monthly' ? '$9.99' : '$89.99',
-    period: billing === 'monthly' ? '/month' : '/year',
-    features: [
-      'Everything in Free Plan',
-      '200 Quick Searches Per Month',
-      'Personalized Search Results',
-      'Downloadable PDF Exports',
-      'Priority AI Processing',
-      'Idea/Product Storage (100)',
-      'Advanced Profile Dashboard',
-      { text: 'Deep Research Engine', unavailable: true },
-    ],
-    button: 'Upgrade to Pro',
-    highlight: true,
-    badge: 'Most Popular',
-    icon: <span className="plan-icon-bg pro large"><FiZap className="plan-icon-svg large" /></span>,
-    productId: 'prod_SYknpEzXHNaC6J',
-    paymentLink: billing === 'monthly' 
-      ? 'https://buy.stripe.com/test_6oU3cxa8R1EefecdWA38400' + (userEmail ? '?prefilled_email=' + userEmail : '')
-      : 'https://buy.stripe.com/test_3cI14p1Cl0Aaea89Gk38401' + (userEmail ? '?prefilled_email=' + userEmail : ''),
-  },
-  {
-    name: 'Founder',
-    price: billing === 'monthly' ? '$24.99' : '$224.99',
-    period: billing === 'monthly' ? '/month' : '/year',
-    features: [
-      'Everything in Pro Plan',
-      'Access to Deep Research Engine',
-      '500 Quick Searches Per Month',
-      '50 Deep Searches Per Month',
-      'Highest Priority AI Processing',
-      'Idea/Product Storage (500)',
-      'Specifc API Selections',
-      'Early Access to New Features',
-    ],
-    button: 'Become a Founder',
-    highlight: false,
-    icon: <span className="plan-icon-bg founder large"><FiCalendar className="plan-icon-svg large" /></span>,
-    productId: 'prod_SYkobvntWhJWQ8',
-    paymentLink: billing === 'monthly'
-      ? 'https://buy.stripe.com/test_7sYaEZ80J2Ii4zyaKo38402' + (userEmail ? '?prefilled_email=' + userEmail : '')      
-      : 'https://buy.stripe.com/test_aFa5kFftb0Aa6HGdWA38403' + (userEmail ? '?prefilled_email=' + userEmail : ''),
-  },
-]);
-
 const infoPoints = [
   {
     icon: <span className="info-emoji">🔒</span>, text: 'Secured Payments via Stripe • Cancel Subscription Anytime'
@@ -88,14 +21,86 @@ const infoPoints = [
 export default function PricingPage() {
   const [billing, setBilling] = useState('monthly');
   const [userEmail, setUserEmail] = useState('');
+
+  const planData = (billing, userEmail = '') => ([
+    {
+      name: 'Free',
+      price: '$0',
+      period: '',
+      features: [
+        'Basic Idea Analysis',
+        '50 Quick Searches Per Month',
+        'Competitor Overview',
+        'MVP Feature Suggestions',
+        { text: 'Idea/Product Storage', unavailable: true },
+        { text: 'Downloadable PDF Exports', unavailable: true },
+        { text: 'Priority AI Processing', unavailable: true },
+        { text: 'Advanced Insights', unavailable: true },
+      ],
+      button: 'Start for Free',
+      highlight: false,
+      icon: <span className="plan-icon-bg free large"><FiUser className="plan-icon-svg large" /></span>,
+      paymentLink: null,
+    },
+    {
+      name: 'Pro',
+      price: billing === 'monthly' ? '$9.99' : '$89.99',
+      period: billing === 'monthly' ? '/month' : '/year',
+      features: [
+        'Everything in Free Plan',
+        '200 Quick Searches Per Month',
+        'Personalized Search Results',
+        'Downloadable PDF Exports',
+        'Priority AI Processing',
+        'Idea/Product Storage (100)',
+        'Advanced Profile Dashboard',
+        { text: 'Deep Research Engine', unavailable: true },
+      ],
+      button: 'Upgrade to Pro',
+      highlight: true,
+      badge: 'Most Popular',
+      icon: <span className="plan-icon-bg pro large"><FiZap className="plan-icon-svg large" /></span>,
+      productId: 'prod_SYknpEzXHNaC6J',
+      paymentLink: billing === 'monthly' 
+        ? 'https://buy.stripe.com/test_6oU3cxa8R1EefecdWA38400' + (userEmail ? '?customer_email=' + encodeURIComponent(userEmail) : '')
+        : 'https://buy.stripe.com/test_3cI14p1Cl0Aaea89Gk38401' + (userEmail ? '?customer_email=' + encodeURIComponent(userEmail) : ''),
+    },
+    {
+      name: 'Founder',
+      price: billing === 'monthly' ? '$24.99' : '$224.99',
+      period: billing === 'monthly' ? '/month' : '/year',
+      features: [
+        'Everything in Pro Plan',
+        'Access to Deep Research Engine',
+        '500 Quick Searches Per Month',
+        '50 Deep Searches Per Month',
+        'Highest Priority AI Processing',
+        'Idea/Product Storage (500)',
+        'Specifc API Selections',
+        'Early Access to New Features',
+      ],
+      button: 'Become a Founder',
+      highlight: false,
+      icon: <span className="plan-icon-bg founder large"><FiCalendar className="plan-icon-svg large" /></span>,
+      productId: 'prod_SYkobvntWhJWQ8',
+      paymentLink: billing === 'monthly'
+        ? 'https://buy.stripe.com/test_7sYaEZ80J2Ii4zyaKo38402' + (userEmail ? '?customer_email=' + encodeURIComponent(userEmail) : '')      
+        : 'https://buy.stripe.com/test_aFa5kFftb0Aa6HGdWA38403' + (userEmail ? '?customer_email=' + encodeURIComponent(userEmail) : ''),
+    },
+  ]);
+
   const plans = planData(billing, userEmail);
 
   useEffect(() => {
     const getUserEmail = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
+        console.log('Supabase user:', user); // Debug log
         if (user && user.email) {
+          console.log('Setting user email:', user.email); // Debug log
           setUserEmail(user.email);
+        } else {
+          console.log('No user or email found'); // Debug log
         }
       } catch (error) {
         console.error('Error getting user email:', error);
@@ -104,6 +109,9 @@ export default function PricingPage() {
 
     getUserEmail();
   }, []);
+
+  // Debug log to see current userEmail state
+  console.log('Current userEmail state:', userEmail);
 
   const handlePlanClick = (plan) => {
     if (plan.name === 'Free') {
