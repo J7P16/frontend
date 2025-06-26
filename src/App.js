@@ -9,6 +9,7 @@ import PricingPage from './components/PricingPage';
 import ProfileDashboard from './components/ProfileDashboard';
 import ForgotPasswordPage from './components/ForgotPasswordPage';
 import ResetPasswordPage from './components/ResetPasswordPage';
+import UnderConstructionPage from './components/UnderConstruction'
 import './App.css';
 
 function App() {
@@ -24,6 +25,8 @@ function App() {
         <Route path="/profile" element={<ProfileDashboard />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/under-construction" element={<UnderConstructionPage/>} />
+        
       </Routes>
     </Router>
   );
