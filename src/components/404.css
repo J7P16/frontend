@@ -1,5 +1,5 @@
-/* === Under-Construction Banner ========================================= */
-.uc-banner {
+/* === Not-Found Banner ========================================= */
+.not-found-banner {
   /* matches homepage hero height & spacing rhythm */
   display: flex;
   flex-direction: column;
@@ -12,7 +12,7 @@
 }
 
 /* Primary headline ------------------------------------------------------ */
-.uc-banner h1 {
+.not-found-banner h1 {
   font-family: 'Inter', Arial, sans-serif;
   font-size: 3.5rem;               /* slightly smaller than 4 rem hero */
   font-weight: 800;                /* confident, bold                 */
@@ -27,7 +27,7 @@
 }
 
 /* Supporting sub-headline ---------------------------------------------- */
-.uc-banner h3 {
+.not-found-banner h3 {
   font-family: 'Inter', Arial, sans-serif;
   font-size: 1.35rem;              /* sits between body (1 rem) and h2 (2 rem) */
   font-weight: 500;
@@ -36,26 +36,21 @@
   margin: 0 auto 32px;
 }
 
-/* Optional pulse underline for emphasis --------------------------------- */
-@keyframes uc-underline-pulse {
-  0%, 100% { width: 60%; opacity: 0.25; }
-  50%      { width: 80%; opacity: 0.6;  }
-}
 
-.uc-banner a {
-  text-decoration: underline;
-  position: relative;
-}
-
-
-.uc-banner::after {
+.not-found-banner::after {
   content: '';
   display: block;
   height: 4px;
   border-radius: 2px;
   margin: 0 auto;
   background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
-  animation: uc-underline-pulse 3s ease-in-out infinite;
 }
 
-/* === Under-Construction Link ========================================= */
+/*************  ✨ Windsurf Command ⭐  *************/
+.not-found-banner a {
+  text-decoration: underline;
+  position: relative;
+  color:linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
+}
+
+
