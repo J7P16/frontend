@@ -62,8 +62,8 @@ export default function PricingPage() {
       icon: <span className="plan-icon-bg pro large"><FiZap className="plan-icon-svg large" /></span>,
       productId: 'prod_SYknpEzXHNaC6J',
       paymentLink: billing === 'monthly' 
-        ? 'https://buy.stripe.com/test_6oU3cxa8R1EefecdWA38400' + (userEmail ? '?customer_email=' + encodeURIComponent(userEmail) : '')
-        : 'https://buy.stripe.com/test_3cI14p1Cl0Aaea89Gk38401' + (userEmail ? '?customer_email=' + encodeURIComponent(userEmail) : ''),
+        ? 'http://localhost:5000/subscribe?plan=pro_monthly'
+        : 'http://localhost:5000/subscribe?plan=pro_yearly',
     },
     {
       name: 'Founder',
@@ -84,8 +84,8 @@ export default function PricingPage() {
       icon: <span className="plan-icon-bg founder large"><FiCalendar className="plan-icon-svg large" /></span>,
       productId: 'prod_SYkobvntWhJWQ8',
       paymentLink: billing === 'monthly'
-        ? 'https://buy.stripe.com/test_7sYaEZ80J2Ii4zyaKo38402' + (userEmail ? '?customer_email=' + encodeURIComponent(userEmail) : '')      
-        : 'https://buy.stripe.com/test_aFa5kFftb0Aa6HGdWA38403' + (userEmail ? '?customer_email=' + encodeURIComponent(userEmail) : ''),
+        ? 'http://localhost:5000/subscribe?plan=founder_monthly'      
+        : 'http://localhost:5000/subscribe?plan=founder_yearly',
     },
   ]);
 
