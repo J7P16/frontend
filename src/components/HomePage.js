@@ -5,6 +5,7 @@ import logo from '../Clean_Validly_Logo.png';
 import validlyBanner from '../validly_banner.png';
 import { FiTwitter, FiLinkedin, FiGithub, FiInstagram, FiYoutube } from 'react-icons/fi';
 import { supabase } from '../supabaseClient';
+import Navbar from './Navbar';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -28,28 +29,7 @@ const HomePage = () => {
   return (
     <>
       {/* Navigation Bar */}
-      <nav className="navbar">
-        <div className="navbar-left">
-          <img src={logo} alt="Validly Logo" className="navbar-logo" />
-          <span className="navbar-title">Validly</span>
-        </div>
-        <div className="navbar-right">
-          {user && (
-            <button
-              className="navbar-profile-btn"
-              title="Profile"
-              onClick={() => navigate('/profile')}
-            >
-              <FiUser className="navbar-profile-icon" />
-            </button>
-          )}
-          {user ? (
-            <button className="navbar-signout" onClick={handleSignOut}>Sign Out</button>
-          ) : (
-            <button className="navbar-signout" onClick={() => navigate('/signin')}>Login</button>
-          )}
-        </div>
-      </nav>
+      <Navbar></Navbar>
 
       {/* Homepage Content */}
       <div className="homepage-container">
