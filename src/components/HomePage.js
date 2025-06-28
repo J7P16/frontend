@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FiTrendingUp, FiUsers, FiUserCheck, FiZap, FiShield, FiBarChart2, FiUser } from 'react-icons/fi';
 import logo from '../Clean_Validly_Logo.png';
 import validlyBanner from '../validly_banner.png';
-import { FiTwitter, FiLinkedin, FiGithub } from 'react-icons/fi';
+import { FiTwitter, FiLinkedin, FiGithub, FiInstagram, FiYoutube } from 'react-icons/fi';
 import { supabase } from '../supabaseClient';
 
 const HomePage = () => {
@@ -119,9 +119,9 @@ const HomePage = () => {
             </div>
             <p className="footer-desc">Validate your startup idea in seconds with AI-powered insights, competitor analysis, and MVP recommendations.</p>
             <div className="footer-socials">
-              <a href="/" className="footer-social"><FiTwitter /></a>
-              <a href="/" className="footer-social"><FiLinkedin /></a>
-              <a href="/" className="footer-social"><FiGithub /></a>
+              <a href="https://www.instagram.com/validlyai/" className="footer-social"><FiInstagram /></a>
+              <a href="https://www.youtube.com/channel/UCK3n67eeJ7oSLBL47lhUHaA" className="footer-social"><FiYoutube /></a>
+              <a href="https://www.linkedin.com/company/validlyai/" className="footer-social"><FiLinkedin /></a>
             </div>
           </div>
           <div className="footer-col footer-links">
