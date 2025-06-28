@@ -86,7 +86,7 @@ const ResultsPage = () => {
     pdfContainer.style.width = '794px'; // A4 at 96dpi
     pdfContainer.style.padding = '40px';
     pdfContainer.style.backgroundColor = '#ffffff';
-    pdfContainer.style.fontFamily = 'Arial, sans-serif';
+    pdfContainer.style.fontFamily = 'var(--font-primary)';
     pdfContainer.style.lineHeight = '1.6';
     pdfContainer.style.color = '#333';
     pdfContainer.style.zIndex = '10000';

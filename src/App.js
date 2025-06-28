@@ -11,6 +11,7 @@ import ForgotPasswordPage from './components/ForgotPasswordPage';
 import ResetPasswordPage from './components/ResetPasswordPage';
 import UnderConstructionPage from './components/UnderConstruction';
 import NotFoundPage from './components/404';
+import FeaturesPage from './components/Features';
 import './App.css';
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
         <Route path="/profile" element={<ProfileDashboard />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/features" element={<FeaturesPage />} />
         <Route path="/under-construction" element={<UnderConstructionPage/>} />
         <Route path="*" element={<NotFoundPage/>} />
       </Routes>

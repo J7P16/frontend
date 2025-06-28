@@ -1,3 +1,10 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Space+Grotesk:wght@300..700&display=swap');
+
+:root {
+  --font-primary: 'Plus Jakarta Sans', sans-serif;
+}
+
 .App {
   text-align: center;
 }
@@ -5,7 +12,7 @@
 /* General resets and body */
 body, html, #root {
   background: #f6faff;
-  font-family: 'Inter', Arial, sans-serif;
+  font-family: var(--font-primary);
   margin: 0;
   padding: 0;
   min-height: 100vh;
@@ -220,7 +227,7 @@ button.secondary:hover {
   border: 1px solid #dbeafe;
   padding: 14px;
   font-size: 1.05rem;
-  font-family: 'Inter', Arial, sans-serif;
+  font-family: var(--font-primary);
   color: black;
   resize: none;
   min-height: 90px;
@@ -229,7 +236,7 @@ button.secondary:hover {
   box-sizing: border-box;
 }
 .validate-form textarea::placeholder {
-  font-family: 'Inter', Arial, sans-serif;
+  font-family: --var(--font-primary);
   color: #7a8ca3;
   font-size: 1.05rem;
   opacity: 1;
@@ -343,7 +350,7 @@ button.secondary:hover {
   font-size: 1.08rem;
   padding: 18px 22px;
   margin: 0;
-  font-family: 'Inter', Arial, sans-serif;
+  font-family: --var(--font-primary);
   font-style: italic;
   font-weight: 400;
   box-shadow: none;
@@ -1164,7 +1171,7 @@ button.secondary:hover {
   color: black;
   font-size: 1rem;
   white-space: pre-line;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: --var(--font-primary);
 }
 
 .copy-pitch-btn {
@@ -1259,7 +1266,7 @@ button.secondary:hover {
   align-items: center;
   font-size: 1.08rem;
   color: #334155;
-  font-family: 'Inter', Arial, sans-serif;
+  font-family: --var(--font-primary);
   font-weight: 500;
   margin-bottom: 0;
 }
@@ -1331,7 +1338,7 @@ button.secondary:hover {
 .feature-name {
   font-size: 1.08rem;
   color: #334155;
-  font-family: 'Inter', Arial, sans-serif;
+  font-family: --var(--font-primary);
   font-weight: 500;
 }
 .mvp-feature-badges {
