@@ -13,7 +13,7 @@
 
 /* Primary headline ------------------------------------------------------ */
 .uc-banner h1 {
-  font-family: 'Inter', Arial, sans-serif;
+  font-family: --var(--font-primary);
   font-size: 3.5rem;               /* slightly smaller than 4 rem hero */
   font-weight: 800;                /* confident, bold                 */
   line-height: 1.1;
@@ -28,7 +28,7 @@
 
 /* Supporting sub-headline ---------------------------------------------- */
 .uc-banner h3 {
-  font-family: 'Inter', Arial, sans-serif;
+  font-family: --var(--font-primary);
   font-size: 1.35rem;              /* sits between body (1 rem) and h2 (2 rem) */
   font-weight: 500;
   color: #6b7280;                  /* calm slate tone                  */
