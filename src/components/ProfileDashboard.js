@@ -246,6 +246,31 @@ export default function ProfileDashboard() {
     }));
   };
 
+  // This function is used for the manage plan button so that it either directs the user to the billing page (if they currently have a subscription) or the pricing page
+  const handleManagePlan = async () => {
+    if (!email) {
+      navigate('/pricing');
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:5000/get-customer-id?email=${encodeURIComponent(email)}`);
+      const data = await response.json();
+
+      if (response.ok && data.hasActiveSubscription) {
+        // User has active subscription, redirect to Stripe billing portal
+        window.location.href = `http://localhost:5000/customers/${data.customerId}`;
+      } else {
+        // No subscription or no customer found, redirect to pricing page
+        navigate('/pricing');
+      }
+    } catch (error) {
+      console.error('Error checking subscription status:', error);
+      // Fallback to pricing page on error
+      navigate('/pricing');
+    }
+  };
+
   return (
     <div className="profile-bg">
       <div className="profile-container">
@@ -259,7 +284,7 @@ export default function ProfileDashboard() {
             <h2>Pricing Plan</h2>
             <span className="profile-plan-badge">Free</span>
             <div className="profile-plan-desc">Enjoy basic access to all essential features.</div>
-            <button className="profile-manage-btn" onClick={() => navigate('/pricing')}>Manage Plan</button>
+            <button className="profile-manage-btn" onClick={handleManagePlan}>Manage Plan</button>
           </div>
           <div className="profile-card">
             <h2>Account Details</h2>

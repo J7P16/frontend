@@ -21,6 +21,7 @@ const infoPoints = [
 export default function PricingPage() {
   const [billing, setBilling] = useState('monthly');
   const [userEmail, setUserEmail] = useState('');
+  const [userId, setUserId] = useState('');
 
   const planData = (billing, userEmail = '') => ([
     {
@@ -62,8 +63,8 @@ export default function PricingPage() {
       icon: <span className="plan-icon-bg pro large"><FiZap className="plan-icon-svg large" /></span>,
       productId: 'prod_SYknpEzXHNaC6J',
       paymentLink: billing === 'monthly' 
-        ? 'http://localhost:5000/subscribe?plan=pro_monthly'
-        : 'http://localhost:5000/subscribe?plan=pro_yearly',
+        ? `http://localhost:5000/subscribe?plan=pro_monthly${userEmail ? `&email=${encodeURIComponent(userEmail)}` : ''}${userId ? `&user_id=${userId}` : ''}`
+        : `http://localhost:5000/subscribe?plan=pro_yearly${userEmail ? `&email=${encodeURIComponent(userEmail)}` : ''}${userId ? `&user_id=${userId}` : ''}`,
     },
     {
       name: 'Founder',
@@ -84,30 +85,27 @@ export default function PricingPage() {
       icon: <span className="plan-icon-bg founder large"><FiCalendar className="plan-icon-svg large" /></span>,
       productId: 'prod_SYkobvntWhJWQ8',
       paymentLink: billing === 'monthly'
-        ? 'http://localhost:5000/subscribe?plan=founder_monthly'      
-        : 'http://localhost:5000/subscribe?plan=founder_yearly',
+        ? `http://localhost:5000/subscribe?plan=founder_monthly${userEmail ? `&email=${encodeURIComponent(userEmail)}` : ''}${userId ? `&user_id=${userId}` : ''}`      
+        : `http://localhost:5000/subscribe?plan=founder_yearly${userEmail ? `&email=${encodeURIComponent(userEmail)}` : ''}${userId ? `&user_id=${userId}` : ''}`,
     },
   ]);
 
   const plans = planData(billing, userEmail);
 
   useEffect(() => {
-    const getUserEmail = async () => {
+    const getUserData = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
-        console.log('Supabase user:', user); // Debug log
-        if (user && user.email) {
-          console.log('Setting user email:', user.email); // Debug log
+        if (user) {
           setUserEmail(user.email);
-        } else {
-          console.log('No user or email found'); // Debug log
+          setUserId(user.id);
         }
       } catch (error) {
-        console.error('Error getting user email:', error);
+        console.error('Error getting user data:', error);
       }
     };
-
-    getUserEmail();
+  
+    getUserData();
   }, []);
 
   // Debug log to see current userEmail state
