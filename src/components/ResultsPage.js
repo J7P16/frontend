@@ -144,7 +144,8 @@ const ResultsPage = () => {
       </div>
 
       <div style="margin-bottom: 40px;">
-        <h2 style="color: #2563eb; font-size: 24px; margin: 0 0 20px 0; padding-bottom: 10px; border-bottom: 2px solid #e5e7eb;">Top Potential Competitors</h2>
+        <h2 style="color: #2563eb; font-size: 24px; margin: 0 0 20px 0; padding-bottom: 10px; border-bottom: 2px solid #e5e7eb;">Market Competitiveness</h2>
+        <span style="display: inline-block; background: #2563eb; color: white; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 16px; margin-left: 15px;">${analysis.feasibilityscore || 'N/A'}/10</span>
         ${competitors.length > 0 ? competitors.map(comp => {
           const prosArray = ensureArrayForPDF(comp.pros);
           const weaknessesArray = ensureArrayForPDF(comp.weaknesses);
@@ -292,15 +293,25 @@ const ResultsPage = () => {
   }
 
   // score badge function 
-  const getScoreColor = () => {
-    if (analysis.score >= 7) {
+  const getScoreColor = (inputscore) => {
+    if (inputscore >= 7) {
       return 'score-badge-green';
-    } else if (analysis.score >= 4) {
+    } else if (inputscore >= 4) {
       return 'score-badge-yellow';
     } else {
       return 'score-badge-red';
     }
   };
+
+  const getScoreColor2 = (inputscore) => {
+    if (inputscore <= 3) {
+      return 'score-badge-green';
+    } else if (inputscore <= 6) {
+      return 'score-badge-yellow';
+    } else {
+      return 'score-badge-red';
+    }
+  }
 
   // Add safety checks for required properties
   const marketDemand = analysis.marketDemand || {};
@@ -335,7 +346,7 @@ const ResultsPage = () => {
         <div className="market-demand-header">
           <span className="market-demand-icon-bg"><FiTrendingUp className="market-demand-icon" /></span>
           <h3>Market Demand</h3>
-          <span className={`score-badge ${getScoreColor()}`}>{analysis.score}/10</span>
+          <span className={`score-badge ${getScoreColor(analysis.score)}`}>{analysis.score}/10</span>
         </div>
         <p className="market-demand-summary">{analysis.summary || 'No summary available'}</p>
         <p className="market-demand-details">{analysis.details || 'No details available'}</p>
@@ -383,7 +394,8 @@ const ResultsPage = () => {
       <div className="results-section competitors">
         <div className="competitors-header">
           <span className="competitors-icon-bg"><FiTarget className="competitors-icon" /></span>
-          <h3>Top Potential Competitors</h3>
+          <h3>Market Competitiveness</h3>
+          <span className={`score-badge ${getScoreColor2(analysis.feasibilityscore)}`}>{analysis.feasibilityscore}/10</span>
         </div>
         {competitors.length > 0 ? (
           competitors.map((comp, idx) => (
