@@ -119,6 +119,24 @@ export default function ProfileDashboard() {
   const email = user?.email;
   const memberSince = user?.created_at ? new Date(user.created_at).toLocaleDateString() : '-';
   const userId = user?.id;
+  const plan = profile?.plan || 'free';
+
+  // Plan display mapping
+  const planDisplay = {
+    free: {
+      label: 'Free',
+      desc: 'Enjoy basic access to all essential features.'
+    },
+    pro: {
+      label: 'Pro',
+      desc: 'Unlock advanced features, more searches, and personalized analysis.'
+    },
+    founder: {
+      label: 'Founder',
+      desc: 'Access all premium features, highest limits, and early access to new tools.'
+    }
+  };
+  const currentPlan = planDisplay[plan] || planDisplay.free;
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -282,8 +300,8 @@ export default function ProfileDashboard() {
         <div className="profile-cards">
           <div className="profile-card">
             <h2>Pricing Plan</h2>
-            <span className="profile-plan-badge">Free</span>
-            <div className="profile-plan-desc">Enjoy basic access to all essential features.</div>
+            <span className={`profile-plan-badge ${plan}`}>{currentPlan.label}</span>
+            <div className="profile-plan-desc">{currentPlan.desc}</div>
             <button className="profile-manage-btn" onClick={handleManagePlan}>Manage Plan</button>
           </div>
           <div className="profile-card">
