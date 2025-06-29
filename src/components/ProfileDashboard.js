@@ -580,7 +580,9 @@ export default function ProfileDashboard() {
                         <div className="analysis-section-header" onClick={() => toggleSection('competitors')}>
                           <div className="analysis-section-title">
                             <FiTarget className="section-icon" />
-                            <span>Top Potential Competitors</span>
+                            <span>Market Competitiveness</span>
+                            <span className="score-badge-sm">{idea.analysis?.feasibilityscore || 'N/A'}/10</span>
+
                           </div>
                           {expandedSections.competitors ? <FiChevronUp /> : <FiChevronDown />}
                         </div>
