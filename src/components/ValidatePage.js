@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FiClipboard, FiChevronDown } from 'react-icons/fi';
 import { supabase } from '../supabaseClient';
+import { useFeatureAccess } from '../hooks/useFeatureAccess';
+import { DeepResearchGuard } from '../components/FeatureGuard';
 import '../styles/ValidatePage.css';
 
 const modeList = [
@@ -21,12 +23,26 @@ const ValidatePage = () => {
   const [selectedModel, setSelectedModel] = useState(modeList[0]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
+  const [showUpgradeNotification, setShowUpgradeNotification] = useState(false);
+  const [upgradeType, setUpgradeType] = useState(null); // 'deep-research' or 'personalized-analysis'
   const dropdownRef = useRef(null);
   const progressIntervalRef = useRef(null);
   const navigate = useNavigate();
   const maxWords = 100;
   const maxChars = 750;
   let parsed; // its here because the error block cant access it otherwise 
+
+  // Use the feature access hook
+  const { canUseDeepResearch, canUsePersonalizedAnalysis, userPlan } = useFeatureAccess();
+
+  // Show all models to all users, but handle access control on selection
+  const availableModels = modeList; // Show all models
+
+  // Debug logging
+  console.log('User Plan:', userPlan);
+  console.log('Can use Deep Research:', canUseDeepResearch());
+  console.log('Can use Personalized Analysis:', canUsePersonalizedAnalysis());
+  console.log('Available Models:', availableModels);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -113,6 +129,27 @@ const ValidatePage = () => {
       progressIntervalRef.current = null;
     }
     setProgress(100);
+  };
+
+  // Handle model selection with access control
+  const handleModelSelection = (model) => {
+    if (model === 'Deep Research' && !canUseDeepResearch()) {
+      setUpgradeType('deep-research');
+      setShowUpgradeNotification(true);
+      return;
+    }
+    setSelectedModel(model);
+    setShowDropdown(false);
+  };
+
+  // Handle personalized analysis toggle
+  const handlePersonalizedToggle = () => {
+    if (!canUsePersonalizedAnalysis()) {
+      setUpgradeType('personalized-analysis');
+      setShowUpgradeNotification(true);
+      return;
+    }
+    setPersonalized(v => !v);
   };
 
   const handleSubmit = async (e) => {
@@ -213,7 +250,7 @@ const ValidatePage = () => {
               <div className="toggle-group">
                 <span className="toggle-label">Personalized Analysis</span>
                 <label className="switch">
-                  <input type="checkbox" checked={personalized} onChange={() => setPersonalized(v => !v)} />
+                  <input type="checkbox" checked={personalized} onChange={handlePersonalizedToggle} />
                   <span className="slider round"></span>
                 </label>
               </div>
@@ -228,16 +265,14 @@ const ValidatePage = () => {
                 </button>
                 {showDropdown && (
                   <ul className="model-dropdown-list">
-                    {modeList.map((model) => (
+                    {availableModels.map((model) => (
                       <li
                         key={model}
-                        className={`${model === selectedModel ? 'selected' : ''} ${model === 'Quick Search' ? 'quick-search' : ''} ${model === 'Deep Research' ? 'deep-search' : ''}`}
-                        onClick={() => {
-                          setSelectedModel(model);
-                          setShowDropdown(false);
-                        }}
+                        className={`${model === selectedModel ? 'selected' : ''} ${model === 'Quick Search' ? 'quick-search' : ''} ${model === 'Deep Research' ? 'deep-search' : ''} ${model === 'Deep Research' && !canUseDeepResearch() ? 'premium-locked' : ''}`}
+                        onClick={() => handleModelSelection(model)}
                       >
                         {model}
+                        {model === 'Deep Research' && !canUseDeepResearch()}
                       </li>
                     ))}
                   </ul>
@@ -285,6 +320,39 @@ const ValidatePage = () => {
           )}
           {error && <div className="validate-error">{error}</div>}
         </form>
+        
+        {/* Upgrade Notification */}
+        {showUpgradeNotification && (
+          <>
+            <div className="upgrade-notification-backdrop"></div>
+            <div className="upgrade-notification">
+              <div className="upgrade-notification-content">
+                <div className="upgrade-notification-icon">🔒</div>
+                <div className="upgrade-notification-text">
+                  <h4>Upgrade Required</h4>
+                  {upgradeType === 'deep-research' ? (
+                    <p>Deep Research is available exclusively for Founder Plan users.</p>
+                  ) : (
+                    <p>Personalized analysis is available exclusively for Pro/Founder Plan users.</p>
+                  )}
+                </div>
+                <button 
+                  className="upgrade-notification-btn"
+                  onClick={() => navigate('/pricing')}
+                >
+                  Upgrade Now
+                </button>
+                <button 
+                  className="upgrade-notification-close"
+                  onClick={() => setShowUpgradeNotification(false)}
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+        
         <div className="validate-whatyouget">
           <h3>What you'll get:</h3>
           <ul>

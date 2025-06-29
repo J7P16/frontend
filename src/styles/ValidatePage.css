@@ -74,4 +74,167 @@ body {
   color: #6b7280;
   font-weight: 500;
   margin-top: 0.25rem;
+}
+
+/* Deep Research Upgrade Prompt Styles */
+.deep-research-upgrade-prompt {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.deep-research-upgrade-prompt small {
+  color: #64748b;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.deep-research-upgrade-prompt strong {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.deep-research-upgrade-prompt .upgrade-link {
+  background: none;
+  border: none;
+  color: #2563eb;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.deep-research-upgrade-prompt .upgrade-link:hover {
+  color: #1d4ed8;
+  text-decoration: none;
+}
+
+/* Upgrade Notification Styles */
+.upgrade-notification {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgb(255, 255, 255);
+  border-radius: 12px;
+  /*box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);*/
+  border: 1px solid #e5e7eb;
+  z-index: 1000;
+  max-width: 400px;
+  width: 90%;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -60%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.upgrade-notification-content {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+}
+
+.upgrade-notification-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+}
+
+.upgrade-notification-text h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 8px 0;
+}
+
+.upgrade-notification-text p {
+  color: #1e293b;
+  font-size: 1rem;
+  margin: 0 0 20px 0;
+  line-height: 1.5;
+}
+
+.upgrade-notification-btn {
+  background: linear-gradient(90deg, #2563eb 0%, #7c3aed 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
+}
+
+.upgrade-notification-btn:hover {
+  background: linear-gradient(90deg, #1d4ed8 0%, #6d28d9 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+}
+
+.upgrade-notification-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.upgrade-notification-close:hover {
+  color: #6b7280;
+  background: #f3f4f6;
+}
+
+/* Backdrop overlay for modal */
+.upgrade-notification-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+/* Premium indicator in dropdown */
+.premium-locked {
+  opacity: 0.7;
+  position: relative;
+}
+
+.premium-indicator {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.875rem;
+  color: #9ca3af;
+}
+
+.premium-locked:hover {
+  opacity: 1;
+  background-color: #f8fafc;
 } 
