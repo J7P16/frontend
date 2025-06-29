@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FiDownload, FiTrendingUp, FiTarget, FiUsers, FiCheckCircle, FiDollarSign, FiExternalLink, FiAlertCircle, FiLink, FiMessageSquare, FiCopy, FiClock, FiSave } from 'react-icons/fi';
 import jsPDF from 'jspdf';
@@ -14,7 +13,6 @@ const ResultsPage = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState('');
-  const [patentData, setPatentData] = useState({});
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -306,26 +304,6 @@ const ResultsPage = () => {
     return [];
   };
 
-  useEffect(() => {
-    const loadPatents = async () => {
-      const results = {};
-      for (const comp of competitors) {
-        if (!comp.name) continue;
-        try {
-          const res = await axios.get('http://localhost:5000/api/patents', {
-            params: { company: comp.name }
-          });
-          results[comp.name] = res.data.patents || [];
-        } catch (err) {
-          console.error('Patent fetch error', err);
-          results[comp.name] = [];
-        }
-      }
-      setPatentData(results);
-    };
-    if (competitors.length) loadPatents();
-  }, [competitors]);
-
   return (
     <div className="results-container">
       <a className="back-link" href="/validate">← Validate Another Idea</a>
@@ -424,22 +402,6 @@ const ResultsPage = () => {
                     ))}
                   </ul>
                 </div>
-              </div>
-              <div className="competitor-patents">
-                <h4>Recent Patents</h4>
-                {patentData[comp.name] && patentData[comp.name].length > 0 ? (
-                  <ul>
-                    {patentData[comp.name].map((p) => (
-                      <li key={p.number}>
-                        <a href={`https://patents.google.com/patent/${p.number}`} target="_blank" rel="noopener noreferrer">
-                          {p.title} ({p.date})
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p>No patents found</p>
-                )}
               </div>
             </div>
           ))
