@@ -1,3 +1,6 @@
+.info-item input, .info-item textarea {
+  font-family: var(--font-primary);
+}
 .profile-bg {
   min-height: 100vh;
   background: #f6faff;
