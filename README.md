@@ -2,6 +2,10 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+The application includes a small Express backend used to query patent
+data from the USPTO PatentsView API. The results page displays recent
+patents for each competitor.
+
 ## Available Scripts
 
 In the project directory, you can run:
@@ -13,6 +17,13 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
+
+### `npm run server`
+
+Starts the small Express backend that proxies patent queries to the
+[PatentsView API](https://patentsview.org/apis/purpose). It listens on
+port `5000` and exposes an `/api/patents` route accepting a `company`
+query parameter.
 
 ### `npm test`
 
