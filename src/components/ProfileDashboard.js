@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
+import { useFeatureAccess } from '../hooks/useFeatureAccess';
 import './ProfileDashboard.css';
 import { FiChevronDown, FiChevronUp, FiTrash2, FiBriefcase, FiDollarSign, FiTrendingUp, FiTarget, FiUsers, FiMessageSquare, FiExternalLink } from 'react-icons/fi';
 
@@ -52,6 +53,9 @@ export default function ProfileDashboard() {
   const [ideasLoading, setIdeasLoading] = useState(true);
   const [expandedIdea, setExpandedIdea] = useState(null);
   const [expandedSections, setExpandedSections] = useState({});
+
+  // Feature access for idea storage limits
+  const { getIdeaStorageLimit} = useFeatureAccess();
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data?.user || null));
@@ -120,6 +124,13 @@ export default function ProfileDashboard() {
   const memberSince = user?.created_at ? new Date(user.created_at).toLocaleDateString() : '-';
   const userId = user?.id;
   const plan = profile?.plan || 'free';
+  const customerId = profile?.stripe_customer_id || 'No Subscription Yet';
+  const subscriptionId = profile?.subscription_id || 'No Subscription Yet';
+
+  // Idea storage limits
+  const ideaStorageLimit = getIdeaStorageLimit();
+  const currentIdeasCount = ideas.length;
+  const canSaveMoreIdeas = currentIdeasCount < ideaStorageLimit;
 
   // Plan display mapping
   const planDisplay = {
@@ -307,8 +318,15 @@ export default function ProfileDashboard() {
           <div className="profile-card">
             <h2>Account Details</h2>
             <div><b>User ID:</b> {userId}</div>
+            <div><b>Customer ID:</b> {customerId}</div>
+            <div><b>Subscription ID:</b> {subscriptionId}</div>
             <div><b>Member Since:</b> {memberSince}</div>
-            <div><b>Stored Ideas:</b> {ideas.length}</div>
+            <div><b>Stored Ideas:</b> {currentIdeasCount} / {ideaStorageLimit}</div>
+            {!canSaveMoreIdeas && (
+              <div className="storage-limit-warning">
+                <small>⚠️ You've reached your idea storage limit. Upgrade your plan to save more ideas.</small>
+              </div>
+            )}
             <button
               className="profile-delete-btn"
               onClick={() => setShowDeleteConfirm(true)}
@@ -514,7 +532,19 @@ export default function ProfileDashboard() {
         </div>
 
         <div className="startup-ideas-section">
-          <h2 className="startup-ideas-title">Your Startup Ideas</h2>
+          <h2 className="startup-ideas-title">Your Startup Ideas&nbsp;&nbsp;&nbsp;({currentIdeasCount} / {ideaStorageLimit})</h2>
+          {!canSaveMoreIdeas && (
+                <div className="storage-limit-notice">
+                  <p>You've reached your idea storage limit ({ideaStorageLimit} ideas).</p>
+                  <button 
+                    className="upgrade-storage-btn"
+                    onClick={() => navigate('/pricing')}
+                  >
+                    Upgrade Plan to Save More Ideas
+                  </button>
+                </div>
+              )}
+          <br></br>
           {ideasLoading ? (
             <p>Loading ideas...</p>
           ) : ideas.length === 0 ? (

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './UnderConstruction.css';
+import { Link } from 'react-router-dom';
 
   const messages = [
   'Validly\'s greatest minds are assembling to build this.',
@@ -34,7 +35,7 @@ const UnderConstruction = () => {
       <div className="uc-banner">
         <h1>UNDER CONSTRUCTION</h1>
         <h3>{message}</h3>
-        <h3>Redirecting you to the <a className="redirect" onClick={() => navigate('/')}>homepage</a> in {redirectTimer} seconds...</h3>
+        <h3>Redirecting you to the <Link className="redirect" onClick={() => navigate('/')}>homepage</Link> in {redirectTimer} seconds...</h3>
         <br></br>
       </div>
     </div>

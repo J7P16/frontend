@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiTrendingUp, FiUsers, FiUserCheck, FiZap, FiShield, FiBarChart2, FiUser } from 'react-icons/fi';
-import logo from '../Clean_Validly_Logo.png';
+import { FiTrendingUp, FiUsers, FiUserCheck, FiZap, FiShield, FiBarChart2 } from 'react-icons/fi';
 import validlyBanner from '../validly_banner.png';
-import { FiTwitter, FiLinkedin, FiGithub, FiInstagram, FiYoutube } from 'react-icons/fi';
 import { supabase } from '../supabaseClient';
 import Navbar from '../reusable/Navbar';
 import Footer from '../reusable/Footer';
@@ -18,13 +16,6 @@ const HomePage = () => {
     });
     return () => { listener?.subscription.unsubscribe(); };
   }, []);
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    // Stay on homepage after sign out
-    // No navigation needed
-  };
 
   return (
     <>

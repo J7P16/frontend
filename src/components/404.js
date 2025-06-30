@@ -1,5 +1,4 @@
 import React from 'react';
-import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './404.css';
 
@@ -25,7 +24,7 @@ const NotFound = () => {
         The page you are looking for does not exist.
         <br></br>
         <br></br>
-        Redirecting you to the <a className="redirect" onClick={() => navigate('/')}>homepage</a> in {redirectTimer} seconds...
+        Redirecting you to the <button className="redirect" onClick={() => navigate('/')}>homepage</button> in {redirectTimer} seconds...
       </h3>
     </div>
   );

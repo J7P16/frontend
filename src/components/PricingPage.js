@@ -32,7 +32,7 @@ export default function PricingPage() {
         'Basic Idea Analysis',
         '50 Quick Searches Per Month',
         'Competitor Overview',
-        'MVP Feature Suggestions',
+        'Idea/Product Storage (10)',
         { text: 'Idea/Product Storage', unavailable: true },
         { text: 'Downloadable PDF Exports', unavailable: true },
         { text: 'Priority AI Processing', unavailable: true },

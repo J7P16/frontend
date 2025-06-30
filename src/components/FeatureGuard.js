@@ -11,7 +11,7 @@ const FeatureGuard = ({
   className = '',
   ...props 
 }) => {
-  const { canAccessFeature, getUpgradeSuggestion, userPlan } = useFeatureAccess();
+  const { canAccessFeature, getUpgradeSuggestion} = useFeatureAccess();
   const navigate = useNavigate();
   
   const hasAccess = canAccessFeature(feature);

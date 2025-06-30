@@ -1,9 +1,7 @@
 import React from "react";
 import { useNavigate } from 'react-router-dom';
-import { FiTrendingUp, FiUsers, FiUserCheck, FiZap, FiShield, FiBarChart2, FiUser } from 'react-icons/fi';
 import logo from '../Clean_Validly_Logo.png';
-import validlyBanner from '../validly_banner.png';
-import { FiTwitter, FiLinkedin, FiGithub, FiInstagram, FiYoutube } from 'react-icons/fi';
+import { FiLinkedin, FiInstagram, FiYoutube } from 'react-icons/fi';
 
 const Footer = () => {
     const navigate = useNavigate();

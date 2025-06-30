@@ -3,7 +3,7 @@ export const FEATURE_LIMITS = {
   free: {
     quickSearchesPerMonth: 50,
     deepSearchesPerMonth: 0,
-    ideaStorage: 0,
+    ideaStorage: 1,
     pdfExports: false,
     priorityProcessing: false,
     personalizedAnalysis: false,

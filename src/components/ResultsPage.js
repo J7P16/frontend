@@ -16,9 +16,10 @@ const ResultsPage = () => {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState('');
   const [showUpgradeNotification, setShowUpgradeNotification] = useState(false);
+  const [showStorageLimitModal, setShowStorageLimitModal] = useState(false);
 
   // Feature access
-  const { canExportPDF, userPlan } = useFeatureAccess();
+  const { canExportPDF, getIdeaStorageLimit } = useFeatureAccess();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -35,6 +36,20 @@ const ResultsPage = () => {
     }
     if (!analysis || !input) {
       setSaveError('No analysis to save.');
+      return;
+    }
+
+    // Check current idea count and storage limit
+    const ideaStorageLimit = getIdeaStorageLimit();
+    const { data: currentIdeas } = await supabase
+      .from('startup_ideas')
+      .select('id')
+      .eq('user_id', user.id);
+    
+    const currentIdeasCount = currentIdeas?.length || 0;
+    
+    if (currentIdeasCount >= ideaStorageLimit) {
+      setShowStorageLimitModal(true);
       return;
     }
 
@@ -564,6 +579,34 @@ const ResultsPage = () => {
               <button 
                 className="upgrade-notification-close"
                 onClick={() => setShowUpgradeNotification(false)}
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+      
+      {/* Storage Limit Modal */}
+      {showStorageLimitModal && (
+        <>
+          <div className="upgrade-notification-backdrop"></div>
+          <div className="upgrade-notification">
+            <div className="upgrade-notification-content">
+              <div className="upgrade-notification-icon">📦</div>
+              <div className="upgrade-notification-text">
+                <h4>Storage Limit Reached</h4>
+                <p>Uh oh! You've reached your idea storage limit ({getIdeaStorageLimit()} ideas)! Upgrade your plan or free up your storage to save more ideas.</p>
+              </div>
+              <button 
+                className="upgrade-notification-btn"
+                onClick={() => navigate('/pricing')}
+              >
+                Upgrade Now
+              </button>
+              <button 
+                className="upgrade-notification-close"
+                onClick={() => setShowStorageLimitModal(false)}
               >
                 ×
               </button>
