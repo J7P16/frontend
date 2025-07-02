@@ -53,9 +53,18 @@ export default function ProfileDashboard() {
   const [ideasLoading, setIdeasLoading] = useState(true);
   const [expandedIdea, setExpandedIdea] = useState(null);
   const [expandedSections, setExpandedSections] = useState({});
+  const [showUpgradeNotification, setShowUpgradeNotification] = useState(false);
+  const [upgradeType, setUpgradeType] = useState('');
 
-  // Feature access for idea storage limits
-  const { getIdeaStorageLimit} = useFeatureAccess();
+  // Feature access for idea storage limits and API usage
+  const { 
+    getIdeaStorageLimit, 
+    usage, 
+    getQuickSearchLimit, 
+    getDeepSearchLimit,
+    hasExceededLimit,
+    getUpgradeSuggestion
+  } = useFeatureAccess();
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data?.user || null));
@@ -131,6 +140,14 @@ export default function ProfileDashboard() {
   const ideaStorageLimit = getIdeaStorageLimit();
   const currentIdeasCount = ideas.length;
   const canSaveMoreIdeas = currentIdeasCount < ideaStorageLimit;
+
+  // API usage limits
+  const quickSearchLimit = getQuickSearchLimit();
+  const deepSearchLimit = getDeepSearchLimit();
+  const currentQuickSearches = usage.quickSearches || 0;
+  const currentDeepSearches = usage.deepSearches || 0;
+  const hasExceededQuickSearch = hasExceededLimit('quickSearchesPerMonth', currentQuickSearches);
+  const hasExceededDeepSearch = hasExceededLimit('deepSearchesPerMonth', currentDeepSearches);
 
   // Plan display mapping
   const planDisplay = {
@@ -277,27 +294,45 @@ export default function ProfileDashboard() {
 
   // This function is used for the manage plan button so that it either directs the user to the billing page (if they currently have a subscription) or the pricing page
   const handleManagePlan = async () => {
-    if (!email) {
-      navigate('/pricing');
-      return;
-    }
-
     try {
-      const response = await fetch(`http://localhost:5000/get-customer-id?email=${encodeURIComponent(email)}`);
-      const data = await response.json();
-
-      if (response.ok && data.hasActiveSubscription) {
-        // User has active subscription, redirect to Stripe billing portal
-        window.location.href = `http://localhost:5000/customers/${data.customerId}`;
-      } else {
-        // No subscription or no customer found, redirect to pricing page
-        navigate('/pricing');
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('stripe_customer_id')
+          .eq('id', user.id)
+          .single();
+        
+        if (profile?.stripe_customer_id) {
+          // Redirect to Stripe customer portal
+          window.open(`https://billing.stripe.com/session/${profile.stripe_customer_id}`, '_blank');
+        } else {
+          // Redirect to pricing page if no subscription
+          navigate('/pricing');
+        }
       }
     } catch (error) {
-      console.error('Error checking subscription status:', error);
-      // Fallback to pricing page on error
+      console.error('Error managing plan:', error);
       navigate('/pricing');
     }
+  };
+
+  const showUpgradeNotificationForFeature = (feature) => {
+    if (feature === 'quick-search') {
+      setUpgradeType('quick-search');
+    } else if (feature === 'deep-search') {
+      setUpgradeType('deep-search');
+    } else {
+      setUpgradeType('general');
+    }
+    setShowUpgradeNotification(true);
+  };
+
+  // Helper function to get usage bar color class
+  const getUsageBarClass = (current, limit) => {
+    if (current >= limit) return 'exceeded';
+    if (current >= limit * 0.75) return 'warning'; // 75% threshold
+    return ''; // Default green
   };
 
   return (
@@ -313,6 +348,64 @@ export default function ProfileDashboard() {
             <h2>Pricing Plan</h2>
             <span className={`profile-plan-badge ${plan}`}>{currentPlan.label}</span>
             <div className="profile-plan-desc">{currentPlan.desc}</div>
+            
+            {/* API Usage Section */}
+            <div className="api-usage-section">
+              <h3>API Usage This Month</h3>
+              
+              {/* Quick Searches */}
+              <div className="usage-item">
+                <div className="usage-label">
+                  <span>Quick Searches</span>
+                  <span className={`usage-count ${hasExceededQuickSearch ? 'exceeded' : ''}`}>
+                    {currentQuickSearches} / {quickSearchLimit}
+                  </span>
+                </div>
+                <div className="usage-bar">
+                  <div 
+                    className={`usage-bar-fill ${getUsageBarClass(currentQuickSearches, quickSearchLimit)}`}
+                    style={{ width: `${Math.min((currentQuickSearches / quickSearchLimit) * 100, 100)}%` }}
+                  ></div>
+                </div>
+                {hasExceededQuickSearch && (
+                  <div className="usage-warning">
+                    <small 
+                      style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                      onClick={() => showUpgradeNotificationForFeature('quick-search')}
+                    >
+                      ⚠️ You've reached your quick search limit. Click to upgrade.
+                    </small>
+                  </div>
+                )}
+              </div>
+              
+              {/* Deep Searches */}
+              <div className="usage-item">
+                <div className="usage-label">
+                  <span>Deep Searches</span>
+                  <span className={`usage-count ${hasExceededDeepSearch ? 'exceeded' : ''}`}>
+                    {currentDeepSearches} / {deepSearchLimit}
+                  </span>
+                </div>
+                <div className="usage-bar">
+                  <div 
+                    className={`usage-bar-fill ${getUsageBarClass(currentDeepSearches, deepSearchLimit)}`}
+                    style={{ width: `${Math.min((currentDeepSearches / deepSearchLimit) * 100, 100)}%` }}
+                  ></div>
+                </div>
+                {hasExceededDeepSearch && (
+                  <div className="usage-warning">
+                    <small 
+                      style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                      onClick={() => showUpgradeNotificationForFeature('deep-search')}
+                    >
+                      ⚠️ You've reached your deep search limit. Click to upgrade.
+                    </small>
+                  </div>
+                )}
+              </div>
+            </div>
+            
             <button className="profile-manage-btn" onClick={handleManagePlan}>Manage Plan</button>
           </div>
           <div className="profile-card">
@@ -753,6 +846,40 @@ export default function ProfileDashboard() {
             </div>
           )}
         </div>
+        
+        {/* Upgrade Notification Modal */}
+        {showUpgradeNotification && (
+          <>
+            <div className="upgrade-notification-backdrop"></div>
+            <div className="upgrade-notification">
+              <div className="upgrade-notification-content">
+                <div className="upgrade-notification-icon">🔒</div>
+                <div className="upgrade-notification-text">
+                  <h4>Upgrade Required</h4>
+                  {upgradeType === 'quick-search' ? (
+                    <p>You've reached your quick search limit for this month. Upgrade your plan to continue validating ideas.</p>
+                  ) : upgradeType === 'deep-search' ? (
+                    <p>You've reached your deep search limit for this month. Upgrade your plan to continue using deep research.</p>
+                  ) : (
+                    <p>You've reached your usage limit. Upgrade your plan to continue using this feature.</p>
+                  )}
+                </div>
+                <button 
+                  className="upgrade-notification-btn"
+                  onClick={() => navigate('/pricing')}
+                >
+                  Upgrade Now
+                </button>
+                <button 
+                  className="upgrade-notification-close"
+                  onClick={() => setShowUpgradeNotification(false)}
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

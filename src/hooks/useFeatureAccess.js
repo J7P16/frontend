@@ -79,25 +79,23 @@ export const useFeatureAccess = () => {
 
   const fetchCurrentUsage = async (userId) => {
     try {
-      // Fetch current month's usage from your database
-      // This is a placeholder - implement based on your data structure
-      const currentMonth = new Date().getMonth();
-      const currentYear = new Date().getFullYear();
+      // Fetch current usage from profiles table
+      const { data: profileData, error } = await supabase
+        .from('profiles')
+        .select('quick_searches, deep_searches')
+        .eq('id', userId)
+        .single();
       
-      // Example: fetch usage from a usage_tracking table
-      // const { data: usageData } = await supabase
-      //   .from('usage_tracking')
-      //   .select('*')
-      //   .eq('user_id', userId)
-      //   .eq('month', currentMonth)
-      //   .eq('year', currentYear)
-      //   .single();
+      if (error) {
+        console.error('Error fetching usage:', error);
+        return;
+      }
       
-      // For now, using placeholder data
+      // Set usage from the profiles table
       setUsage({
-        quickSearches: 0,
-        deepSearches: 0,
-        savedIdeas: 0,
+        quickSearches: profileData?.quick_searches || 0,
+        deepSearches: profileData?.deep_searches || 0,
+        savedIdeas: 0, // This will be handled separately in ProfileDashboard
       });
     } catch (error) {
       console.error('Error fetching usage:', error);
@@ -147,6 +145,37 @@ export const useFeatureAccess = () => {
         ...prev,
         [feature]: (prev[feature] || 0) + 1
       }));
+    },
+    
+    incrementUsageInDatabase: async (feature) => {
+      if (!user) return;
+      
+      try {
+        const columnName = feature === 'quickSearches' ? 'quick_searches' : 'deep_searches';
+        
+        // Get current value and increment
+        const currentValue = usage[feature] || 0;
+        const newValue = currentValue + 1;
+        
+        // Update the database
+        const { error } = await supabase
+          .from('profiles')
+          .update({ [columnName]: newValue })
+          .eq('id', user.id);
+        
+        if (error) {
+          console.error('Error incrementing usage:', error);
+          return;
+        }
+        
+        // Update local state
+        setUsage(prev => ({
+          ...prev,
+          [feature]: newValue
+        }));
+      } catch (error) {
+        console.error('Error incrementing usage:', error);
+      }
     },
     
     resetUsage: () => {
