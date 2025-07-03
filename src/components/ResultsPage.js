@@ -5,7 +5,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { supabase } from '../supabaseClient';
 import { useFeatureAccess } from '../hooks/useFeatureAccess';
-import '../styles/ValidatePage.css';
+import './ValidatePage.css';
 
 const ResultsPage = () => {
   const location = useLocation();

@@ -5,7 +5,7 @@ import { FiClipboard, FiChevronDown } from 'react-icons/fi';
 import { supabase } from '../supabaseClient';
 import { useFeatureAccess } from '../hooks/useFeatureAccess';
 import { DeepResearchGuard } from '../components/FeatureGuard';
-import '../styles/ValidatePage.css';
+import './ValidatePage.css';
 
 const modeList = [
   'Quick Search',
