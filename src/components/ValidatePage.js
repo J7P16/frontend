@@ -33,7 +33,7 @@ const ValidatePage = () => {
   let parsed; // its here because the error block cant access it otherwise 
 
   // Use the feature access hook
-  const { canUseDeepResearch, canUsePersonalizedAnalysis, userPlan } = useFeatureAccess();
+  const { canUseDeepResearch, userPlan } = useFeatureAccess();
 
   // Show all models to all users, but handle access control on selection
   const availableModels = modeList; // Show all models
@@ -41,7 +41,6 @@ const ValidatePage = () => {
   // Debug logging
   console.log('User Plan:', userPlan);
   console.log('Can use Deep Research:', canUseDeepResearch());
-  console.log('Can use Personalized Analysis:', canUsePersonalizedAnalysis());
   console.log('Available Models:', availableModels);
 
   useEffect(() => {
@@ -140,16 +139,6 @@ const ValidatePage = () => {
     }
     setSelectedModel(model);
     setShowDropdown(false);
-  };
-
-  // Handle personalized analysis toggle
-  const handlePersonalizedToggle = () => {
-    if (!canUsePersonalizedAnalysis()) {
-      setUpgradeType('personalized-analysis');
-      setShowUpgradeNotification(true);
-      return;
-    }
-    setPersonalized(v => !v);
   };
 
   const handleSubmit = async (e) => {
@@ -252,7 +241,7 @@ const ValidatePage = () => {
               <div className="toggle-group">
                 <span className="toggle-label">Personalized Analysis</span>
                 <label className="switch">
-                  <input type="checkbox" checked={personalized} onChange={handlePersonalizedToggle} />
+                  <input type="checkbox" checked={personalized} onChange={() => setPersonalized(v => !v)} />
                   <span className="slider round"></span>
                 </label>
               </div>
@@ -333,9 +322,9 @@ const ValidatePage = () => {
                 <div className="upgrade-notification-text">
                   <h4>Upgrade Required</h4>
                   {upgradeType === 'deep-research' ? (
-                    <p>Deep Research is available exclusively for Founder Plan users.</p>
+                    <p>Deep Research is available exclusively for Pro Plan users.</p>
                   ) : (
-                    <p>Personalized analysis is available exclusively for Pro/Founder Plan users.</p>
+                    <p>Personalized analysis is available exclusively for Pro Plan users.</p>
                   )}
                 </div>
                 <button 

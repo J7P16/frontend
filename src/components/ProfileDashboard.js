@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { useFeatureAccess } from '../hooks/useFeatureAccess';
 import './ProfileDashboard.css';
+import { getIdeaStorageLimit } from '../utils/featureAccess';
 import { FiChevronDown, FiChevronUp, FiTrash2, FiBriefcase, FiDollarSign, FiTrendingUp, FiTarget, FiUsers, FiMessageSquare, FiExternalLink } from 'react-icons/fi';
 
 const industryOptions = [
@@ -142,10 +143,7 @@ export default function ProfileDashboard() {
       label: 'Pro',
       desc: 'Unlock advanced features, more searches, and personalized analysis.'
     },
-    founder: {
-      label: 'Founder',
-      desc: 'Access all premium features, highest limits, and early access to new tools.'
-    }
+
   };
   const currentPlan = planDisplay[plan] || planDisplay.free;
 

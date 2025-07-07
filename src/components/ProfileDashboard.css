@@ -89,15 +89,10 @@
   color: #fff;
 }
 .profile-plan-badge.pro {
-  background: #7c3aed;
+  background: linear-gradient(90deg, #2563eb 0%, #7c3aed 100%);
   color: #fff;
 }
-.profile-plan-badge.founder {
-  background: linear-gradient(90deg, #428aff 0%, #6366f1 100%);
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.10);
-  border: none;
-}
+
 .profile-plan-desc {
   color: #22336b;
   font-size: 1.05rem;

@@ -19,7 +19,7 @@ const ResultsPage = () => {
   const [showStorageLimitModal, setShowStorageLimitModal] = useState(false);
 
   // Feature access
-  const { canExportPDF, getIdeaStorageLimit } = useFeatureAccess();
+  const { getIdeaStorageLimit } = useFeatureAccess();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -294,12 +294,8 @@ const ResultsPage = () => {
     }
   };
 
-  // Handle PDF download with access control
+  // Handle PDF download
   const handleDownloadPDF = async () => {
-    if (!canExportPDF()) {
-      setShowUpgradeNotification(true);
-      return;
-    }
     await generatePDF();
   };
 
@@ -559,33 +555,6 @@ const ResultsPage = () => {
         </button>
         <button className="download-btn" onClick={handleDownloadPDF}><FiDownload style={{marginRight: 8, fontSize: '1.2em'}} />Download PDF Report</button>
       </div>
-      {/* Upgrade Notification Modal */}
-      {showUpgradeNotification && (
-        <>
-          <div className="upgrade-notification-backdrop"></div>
-          <div className="upgrade-notification">
-            <div className="upgrade-notification-content">
-              <div className="upgrade-notification-icon">🔒</div>
-              <div className="upgrade-notification-text">
-                <h4>Upgrade Required</h4>
-                <p>Downloadable PDF reports are available exclusively for Pro/Founder Plan users.</p>
-              </div>
-              <button 
-                className="upgrade-notification-btn"
-                onClick={() => navigate('/pricing')}
-              >
-                Upgrade Now
-              </button>
-              <button 
-                className="upgrade-notification-close"
-                onClick={() => setShowUpgradeNotification(false)}
-              >
-                ×
-              </button>
-            </div>
-          </div>
-        </>
-      )}
       
       {/* Storage Limit Modal */}
       {showStorageLimitModal && (

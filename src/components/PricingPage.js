@@ -30,13 +30,13 @@ export default function PricingPage() {
       period: '',
       features: [
         'Basic Idea Analysis',
-        '50 Quick Searches Per Month',
+        'Quick Search',
         'Competitor Overview',
-        'Idea/Product Storage (10)',
-        { text: 'Idea/Product Storage', unavailable: true },
-        { text: 'Downloadable PDF Exports', unavailable: true },
+        'Idea/Product Storage (100)',
+        'Personalized Search',
+        'Downloadable PDF Exports',
         { text: 'Priority AI Processing', unavailable: true },
-        { text: 'Advanced Insights', unavailable: true },
+        { text: 'Deep Research', unavailable: true },
       ],
       button: 'Start for Free',
       highlight: false,
@@ -49,45 +49,21 @@ export default function PricingPage() {
       period: billing === 'monthly' ? '/month' : '/year',
       features: [
         'Everything in Free Plan',
-        '200 Quick Searches Per Month',
-        'Personalized Search Results',
-        'Downloadable PDF Exports',
+        'Deep Research',
+        'Idea/Product Storage (500)',
         'Priority AI Processing',
-        'Idea/Product Storage (100)',
-        'Advanced Profile Dashboard',
-        { text: 'Deep Research Engine', unavailable: true },
+        'Early Access to New Features',
       ],
       button: 'Upgrade to Pro',
       highlight: true,
-      badge: 'Most Popular',
+      badge: 'Limited-Time Price',
       icon: <span className="plan-icon-bg pro large"><FiZap className="plan-icon-svg large" /></span>,
       productId: 'prod_SYknpEzXHNaC6J',
       paymentLink: billing === 'monthly' 
         ? `http://localhost:5000/subscribe?plan=pro_monthly${userEmail ? `&email=${encodeURIComponent(userEmail)}` : ''}${userId ? `&user_id=${userId}` : ''}`
         : `http://localhost:5000/subscribe?plan=pro_yearly${userEmail ? `&email=${encodeURIComponent(userEmail)}` : ''}${userId ? `&user_id=${userId}` : ''}`,
     },
-    {
-      name: 'Founder',
-      price: billing === 'monthly' ? '$24.99' : '$224.99',
-      period: billing === 'monthly' ? '/month' : '/year',
-      features: [
-        'Everything in Pro Plan',
-        'Access to Deep Research Engine',
-        '500 Quick Searches Per Month',
-        '50 Deep Searches Per Month',
-        'Highest Priority AI Processing',
-        'Idea/Product Storage (500)',
-        'Specifc API Selections',
-        'Early Access to New Features',
-      ],
-      button: 'Become a Founder',
-      highlight: false,
-      icon: <span className="plan-icon-bg founder large"><FiCalendar className="plan-icon-svg large" /></span>,
-      productId: 'prod_SYkobvntWhJWQ8',
-      paymentLink: billing === 'monthly'
-        ? `http://localhost:5000/subscribe?plan=founder_monthly${userEmail ? `&email=${encodeURIComponent(userEmail)}` : ''}${userId ? `&user_id=${userId}` : ''}`      
-        : `http://localhost:5000/subscribe?plan=founder_yearly${userEmail ? `&email=${encodeURIComponent(userEmail)}` : ''}${userId ? `&user_id=${userId}` : ''}`,
-    },
+
   ]);
 
   const plans = planData(billing, userEmail);
@@ -171,8 +147,7 @@ export default function PricingPage() {
               <h2 className="pricing-plan-name">{plan.name}</h2>
               <div className="pricing-plan-desc">
                 {plan.name === 'Free' && 'Perfect for drafting your first startup idea'}
-                {plan.name === 'Pro' && 'For serious entrepreneurs searching for product-market fit'}
-                {plan.name === 'Founder' && 'Complete product validation suite for existing companies'}
+                {plan.name === 'Pro' && 'Deeper insights for serious entrepreneurs'}
               </div>
               <div className="pricing-price-row">
                 <span className="pricing-price">{plan.price}</span>
@@ -195,7 +170,7 @@ export default function PricingPage() {
               </ul>
               <button
                 className={
-                  plan.highlight || plan.name === 'Founder'
+                  plan.highlight
                     ? 'pricing-btn gradient-btn'
                     : 'pricing-btn'
                 }
