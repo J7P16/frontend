@@ -237,13 +237,15 @@ const ValidatePage = () => {
       }
       
       if (parsed?.title && parsed?.marketDemand && parsed?.competitors) {
+        stopProgressSimulation();
+        setLoading(false);
         navigate('/results', { state: { analysis: parsed, input: message } });
       } else {
+        stopProgressSimulation();
+        setLoading(false);
         setError('The validation result was incomplete or malformed.');
       }
-      stopProgressSimulation();
-      setLoading(false);
-      navigate('/results', { state: { analysis: parsed, input: message } });
+
     } catch (err) {
       stopProgressSimulation();
       setLoading(false);
