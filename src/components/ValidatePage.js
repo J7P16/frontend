@@ -28,8 +28,8 @@ const ValidatePage = () => {
   const dropdownRef = useRef(null);
   const progressIntervalRef = useRef(null);
   const navigate = useNavigate();
-  const maxWords = 100;
-  const maxChars = 750;
+  const maxWords = 500;
+  const maxChars = 3500;
   let parsed; // its here because the error block cant access it otherwise 
 
   // Use the feature access hook
@@ -273,7 +273,7 @@ const ValidatePage = () => {
           </div>
           {personalized && (
             <div className="personalized-explanation">
-              <small>💡 Personalized analysis considers your location, education, and background to provide more relevant startup insights tailored to your specific context.</small>
+              <small>💡 Personalized analysis considers your personal background to provide more relevant business insights tailored to your specific context. This option is recommended for smaller and local ideas.</small>
             </div>
           )}
         </div>
