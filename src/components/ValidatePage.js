@@ -33,14 +33,7 @@ const ValidatePage = () => {
   let parsed; // its here because the error block cant access it otherwise 
 
   // Use the feature access hook
-  const { 
-    canUseDeepResearch, 
-    canUsePersonalizedAnalysis, 
-    userPlan,
-    usage,
-    hasExceededLimit,
-    incrementUsageInDatabase
-  } = useFeatureAccess();
+  const { canUseDeepResearch, canUsePersonalizedAnalysis, userPlan } = useFeatureAccess();
 
   // Show all models to all users, but handle access control on selection
   const availableModels = modeList; // Show all models
@@ -162,23 +155,6 @@ const ValidatePage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (wordCount > maxWords) return;
-    
-    // Check usage limits before allowing search
-    const isQuickSearch = selectedModel === 'Quick Search';
-    const isDeepSearch = selectedModel === 'Deep Research';
-    
-    if (isQuickSearch && hasExceededLimit('quickSearchesPerMonth', usage.quickSearches)) {
-      setUpgradeType('quick-search');
-      setShowUpgradeNotification(true);
-      return;
-    }
-    
-    if (isDeepSearch && hasExceededLimit('deepSearchesPerMonth', usage.deepSearches)) {
-      setUpgradeType('deep-search');
-      setShowUpgradeNotification(true);
-      return;
-    }
-    
     setLoading(true);
     setError(null);
     startProgressSimulation();
@@ -228,14 +204,6 @@ const ValidatePage = () => {
           return;
         }
       }
-      
-      // Increment usage in database after successful search
-      if (isQuickSearch) {
-        await incrementUsageInDatabase('quickSearches');
-      } else if (isDeepSearch) {
-        await incrementUsageInDatabase('deepSearches');
-      }
-      
       if (parsed?.title && parsed?.marketDemand && parsed?.competitors) {
         stopProgressSimulation();
         setLoading(false);
@@ -366,14 +334,8 @@ const ValidatePage = () => {
                   <h4>Upgrade Required</h4>
                   {upgradeType === 'deep-research' ? (
                     <p>Deep Research is available exclusively for Founder Plan users.</p>
-                  ) : upgradeType === 'personalized-analysis' ? (
-                    <p>Personalized analysis is available exclusively for Pro/Founder Plan users.</p>
-                  ) : upgradeType === 'quick-search' ? (
-                    <p>You've reached your quick search limit for this month. Upgrade your plan to continue validating ideas.</p>
-                  ) : upgradeType === 'deep-search' ? (
-                    <p>You've reached your deep search limit for this month. Upgrade your plan to continue using deep research.</p>
                   ) : (
-                    <p>You've reached your usage limit. Upgrade your plan to continue using this feature.</p>
+                    <p>Personalized analysis is available exclusively for Pro/Founder Plan users.</p>
                   )}
                 </div>
                 <button 
