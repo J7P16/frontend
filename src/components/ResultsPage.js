@@ -19,35 +19,76 @@ const ResultsPage = () => {
   const [showStorageLimitModal, setShowStorageLimitModal] = useState(false);
 
   // Feature access
-  const { getIdeaStorageLimit } = useFeatureAccess();
+  const { getIdeaStorageLimit, userPlan } = useFeatureAccess();
 
   useEffect(() => {
     const fetchUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
+      try {
+        const { data: { user }, error } = await supabase.auth.getUser();
+        if (error) {
+          console.error('Error fetching user:', error);
+          setSaveError('Authentication error. Please log in again.');
+        } else {
+          setUser(user);
+          console.log('User fetched successfully:', user);
+          
+          // Test Supabase connection by trying to fetch table info
+          if (user) {
+            const { data: testData, error: testError } = await supabase
+              .from('startup_ideas')
+              .select('count')
+              .limit(1);
+            
+            if (testError) {
+              console.error('Error testing startup_ideas table:', testError);
+              setSaveError('Database connection issue. Please try again later.');
+            } else {
+              console.log('Database connection successful');
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Error in fetchUser:', err);
+        setSaveError('Failed to authenticate user.');
+      }
     };
     fetchUser();
   }, []);
 
   const handleSaveIdea = async () => {
-    if (!user) {
+    console.log('Save idea button clicked');
+    // Always fetch the latest user directly from Supabase
+    const { data: { user: freshUser }, error: userError } = await supabase.auth.getUser();
+    console.log('Fresh user:', freshUser);
+    if (userError) {
+      setSaveError('Authentication error. Please log in again.');
+      return;
+    }
+    if (!freshUser) {
       setSaveError('You must be logged in to save an idea.');
       return;
     }
+    console.log('Analysis:', analysis);
+    console.log('Input:', input);
     if (!analysis || !input) {
       setSaveError('No analysis to save.');
       return;
     }
 
     // Check current idea count and storage limit
-    const ideaStorageLimit = getIdeaStorageLimit();
-    const { data: currentIdeas } = await supabase
+    const ideaStorageLimit = getIdeaStorageLimit(userPlan);
+    console.log('Idea storage limit:', ideaStorageLimit);
+    const { data: currentIdeas, error: countError } = await supabase
       .from('startup_ideas')
       .select('id')
-      .eq('user_id', user.id);
-    
+      .eq('user_id', freshUser.id);
+    if (countError) {
+      console.error('Error counting current ideas:', countError);
+      setSaveError('Failed to check current idea count. Please try again.');
+      return;
+    }
     const currentIdeasCount = currentIdeas?.length || 0;
-    
+    console.log('Current ideas count:', currentIdeasCount);
     if (currentIdeasCount >= ideaStorageLimit) {
       setShowStorageLimitModal(true);
       return;
@@ -58,22 +99,21 @@ const ResultsPage = () => {
     setSaveSuccess(false);
 
     const ideaData = {
-      user_id: user.id,
+      user_id: freshUser.id,
       title: analysis.title || 'Untitled Idea',
       question: input,
       analysis: analysis, // The entire analysis object
     };
-
+    console.log('Saving idea data:', ideaData);
     const { error } = await supabase.from('startup_ideas').insert([ideaData]);
-
     if (error) {
       console.error('Error saving idea:', error);
       setSaveError('Failed to save idea. Please try again.');
     } else {
+      console.log('Idea saved successfully!');
       setSaveSuccess(true);
       // Don't reset saveSuccess - keep it permanently saved
     }
-
     setIsSaving(false);
   };
 
@@ -565,7 +605,7 @@ const ResultsPage = () => {
               <div className="upgrade-notification-icon">📦</div>
               <div className="upgrade-notification-text">
                 <h4>Storage Limit Reached</h4>
-                <p>Uh oh! You've reached your idea storage limit ({getIdeaStorageLimit()} ideas)! Upgrade your plan or free up your storage to save more ideas.</p>
+                <p>Uh oh! You've reached your idea storage limit ({getIdeaStorageLimit(userPlan)} ideas)! Upgrade your plan or free up your storage to save more ideas.</p>
               </div>
               <button 
                 className="upgrade-notification-btn"

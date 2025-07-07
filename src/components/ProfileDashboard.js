@@ -56,7 +56,7 @@ export default function ProfileDashboard() {
   const [expandedSections, setExpandedSections] = useState({});
 
   // Feature access for idea storage limits
-  const { getIdeaStorageLimit} = useFeatureAccess();
+  const { getIdeaStorageLimit, userPlan } = useFeatureAccess();
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data?.user || null));
@@ -129,7 +129,7 @@ export default function ProfileDashboard() {
   const subscriptionId = profile?.subscription_id || 'No Subscription Yet';
 
   // Idea storage limits
-  const ideaStorageLimit = getIdeaStorageLimit();
+  const ideaStorageLimit = getIdeaStorageLimit(userPlan);
   const currentIdeasCount = ideas.length;
   const canSaveMoreIdeas = currentIdeasCount < ideaStorageLimit;
 
