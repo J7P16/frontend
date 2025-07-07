@@ -36,7 +36,7 @@ const ValidatePage = () => {
   const { canUseDeepResearch, userPlan } = useFeatureAccess();
 
   // Show all models to all users, but handle access control on selection
-  const availableModels = modeList; // Show all models
+  const availableModels = modeList;
 
   // Debug logging
   console.log('User Plan:', userPlan);
