@@ -31,9 +31,9 @@ const HomePage = () => {
             <img src={validlyBanner} alt="Validly Banner" className="validly-banner" />
           </div>
           <h1>
-           Validate Your Business Idea<br />In <span className="gradient-text">Minutes</span>, Not Months
+            Launch Your Startup Idea <br /> With <span className="gradient-text">Hour-Saving Validation</span>
           </h1>
-          <p>Instant insights on market fit, competition, and customer demand—powered by real-time data.</p>
+          <p>Validate your crazy startup ideas in real-time to improve growth, deliverability, reduce competition, and take over markets.</p>
           <div className="homepage-hero-buttons">
             <button className="primary" onClick={() => user ? navigate('/validate') : navigate('/signup')}>Get started →</button>
             <button className="secondary" onClick= {() => navigate('/under-construction')}>Learn more →</button>
@@ -42,8 +42,7 @@ const HomePage = () => {
 
         {/* Features Section */}
         <div className="homepage-features-section">
-          <br></br>
-          <h2>Everything You Need To Validate Your Next Big Idea</h2>
+          <h2>Everything You Need To Validate Your Startup</h2>
           <p>Comprehensive validation tools powered by data and market intelligence</p>
           <div className="homepage-features-grid">
             <div className="feature-card">
@@ -78,6 +77,7 @@ const HomePage = () => {
             </div>
           </div>
         </div>
+
       </div>
 
       {/* Footer */}
