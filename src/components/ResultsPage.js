@@ -20,11 +20,19 @@ const ResultsPage = () => {
 
   // Feature access
   const { getIdeaStorageLimit, userPlan } = useFeatureAccess();
+  
+  // Debug logging for userPlan
+  useEffect(() => {
+    console.log('userPlan from useFeatureAccess:', userPlan);
+  }, [userPlan]);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
+        console.log('Fetching user in useEffect...');
         const { data: { user }, error } = await supabase.auth.getUser();
+        console.log('User fetch result:', { user, error });
+        
         if (error) {
           console.error('Error fetching user:', error);
           setSaveError('Authentication error. Please log in again.');
@@ -34,6 +42,7 @@ const ResultsPage = () => {
           
           // Test Supabase connection by trying to fetch table info
           if (user) {
+            console.log('Testing database connection...');
             const { data: testData, error: testError } = await supabase
               .from('startup_ideas')
               .select('count')
@@ -45,6 +54,8 @@ const ResultsPage = () => {
             } else {
               console.log('Database connection successful');
             }
+          } else {
+            console.log('No user found in useEffect');
           }
         }
       } catch (err) {
@@ -57,64 +68,102 @@ const ResultsPage = () => {
 
   const handleSaveIdea = async () => {
     console.log('Save idea button clicked');
-    // Always fetch the latest user directly from Supabase
-    const { data: { user: freshUser }, error: userError } = await supabase.auth.getUser();
-    console.log('Fresh user:', freshUser);
-    if (userError) {
-      setSaveError('Authentication error. Please log in again.');
-      return;
-    }
-    if (!freshUser) {
-      setSaveError('You must be logged in to save an idea.');
-      return;
-    }
-    console.log('Analysis:', analysis);
-    console.log('Input:', input);
-    if (!analysis || !input) {
-      setSaveError('No analysis to save.');
-      return;
-    }
+    
+    try {
+      // I want to fucking ensure that the user is authenticated Vishist
+      console.log('Fetching user from Supabase...');
+      const { data: { user: freshUser }, error: userError } = await supabase.auth.getUser();
+      console.log('Fresh user:', freshUser);
+      console.log('User error:', userError);
+      
+      if (userError) {
+        console.error('User authentication error:', userError);
+        setSaveError('Authentication error. Please log in again.');
+        return;
+      }
+      
+      if (!freshUser) {
+        console.error('No user found - user not authenticated');
+        setSaveError('You must be logged in to save an idea.');
+        return;
+      }
+      
+      console.log('User authenticated successfully:', freshUser.id);
+      console.log('Analysis object:', analysis);
+      console.log('Input:', input);
+      
+      if (!analysis) {
+        console.error('No analysis object found');
+        setSaveError('No analysis to save. Please validate an idea first.');
+        return;
+      }
+      
+      if (!input) {
+        console.error('No input found');
+        setSaveError('No input to save. Please validate an idea first.');
+        return;
+      }
 
-    // Check current idea count and storage limit
-    const ideaStorageLimit = getIdeaStorageLimit(userPlan);
-    console.log('Idea storage limit:', ideaStorageLimit);
-    const { data: currentIdeas, error: countError } = await supabase
-      .from('startup_ideas')
-      .select('id')
-      .eq('user_id', freshUser.id);
-    if (countError) {
-      console.error('Error counting current ideas:', countError);
-      setSaveError('Failed to check current idea count. Please try again.');
-      return;
-    }
-    const currentIdeasCount = currentIdeas?.length || 0;
-    console.log('Current ideas count:', currentIdeasCount);
-    if (currentIdeasCount >= ideaStorageLimit) {
-      setShowStorageLimitModal(true);
-      return;
-    }
+      // Check current idea count and storage limit
+      console.log('Checking storage limits...');
+      const currentUserPlan = userPlan || 'free'; // Fallback to free if userPlan is undefined
+      const ideaStorageLimit = getIdeaStorageLimit(currentUserPlan);
+      console.log('Idea storage limit:', ideaStorageLimit);
+      console.log('User plan:', currentUserPlan);
+      
+      const { data: currentIdeas, error: countError } = await supabase
+        .from('startup_ideas')
+        .select('id')
+        .eq('user_id', freshUser.id);
+        
+      if (countError) {
+        console.error('Error counting current ideas:', countError);
+        setSaveError('Failed to check current idea count. Please try again.');
+        return;
+      }
+      
+      const currentIdeasCount = currentIdeas?.length || 0;
+      console.log('Current ideas count:', currentIdeasCount);
+      
+      if (currentIdeasCount >= ideaStorageLimit) {
+        console.log('Storage limit reached, showing modal');
+        setShowStorageLimitModal(true);
+        return;
+      }
 
-    setIsSaving(true);
-    setSaveError('');
-    setSaveSuccess(false);
+      setIsSaving(true);
+      setSaveError('');
+      setSaveSuccess(false);
 
-    const ideaData = {
-      user_id: freshUser.id,
-      title: analysis.title || 'Untitled Idea',
-      question: input,
-      analysis: analysis, // The entire analysis object
-    };
-    console.log('Saving idea data:', ideaData);
-    const { error } = await supabase.from('startup_ideas').insert([ideaData]);
-    if (error) {
-      console.error('Error saving idea:', error);
-      setSaveError('Failed to save idea. Please try again.');
-    } else {
-      console.log('Idea saved successfully!');
-      setSaveSuccess(true);
-      // Don't reset saveSuccess - keep it permanently saved
+      const ideaData = {
+        user_id: freshUser.id,
+        title: analysis.title || 'Untitled Idea',
+        question: input,
+        analysis: analysis, // The entire analysis object
+      };
+      
+      console.log('Saving idea data:', ideaData);
+      console.log('Attempting to insert into startup_ideas table...');
+      
+      const { data: insertData, error: insertError } = await supabase
+        .from('startup_ideas')
+        .insert([ideaData])
+        .select();
+        
+      if (insertError) {
+        console.error('Error saving idea:', insertError);
+        setSaveError(`Failed to save idea: ${insertError.message}`);
+      } else {
+        console.log('Idea saved successfully!', insertData);
+        setSaveSuccess(true);
+        // Don't reset saveSuccess - keep it permanently saved
+      }
+    } catch (error) {
+      console.error('Unexpected error in handleSaveIdea:', error);
+      setSaveError(`Unexpected error: ${error.message}`);
+    } finally {
+      setIsSaving(false);
     }
-    setIsSaving(false);
   };
 
   const handleCopyPitch = () => {
