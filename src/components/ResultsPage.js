@@ -124,6 +124,18 @@ const ResultsPage = () => {
     }
   };
 
+  const sortCompetitors = (competitors) => {
+    const priorityOrder = {
+      'Low': 1,
+      'Medium': 2,
+      'High': 3 
+    };
+
+    competitors.sort((a, b) => {
+      return priorityOrder[b.popularity] - priorityOrder[a.popularity];
+    });
+  }
+  
   const generatePDF = async () => {
     const currentDate = new Date().toLocaleDateString();
     const pdf = new jsPDF('p', 'mm', 'a4');
@@ -364,6 +376,7 @@ const ResultsPage = () => {
     }
   }
 
+  sortCompetitors(analysis.competitors)
   // Add safety checks for required properties
   const marketDemand = analysis.marketDemand || {};
   const painPoints = marketDemand.painPoints || {};
@@ -372,6 +385,7 @@ const ResultsPage = () => {
   const targetAudience = analysis.targetAudience || [];
   const revenueModels = analysis.revenueModels || [];
   const mvpFeatures = analysis.mvpFeatures || [];
+
   
   // Helper function to ensure array properties are actually arrays
   const ensureArray = (value) => {
@@ -628,3 +642,4 @@ const ResultsPage = () => {
 };
 
 export default ResultsPage; 
+
