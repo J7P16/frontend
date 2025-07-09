@@ -754,7 +754,7 @@ button.secondary:hover {
   }
 }
 
-.results-section.market-demand {
+.results-section.market-demand, .results-section.founderproduct {
   background: linear-gradient(90deg, #fafdff 60%, #f6faff 100%);
   border-radius: 18px;
   box-shadow: 0 4px 24px 0 rgba(30, 34, 90, 0.07);
@@ -762,13 +762,13 @@ button.secondary:hover {
   margin-bottom: 28px;
   border: none;
 }
-.market-demand-header {
+.market-demand-header, .founderproduct-header {
   display: flex;
   align-items: center;
   gap: 16px;
   margin-bottom: 18px;
 }
-.market-demand-icon-bg {
+.market-demand-icon-bg, .founderproduct-icon-bg {
   background: #d1fae5;
   border-radius: 10px;
   width: 38px;
@@ -777,16 +777,17 @@ button.secondary:hover {
   align-items: center;
   justify-content: center;
 }
-.market-demand-icon {
+.market-demand-icon, .founderproduct-icon {
   color: #22c55e;
   font-size: 1.5rem;
 }
-.market-demand-header h3 {
-  font-size: 1.25rem;
+.market-demand-header, .founderproduct-header {
+  font-size: 1.1rem;
   font-weight: 700;
   color: #222;
   margin: 0 8px 0 0;
 }
+
 
 .score-badge-red {
   background: #fee2e2;
@@ -820,7 +821,7 @@ button.secondary:hover {
   margin-left: 4px;
   display: inline-block;
 }
-.market-demand-summary {
+.market-demand-summary, .founderproduct-summary {
   color: #334155;
   font-size: 1.08rem;
   margin-bottom: 10px;
@@ -1447,6 +1448,36 @@ button.secondary:hover {
   font-weight: 500;
 }
 
+/* Founder Product Fit Subheading Styling  */
+.good-fit-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #069650;
+  font-size: 1.08rem;
+  margin-bottom: 10px;
+}
+
+.good-fit-icon {
+  color: #2cdb5d;
+  font-size: 1.3rem;
+}
+
+.bad-fit-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #b45309;
+  font-size: 1.08rem;
+  margin-bottom: 10px;
+}
+
+.bad-fit-icon {
+  color: #f59e42;
+  font-size: 1.3rem;
+}
 .mvp-design-section {
   margin-bottom: 1.5rem;
 }
