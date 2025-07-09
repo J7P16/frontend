@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { FiDownload, FiTrendingUp, FiTarget, FiUsers, FiCheckCircle, FiDollarSign, FiExternalLink, FiAlertCircle, FiLink, FiMessageSquare, FiCopy, FiClock, FiSave } from 'react-icons/fi';
+import { FiX, FiCheck, FiDownload, FiTrendingUp, FiTarget, FiUsers, FiCheckCircle, FiDollarSign, FiExternalLink, FiAlertCircle, FiLink, FiMessageSquare, FiCopy, FiClock, FiSave, FiUserCheck, FiChevronsUp, FiChevronsDown } from 'react-icons/fi';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { supabase } from '../supabaseClient';
@@ -550,6 +550,25 @@ const ResultsPage = () => {
           <p>No competitor information available.</p>
         )}
       </div>
+      <div className = "results-section founderproduct">
+        <div className="founderproduct-header">
+          <span className="founderproduct-icon-bg"><FiUserCheck className="founderproduct-icon" /></span>
+          <h3>Founder Fit</h3>
+          <span className={`score-badge ${getScoreColor(analysis.feasibilityscore)}`}>{analysis.feasibilityscore}/10</span>
+        </div>
+        <p className="founderproduct-summary">{analysis.summary || 'No summary available'}</p>
+        <div className = "subsection-divider" />
+          <div className="good-fit-header">
+            <FiChevronsUp className="good-fit-icon" />
+            <span>Your Strengths</span>
+            
+          </div>
+        <div className = "subsection-divider" />
+          <div className="bad-fit-header">
+            <FiChevronsDown className="bad-fit-icon" />
+            <span>Your Weaknesses</span>
+          </div>
+      </div>  
       <div className="results-section target-audience">
         <div className="target-audience-header">
           <span className="target-audience-icon-bg"><FiUsers className="target-audience-icon" /></span>
