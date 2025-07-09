@@ -70,7 +70,7 @@ const ResultsPage = () => {
     console.log('Save idea button clicked');
     
     try {
-      // I want to fucking ensure that the user is authenticated Vishist
+
       console.log('Fetching user from Supabase...');
       const { data: { user: freshUser }, error: userError } = await supabase.auth.getUser();
       console.log('Fresh user:', freshUser);

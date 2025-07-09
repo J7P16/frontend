@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { supabase } from './supabaseClient';
+
 import HomePage from './components/HomePage';
 import ValidatePage from './components/ValidatePage';
 import ResultsPage from './components/ResultsPage';
@@ -15,6 +17,18 @@ import FeaturesPage from './components/Features';
 import './App.css';
 
 function App() {
+
+  useEffect(() => {
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Auth event:', event);
+      console.log('Current session:', session);
+    });
+
+    return () => {
+      listener.subscription.unsubscribe();
+    };
+  }, []);
+
   return (
     <Router>
       <Routes>
