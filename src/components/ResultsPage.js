@@ -434,7 +434,9 @@ const ResultsPage = () => {
   const targetAudience = analysis.targetAudience || [];
   const revenueModels = analysis.revenueModels || [];
   const mvpFeatures = analysis.mvpFeatures || [];
-
+  const founderfit = analysis.founderfit || {};
+  const positivefounderfit = analysis.positivefounderfit || {};
+  const negativefounderfit = analysis.negativefounderfit || {};
   
   // Helper function to ensure array properties are actually arrays
   const ensureArray = (value) => {
@@ -554,19 +556,32 @@ const ResultsPage = () => {
         <div className="founderproduct-header">
           <span className="founderproduct-icon-bg"><FiUserCheck className="founderproduct-icon" /></span>
           <h3>Founder Fit</h3>
-          <span className={`score-badge ${getScoreColor(analysis.feasibilityscore)}`}>{analysis.feasibilityscore}/10</span>
+          <span className={`score-badge ${getScoreColor(analysis.founderfitscore)}`}>{analysis.founderfitscore}/10</span>
         </div>
-        <p className="founderproduct-summary">{analysis.summary || 'No summary available'}</p>
+        <p className="founderproduct-summary">{analysis.founderfit || 'No summary available'}</p>
         <div className = "subsection-divider" />
           <div className="good-fit-header">
             <FiChevronsUp className="good-fit-icon" />
             <span>Your Strengths</span>
-            
+            {ensureArray(analysis.positivefounderfit).map((fit, index) => (
+              <div key={index}>
+                {/* render the content you want to display for each fit */}
+                <p>{fit.skill}</p>
+                <p>{fit.description}</p>
+              </div>
+            ))}
           </div>
         <div className = "subsection-divider" />
           <div className="bad-fit-header">
             <FiChevronsDown className="bad-fit-icon" />
             <span>Your Weaknesses</span>
+            {ensureArray(analysis.negativefounderfit).map((fit, index) => (
+              <div key={index}>
+                {/* render the content you want to display for each fit */}
+                <p>{fit.skill}</p>
+                <p>{fit.description}</p>
+              </div>
+            ))}
           </div>
       </div>  
       <div className="results-section target-audience">
