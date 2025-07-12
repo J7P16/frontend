@@ -9,7 +9,7 @@ const Navbar = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUser(data?.user || null));
+    supabase.auth.getSession().then(({ data }) => setUser(data.session?.user || null));
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user || null);
     });
