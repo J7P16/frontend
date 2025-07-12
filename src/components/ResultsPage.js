@@ -37,7 +37,8 @@ const ResultsPage = () => {
     const fetchUser = async () => {
       try {
         console.log('Fetching user in useEffect...');
-        const { data: { user }, error } = await supabase.auth.getUser();
+        const { data: { session }, error } = await supabase.auth.getSession();
+        const user = session?.user;
         console.log('User fetch result:', { user, error });
         
         if (error) {
@@ -79,12 +80,13 @@ const ResultsPage = () => {
     try {
 
       console.log('Fetching user from Supabase...');
-      const { data: { user: freshUser }, error: userError } = await supabase.auth.getUser();
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      const freshUser = session?.user;
       console.log('Fresh user:', freshUser);
-      console.log('User error:', userError);
-      
-      if (userError) {
-        console.error('User authentication error:', userError);
+      console.log('Session error:', sessionError);
+
+      if (sessionError) {
+        console.error('User authentication error:', sessionError);
         setSaveError('Authentication error. Please log in again.');
         return;
       }

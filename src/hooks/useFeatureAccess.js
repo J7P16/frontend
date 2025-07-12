@@ -23,7 +23,8 @@ export const useFeatureAccess = () => {
   useEffect(() => {
     // Get current user
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { session } } = await supabase.auth.getSession();
+      const user = session?.user;
       setUser(user);
       
       if (user) {
