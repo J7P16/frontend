@@ -453,7 +453,8 @@ const ResultsPage = () => {
     return [];
   };
 
-  return (
+  if (analysis.personalizedstatus) {
+      return (
     <div className="results-container">
       <a className="back-link" href="/validate">← Validate Another Idea</a>
       <div className="results-header">
@@ -509,6 +510,64 @@ const ResultsPage = () => {
       )}
     </div>
   );
+  }
+  return (
+    <div className="results-container">
+      <a className="back-link" href="/validate">← Validate Another Idea</a>
+      <div className="results-header">
+        <div className="results-header-left">
+          <h2>Validation Results</h2>
+          <div className="results-input">"{input}"</div>
+        </div>
+        <div className="results-header-right">
+          {saveError && <div className="save-error-message">{saveError}</div>}
+        </div>
+      </div>
+      <DemandResults analysis={analysis} painPoints={painPoints} timingTrends={timingTrends} getScoreColor={getScoreColor} />
+      <CompetitorResults analysis={analysis} competitors={competitors} getScoreColor2={getScoreColor2} ensureArray={ensureArray}/>
+      <AudienceResults analysis={analysis} getScoreColor={getScoreColor} ensureArray={ensureArray} handleCopyPitch={handleCopyPitch}/>
+      <RevenueModelResults analysis={analysis} ensureArray={ensureArray}/>
+      <MVPResults analysis={analysis} ensureArray={ensureArray}/> 
+      <div className="results-actions">
+        <button className="validate-another-btn" onClick={() => navigate('/validate')}>Validate Another Idea</button>
+        <button className={`save-idea-btn ${saveSuccess ? 'saved' : ''}`} onClick={handleSaveIdea} disabled={isSaving || saveSuccess}>
+            <FiSave style={{ marginRight: 8 }} />
+            {isSaving ? 'Saving...' : saveSuccess ? 'Saved!' : 'Save Idea'}
+        </button>
+        <button className="download-btn" onClick={handleDownloadPDF}><FiDownload style={{marginRight: 8, fontSize: '1.2em'}} />Download PDF Report</button>
+      </div>
+      
+      {/* Storage Limit Modal */}
+      {showStorageLimitModal && (
+        <>
+          <div className="upgrade-notification-backdrop"></div>
+          <div className="upgrade-notification">
+            <div className="upgrade-notification-content">
+              <div className="upgrade-notification-icon">📦</div>
+              <div className="upgrade-notification-text">
+                <h4>Storage Limit Reached</h4>
+                <p>Uh oh! You've reached your idea storage limit ({getIdeaStorageLimit(userPlan)} ideas)! Upgrade your plan or free up your storage to save more ideas.</p>
+              </div>
+              <button 
+                className="upgrade-notification-btn"
+                onClick={() => navigate('/pricing')}
+              >
+                Upgrade Now
+              </button>
+              <button 
+                className="upgrade-notification-close"
+                onClick={() => setShowStorageLimitModal(false)}
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+  
+
 };
 
 export default ResultsPage; 
