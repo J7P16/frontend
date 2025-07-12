@@ -563,26 +563,30 @@ const ResultsPage = () => {
           <div className="good-fit-header">
             <FiChevronsUp className="good-fit-icon" />
             <span>Your Strengths</span>
+          </div> 
+            <div className="good-fit-content">
             {ensureArray(analysis.positivefounderfit).map((fit, index) => (
               <div key={index}>
-                {/* render the content you want to display for each fit */}
-                <p>{fit.skill}</p>
-                <p>{fit.description}</p>
+                <div className="good-fit-card">
+                  <strong>{fit.skill}:</strong> {fit.description || 'Not specified'}
+                </div>
               </div>
             ))}
-          </div>
+            </div>
         <div className = "subsection-divider" />
           <div className="bad-fit-header">
             <FiChevronsDown className="bad-fit-icon" />
             <span>Your Weaknesses</span>
+          </div> 
+            <div className="bad-fit-content">
             {ensureArray(analysis.negativefounderfit).map((fit, index) => (
               <div key={index}>
-                {/* render the content you want to display for each fit */}
-                <p>{fit.skill}</p>
-                <p>{fit.description}</p>
+                <div className="bad-fit-card">
+                  <strong>{fit.skill}:</strong> {fit.description || 'Not specified'}
+                </div>
               </div>
             ))}
-          </div>
+            </div>
       </div>  
       <div className="results-section target-audience">
         <div className="target-audience-header">
