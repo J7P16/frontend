@@ -6,6 +6,13 @@ import html2canvas from 'html2canvas';
 import { supabase } from '../supabaseClient';
 import { useFeatureAccess } from '../hooks/useFeatureAccess';
 import './ValidatePage.css';
+import DemandResults from '../reusable/DemandResults.js';
+import CompetitorResults from '../reusable/CompetitorResults.js'
+import FounderResults from '../reusable/FounderResults.js';
+import AudienceResults from '../reusable/AudienceResults.js';
+import RevenueModelResults from '../reusable/RevenueModelResults.js';
+import MVPResults from '../reusable/MVPResults.js';
+
 
 const ResultsPage = () => {
   const location = useLocation();
@@ -458,236 +465,12 @@ const ResultsPage = () => {
           {saveError && <div className="save-error-message">{saveError}</div>}
         </div>
       </div>
-      <div className="results-section market-demand">
-        <div className="market-demand-header">
-          <span className="market-demand-icon-bg"><FiTrendingUp className="market-demand-icon" /></span>
-          <h3>Market Demand</h3>
-          <span className={`score-badge ${getScoreColor(analysis.score)}`}>{analysis.score}/10</span>
-        </div>
-        <p className="market-demand-summary">{analysis.summary || 'No summary available'}</p>
-        <p className="market-demand-details">{analysis.details || 'No details available'}</p>
-
-        {/* Customer Pain Points Subsection */}
-        <div className="subsection-divider" />
-        <div className="pain-points-section">
-          <div className="pain-points-header">
-            <FiAlertCircle className="pain-points-icon" />
-            <span>Customer Pain Points</span>
-          </div>
-          <div className="pain-points-content">
-            <div className="pain-point-card">
-              <strong>Primary Pain Point:</strong> {painPoints.primaryPainPoint || 'Not specified'}
-            </div>
-            <div className="pain-point-card">
-              <strong>Problem Urgency:</strong> {painPoints.urgency || 'Not specified'}
-            </div>
-            <div className="pain-point-card">
-              <strong>Evidence of Demand:</strong> {painPoints.evidence || 'Not specified'}
-            </div>
-          </div>
-        </div>
-
-        {/* Market Timing & Trends Subsection */}
-        <div className="subsection-divider" />
-        <div className="timing-trends-section">
-          <div className="timing-trends-header">
-            <FiClock className="timing-trends-icon" />
-            <span>Market Timing & Trends</span>
-          </div>
-          <div className="timing-trends-content">
-            <div className="timing-trend-card">
-              <strong>Market Readiness:</strong> {timingTrends.marketReadiness || 'Not specified'}
-            </div>
-            <div className="timing-trend-card">
-              <strong>Emerging Trends:</strong> {timingTrends.emergingTrends || 'Not specified'}
-            </div>
-            <div className="timing-trend-card">
-              <strong>Timing Assessment:</strong> {timingTrends.timingAssessment || 'Not specified'}
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="results-section competitors">
-        <div className="competitors-header">
-          <span className="competitors-icon-bg"><FiTarget className="competitors-icon" /></span>
-          <h3>Market Competitiveness</h3>
-          <span className={`score-badge ${getScoreColor2(analysis.feasibilityscore)}`}>{analysis.feasibilityscore}/10</span>
-        </div>
-        {competitors.length > 0 ? (
-          competitors.map((comp, idx) => (
-            <div className="competitor-card" key={idx}>
-              <div className="competitor-header">
-                <span className="competitor-name">{comp.name || 'Unknown'}</span>
-                <span className={`popularity-badge ${(comp.popularity || 'Low').toLowerCase()}`}>{comp.popularity || 'Low'} Popularity</span>
-              </div>
-              <div className="competitor-desc">{comp.description || 'No description available'}</div>
-              <div className="competitor-meta">{comp.locations || 'Unknown'} • {comp.pricing || 'Unknown'}</div>
-              <div className="competitor-analysis">
-                <div className="analysis-section">
-                  <h4>Strengths</h4>
-                  <ul className="analysis-list">
-                    {ensureArray(comp.pros).map((pro, proIdx) => (
-                      <li key={proIdx} className="pro-item">
-                        <FiCheckCircle className="pro-icon" />
-                        <span>{pro}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="analysis-section">
-                  <h4>Weaknesses</h4>
-                  <ul className="analysis-list">
-                    {ensureArray(comp.weaknesses).map((weakness, weakIdx) => (
-                      <li key={weakIdx} className="weakness-item">
-                        <FiAlertCircle className="weakness-icon" />
-                        <span>{weakness}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p>No competitor information available.</p>
-        )}
-      </div>
-      <div className = "results-section founderproduct">
-        <div className="founderproduct-header">
-          <span className="founderproduct-icon-bg"><FiUserCheck className="founderproduct-icon" /></span>
-          <h3>Founder Fit</h3>
-          <span className={`score-badge ${getScoreColor(analysis.founderfitscore)}`}>{analysis.founderfitscore}/10</span>
-        </div>
-        <p className="founderproduct-summary">{analysis.founderfit || 'No summary available'}</p>
-        <div className = "subsection-divider" />
-          <div className="good-fit-header">
-            <FiChevronsUp className="good-fit-icon" />
-            <span>Your Strengths</span>
-          </div> 
-            <div className="good-fit-content">
-            {ensureArray(analysis.positivefounderfit).map((fit, index) => (
-              <div key={index}>
-                <div className="good-fit-card">
-                  <strong>{fit.skill}:</strong> {fit.description || 'Not specified'}
-                </div>
-              </div>
-            ))}
-            </div>
-        <div className = "subsection-divider" />
-          <div className="bad-fit-header">
-            <FiChevronsDown className="bad-fit-icon" />
-            <span>Your Weaknesses</span>
-          </div> 
-            <div className="bad-fit-content">
-            {ensureArray(analysis.negativefounderfit).map((fit, index) => (
-              <div key={index}>
-                <div className="bad-fit-card">
-                  <strong>{fit.skill}:</strong> {fit.description || 'Not specified'}
-                </div>
-              </div>
-            ))}
-            </div>
-      </div>  
-      <div className="results-section target-audience">
-        <div className="target-audience-header">
-          <span className="target-audience-icon-bg"><FiUsers className="target-audience-icon" /></span>
-          <h3>Target Audience</h3>
-        </div>
-        <div className="target-audience-list">
-          {targetAudience.length > 0 ? (
-            targetAudience.map((aud, idx) => (
-              <div className="target-audience-item" key={idx}>
-                <div className="target-audience-group">
-                  <FiCheckCircle className="target-audience-check" />
-                  <span className="target-group-name">{aud.group || 'Unknown Group'}</span>
-                </div>
-                <div className="online-destinations">
-                  <h4>Find this audience online:</h4>
-                  <div className="destination-buttons">
-                    {(aud.onlineDestinations || []).map((dest, destIdx) => (
-                      <a
-                        key={destIdx}
-                        href={dest.url || '#'}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`destination-button ${(dest.type || 'Other').toLowerCase().replace(' ', '-')}`}
-                      >
-                        <span className="destination-icon">
-                          <FiLink />
-                        </span>
-                        <div className="destination-info">
-                          <span className="destination-name">{dest.name || 'Unknown'}</span>
-                          <span className="destination-type">{dest.type || 'Other'}</span>
-                        </div>
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p>No target audience information available.</p>
-          )}
-        </div>
-        <div className="pitch-section">
-          <div className="pitch-header">
-            <span className="pitch-icon-bg"><FiMessageSquare className="pitch-icon" /></span>
-            <h3>Professional Pitch - Share to the Online Community!</h3>
-            <button className="copy-pitch-btn" onClick={handleCopyPitch} title="Copy Pitch to Clipboard">
-              <FiCopy className="copy-icon" />
-            </button>
-          </div>
-          <div className="pitch-content">
-            <p className="pitch-paragraph">{analysis.pitch || 'No pitch available'}</p>
-          </div>
-        </div>
-      </div>
-      <div className="results-section revenue-models">
-        <div className="revenue-models-header">
-          <span className="revenue-models-icon-bg"><FiDollarSign className="revenue-models-icon" /></span>
-          <h3>Revenue Model Suggestions</h3>
-        </div>
-        <ul className="revenue-models-list">
-          {revenueModels.length > 0 ? (
-            revenueModels.map((model, idx) => (
-              <li className="revenue-models-item" key={idx}>
-                <FiCheckCircle className="revenue-models-check" />
-                <span>{model}</span>
-              </li>
-            ))
-          ) : (
-            <li className="revenue-models-item">No revenue models suggested</li>
-          )}
-        </ul>
-      </div>
-      <div className="results-section mvp-features">
-        <div className="mvp-features-header">
-          <span className="mvp-features-icon-bg"><FiExternalLink className="mvp-features-icon" /></span>
-          <h3>MVP Feature Set</h3>
-        </div>
-        <div className="mvp-design-section">
-          <div className="mvp-design-title">Suggested MVP Design</div>
-          <div className="mvp-design-card">{analysis.mvpDesign || 'No MVP design available'}</div>
-        </div>
-        <ul className="mvp-features-list">
-          {mvpFeatures.length > 0 ? (
-            mvpFeatures.map((feat, idx) => (
-              <li className="mvp-feature-row" key={idx}>
-                <div className="mvp-feature-left">
-                  <FiCheckCircle className="mvp-feature-check" />
-                  <span className="feature-name">{feat.feature || 'Unknown feature'}</span>
-                </div>
-                <div className="mvp-feature-badges">
-                  <span className={`priority-badge ${(feat.priority || 'Low').toLowerCase().replace(' ', '-')}`}>{feat.priority || 'Low'} Priority</span>
-                  <span className={`effort-badge ${(feat.effort || 'Low').toLowerCase().replace(' ', '-')}`}>{feat.effort || 'Low'} Effort</span>
-                </div>
-              </li>
-            ))
-          ) : (
-            <li className="mvp-feature-row">No MVP features available</li>
-          )}
-        </ul>
-      </div>
+      <DemandResults analysis={analysis} painPoints={painPoints} timingTrends={timingTrends} getScoreColor={getScoreColor} />
+      <CompetitorResults analysis={analysis} competitors={competitors} getScoreColor2={getScoreColor2} ensureArray={ensureArray}/>
+      <FounderResults analysis={analysis} getScoreColor={getScoreColor} ensureArray={ensureArray}/>
+      <AudienceResults analysis={analysis} getScoreColor={getScoreColor} ensureArray={ensureArray} handleCopyPitch={handleCopyPitch}/>
+      <RevenueModelResults analysis={analysis} ensureArray={ensureArray}/>
+      <MVPResults analysis={analysis} ensureArray={ensureArray}/> 
       <div className="results-actions">
         <button className="validate-another-btn" onClick={() => navigate('/validate')}>Validate Another Idea</button>
         <button className={`save-idea-btn ${saveSuccess ? 'saved' : ''}`} onClick={handleSaveIdea} disabled={isSaving || saveSuccess}>
