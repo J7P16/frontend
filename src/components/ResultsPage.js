@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FiX, FiCheck, FiDownload, FiTrendingUp, FiTarget, FiUsers, FiCheckCircle, FiDollarSign, FiExternalLink, FiAlertCircle, FiLink, FiMessageSquare, FiCopy, FiClock, FiSave, FiUserCheck, FiChevronsUp, FiChevronsDown } from 'react-icons/fi';
 import jsPDF from 'jspdf';
@@ -24,6 +24,7 @@ const ResultsPage = () => {
   const [saveError, setSaveError] = useState('');
   const [showUpgradeNotification, setShowUpgradeNotification] = useState(false);
   const [showStorageLimitModal, setShowStorageLimitModal] = useState(false);
+  const hasSavedRef = useRef(false);
 
   // Feature access
   const { getIdeaStorageLimit, userPlan } = useFeatureAccess();
@@ -72,6 +73,13 @@ const ResultsPage = () => {
     };
     fetchUser();
   }, []);
+
+  useEffect(() => {
+    if (!hasSavedRef.current && analysis && input) {
+      hasSavedRef.current = true;
+      handleSaveIdea();
+    }
+  }, [analysis, input]);
 
   const handleSaveIdea = async () => {
     console.log('Save idea button clicked');
@@ -462,6 +470,7 @@ const ResultsPage = () => {
           <div className="results-input">"{input}"</div>
         </div>
         <div className="results-header-right">
+          {saveSuccess && !saveError && <div className="save-success-message">Idea saved!</div>}
           {saveError && <div className="save-error-message">{saveError}</div>}
         </div>
       </div>
@@ -473,10 +482,7 @@ const ResultsPage = () => {
       <MVPResults analysis={analysis} ensureArray={ensureArray}/> 
       <div className="results-actions">
         <button className="validate-another-btn" onClick={() => navigate('/validate')}>Validate Another Idea</button>
-        <button className={`save-idea-btn ${saveSuccess ? 'saved' : ''}`} onClick={handleSaveIdea} disabled={isSaving || saveSuccess}>
-            <FiSave style={{ marginRight: 8 }} />
-            {isSaving ? 'Saving...' : saveSuccess ? 'Saved!' : 'Save Idea'}
-        </button>
+        <span className="auto-save-status">{isSaving ? 'Saving idea...' : saveSuccess ? 'Idea saved!' : ''}</span>
         <button className="download-btn" onClick={handleDownloadPDF}><FiDownload style={{marginRight: 8, fontSize: '1.2em'}} />Download PDF Report</button>
       </div>
       
