@@ -79,16 +79,19 @@ const ResultsPage = () => {
     
     try {
 
-      console.log('Fetching user from Supabase...');
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      const freshUser = session?.user;
-      console.log('Fresh user:', freshUser);
-      console.log('Session error:', sessionError);
+      console.log('Fetching cached user...');
+      let freshUser = user;
 
-      if (sessionError) {
-        console.error('User authentication error:', sessionError);
-        setSaveError('Authentication error. Please log in again.');
-        return;
+      if (!freshUser) {
+        console.log('No cached user, attempting to retrieve session...');
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) {
+          console.error('User authentication error:', sessionError);
+          setSaveError('Authentication error. Please log in again.');
+          return;
+        }
+        console.log('Session fetched:', session);
+        freshUser = session?.user;
       }
       
       if (!freshUser) {
