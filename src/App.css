@@ -1805,3 +1805,76 @@ input:checked + .slider:before {
     max-height: 150px;
   }
 }
+
+/*  OUTLINED DROPDOWN / EXPAND BUTTON  */
+
+/* .button-wrapper {
+  display: flex;
+  justify-content: center;
+} */
+
+.dropdown-button {
+  /* shape + structure */
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;                /* if you later add an icon */
+  padding: 6px 18px;       /* 24 px high = compact utility size */
+  border: 1.5px solid #d1d5db;   /* gray-300 — same family as other outlines */
+  border-radius: 6px;      /* matches .primary/.secondary buttons */
+
+  /* typography */
+  font-family: var(--font-primary);
+  font-size: 1rem;      /* slightly smaller than primary buttons */
+  font-weight: 500;
+  color: #111827;
+
+  /* interaction */
+  background: #ffffff;
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.1s ease;
+  
+  /* spacing */
+  margin-top:0.5%;
+  margin-bottom:1%;
+}
+
+.dropdown-button:hover {
+  background: #f6faff;     /* very light indigo-tinted canvas (consistent) */
+  border-color: #b7aaff;   /* indigo accent seen on other hover outlines */
+  box-shadow: 0 2px 6px rgba(30, 34, 90, 0.08);
+}
+
+.dropdown-button:active {
+  transform: scale(0.97);
+}
+
+.dropdown-button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.35); /* accessible focus ring */
+}
+
+/* Disabled state (optional) */
+.dropdown-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  background: #ffffff;
+  border-color: #e5e7eb;
+  box-shadow: none;
+  transform: none;
+}
+
+.expandable-wrapper {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease, opacity 0.5s ease;
+}
+
+.expandable-wrapper.show {
+  opacity: 1;
+  max-height: 2000px; /* large enough to hold content */
+}
