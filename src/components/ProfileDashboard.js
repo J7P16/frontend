@@ -4,7 +4,8 @@ import { supabase } from '../supabaseClient';
 import { useFeatureAccess } from '../hooks/useFeatureAccess';
 import './ProfileDashboard.css';
 import { getIdeaStorageLimit } from '../utils/featureAccess';
-import { FiChevronDown, FiChevronUp, FiTrash2, FiBriefcase, FiDollarSign, FiTrendingUp, FiTarget, FiUsers, FiMessageSquare, FiExternalLink } from 'react-icons/fi';
+import { FiChevronDown, FiChevronUp, FiTrash2, FiBriefcase, FiDollarSign, FiTrendingUp, FiTarget, FiUsers, FiMessageSquare, FiExternalLink, FiSearch } from 'react-icons/fi';
+import { useMemo, useCallback, useRef } from 'react';
 
 const industryOptions = [
   'Technology', 'Healthcare', 'Finance', 'Education', 'Retail', 'Entertainment', 'Other'
@@ -54,7 +55,15 @@ export default function ProfileDashboard() {
   const [ideasLoading, setIdeasLoading] = useState(true);
   const [expandedIdea, setExpandedIdea] = useState(null);
   const [expandedSections, setExpandedSections] = useState({});
+  // Search / sort / infinite scroll
+const [searchTerm, setSearchTerm] = useState('');
+const [sortKey, setSortKey] = useState('createdAt_desc');
+const [page, setPage] = useState(0);
+const PAGE_SIZE = 20;
+const observerRef = useRef(null);
 
+// Derived, memoised
+  
   // Feature access for idea storage limits
   const { getIdeaStorageLimit, userPlan } = useFeatureAccess();
 
@@ -131,6 +140,39 @@ export default function ProfileDashboard() {
   // Idea storage limits
   const ideaStorageLimit = getIdeaStorageLimit(userPlan);
   const currentIdeasCount = ideas.length;
+  const filteredSortedIdeas = useMemo(() => {
+  let res = [...ideas];
+  // 1. Search
+  if (searchTerm.trim()) {
+    const q = searchTerm.toLowerCase();
+    res = res.filter(i =>
+      i.title?.toLowerCase().includes(q) ||
+      i.question?.toLowerCase().includes(q) ||
+      JSON.stringify(i.analysis).toLowerCase().includes(q)
+    );
+  }
+  // 2. Sort
+  const [key, dir] = sortKey.split('_');
+  res.sort((a, b) => {
+    if (key === 'createdAt') {
+      return dir === 'asc'
+        ? new Date(a.created_at) - new Date(b.created_at)
+        : new Date(b.created_at) - new Date(a.created_at);
+    }
+    if (key === 'title') {
+      return dir === 'asc'
+        ? a.title.localeCompare(b.title)
+        : b.title.localeCompare(a.title);
+    }
+    return 0;
+  });
+  return res;
+}, [ideas, searchTerm, sortKey]);
+
+const visibleIdeas = useMemo(
+  () => filteredSortedIdeas.slice(0, (page + 1) * PAGE_SIZE),
+  [filteredSortedIdeas, page]
+);
   const canSaveMoreIdeas = currentIdeasCount < ideaStorageLimit;
 
   // Plan display mapping
@@ -146,6 +188,19 @@ export default function ProfileDashboard() {
 
   };
   const currentPlan = planDisplay[plan] || planDisplay.free;
+
+  const lastIdeaRef = useCallback(
+  node => {
+    if (observerRef.current) observerRef.current.disconnect();
+    observerRef.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && visibleIdeas.length < filteredSortedIdeas.length) {
+        setPage(prev => prev + 1);
+      }
+    });
+    if (node) observerRef.current.observe(node);
+  },
+  [visibleIdeas.length, filteredSortedIdeas.length]
+);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -530,19 +585,51 @@ export default function ProfileDashboard() {
         </div>
 
         <div className="startup-ideas-section">
-          <h2 className="startup-ideas-title">Your Startup Ideas&nbsp;&nbsp;&nbsp;({currentIdeasCount} / {ideaStorageLimit})</h2>
-          {!canSaveMoreIdeas && (
-                <div className="storage-limit-notice">
-                  <p>You've reached your idea storage limit ({ideaStorageLimit} ideas).</p>
-                  <button 
-                    className="upgrade-storage-btn"
-                    onClick={() => navigate('/pricing')}
-                  >
-                    Upgrade Plan to Save More Ideas
-                  </button>
-                </div>
-              )}
-          <br></br>
+          <div className="ideas-controls">
+  <h2 className="startup-ideas-title">
+    Your Startup Ideas&nbsp;({visibleIdeas.length} / {ideaStorageLimit})
+  </h2>
+      {!canSaveMoreIdeas && (
+        <div className="storage-limit-notice">
+          <p>You've reached your idea storage limit ({ideaStorageLimit} ideas).</p>
+          <button 
+            className="upgrade-storage-btn"
+            onClick={() => navigate('/pricing')}
+          >
+            Upgrade Plan to Save More Ideas
+          </button>
+        </div>
+      )}
+
+      <div className="ideas-filter-bar">
+        <div className="search-box">
+          <FiSearch className="search-icon" />
+          <input
+            type="text"
+            placeholder="Search ideas…"
+            value={searchTerm}
+            onChange={e => {
+              setSearchTerm(e.target.value);
+              setPage(0);
+            }}
+          />
+        </div>
+
+        <select
+          value={sortKey}
+          onChange={e => {
+            setSortKey(e.target.value);
+            setPage(0);
+          }}
+          className="sort-select"
+        >
+          <option value="createdAt_desc">Newest first</option>
+          <option value="createdAt_asc">Oldest first</option>
+          <option value="title_asc">Title A-Z</option>
+          <option value="title_desc">Title Z-A</option>
+        </select>
+      </div>
+    </div>
           {ideasLoading ? (
             <p>Loading ideas...</p>
           ) : ideas.length === 0 ? (
@@ -552,7 +639,7 @@ export default function ProfileDashboard() {
             </div>
           ) : (
             <div className="ideas-list">
-              {ideas.map((idea) => (
+              {visibleIdeas.map((idea, idx) => (
                 <div key={idea.id} className="idea-card">
                   <div className="idea-card-header" onClick={() => toggleIdea(idea.id)}>
                     <div className="idea-card-title-group">
