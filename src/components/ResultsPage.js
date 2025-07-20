@@ -5,6 +5,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { supabase } from '../supabaseClient';
 import { useFeatureAccess } from '../hooks/useFeatureAccess';
+import { getIdeaStorageLimit } from '../utils/featureAccess';
 import './ValidatePage.css';
 import DemandResults from '../reusable/DemandResults.js';
 import CompetitorResults from '../reusable/CompetitorResults.js'
@@ -19,66 +20,45 @@ const ResultsPage = () => {
   const navigate = useNavigate();
   const { analysis, input } = location.state || {};
   const [user, setUser] = useState(null);
+  const [fetching, setFetching] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState('');
   const [showUpgradeNotification, setShowUpgradeNotification] = useState(false);
   const [showStorageLimitModal, setShowStorageLimitModal] = useState(false);
+  const [userPlan, setUserPlan] = useState('free');
+  const [ideaStorageLimit, setIdeaStorageLimit] = useState(0);
 
-  // Feature access
-  const { getIdeaStorageLimit, userPlan } = useFeatureAccess();
-  
-  // Debug logging for userPlan
-  useEffect(() => {
-    console.log('userPlan from useFeatureAccess:', userPlan);
-  }, [userPlan]);
+    // const { getIdeaStorageLimit, userPlan } = useFeatureAccess();
 
+  // Feature access  // // Debug logging for userPlan
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        console.log('Fetching user in useEffect...');
-        const { data: { user }, error } = await supabase.auth.getUser();
-        console.log('User fetch result:', { user, error });
-        
-        if (error) {
-          console.error('Error fetching user:', error);
-          setSaveError('Authentication error. Please log in again.');
-        } else {
-          setUser(user);
-          console.log('User fetched successfully:', user);
-          
-          // Test Supabase connection by trying to fetch table info
-          if (user) {
-            console.log('Testing database connection...');
-            const { data: testData, error: testError } = await supabase
-              .from('startup_ideas')
-              .select('count')
-              .limit(1);
-            
-            if (testError) {
-              console.error('Error testing startup_ideas table:', testError);
-              setSaveError('Database connection issue. Please try again later.');
-            } else {
-              console.log('Database connection successful');
-            }
-          } else {
-            console.log('No user found in useEffect');
-          }
-        }
-      } catch (err) {
-        console.error('Error in fetchUser:', err);
-        setSaveError('Failed to authenticate user.');
-      }
-    };
-    fetchUser();
+     supabase.auth.getUser().then(({ data }) => {
+       console.log('data.user from supabase.auth.getUser():', data?.user);
+       setUser(data?.user || null);
+       setFetching(false);
+     });
+
+     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+       console.log(session?.user);
+     });
+     return () => { listener?.subscription.unsubscribe(); };
+
   }, []);
+
   useEffect(() => {
   setSaveSuccess(false);
   setSaveError('');
-}, [analysis]);
+  }, [analysis]);
+
+
 
 const handleSaveIdea = async () => {
   console.log('Save idea button clicked');
+  console.log('Save idea button clicked');
+  console.log(user);
+
+
 
   // We already have the user from the useEffect
   if (!user) {
@@ -90,27 +70,29 @@ const handleSaveIdea = async () => {
     setSaveError('No analysis to save. Please validate an idea first.');
     return;
   }
-
-  try {
-    const plan = userPlan || 'free';
-    const limit = getIdeaStorageLimit(plan);
-
-    const { count, error: countError } = await supabase
+      
+  const { count, error: countError } = await supabase
       .from('startup_ideas')
       .select('*', { count: 'exact', head: true })
       .eq('user_id', user.id);
 
-    if (countError) throw countError;
 
-    if ((count ?? 0) >= limit) {
+  setUserPlan(user?.plan || 'free');
+
+  const limit = getIdeaStorageLimit(userPlan);
+
+  if ((count ?? 0) >= limit) {
       setShowStorageLimitModal(true);
       return;
     }
+
+  try {
 
     setIsSaving(true);
     setSaveError('');
     setSaveSuccess(false);
 
+    console.log('test');
     const { error: insertError } = await supabase
       .from('startup_ideas')
       .insert({
@@ -411,6 +393,8 @@ const handleSaveIdea = async () => {
     return [];
   };
 
+
+
   if (analysis.personalizedstatus) {
       return (
     <div className="results-container">
@@ -448,7 +432,6 @@ const handleSaveIdea = async () => {
               <div className="upgrade-notification-icon">📦</div>
               <div className="upgrade-notification-text">
                 <h4>Storage Limit Reached</h4>
-                <p>Uh oh! You've reached your idea storage limit ({getIdeaStorageLimit(userPlan)} ideas)! Upgrade your plan or free up your storage to save more ideas.</p>
               </div>
               <button 
                 className="upgrade-notification-btn"
@@ -504,7 +487,6 @@ const handleSaveIdea = async () => {
               <div className="upgrade-notification-icon">📦</div>
               <div className="upgrade-notification-text">
                 <h4>Storage Limit Reached</h4>
-                <p>Uh oh! You've reached your idea storage limit ({getIdeaStorageLimit(userPlan)} ideas)! Upgrade your plan or free up your storage to save more ideas.</p>
               </div>
               <button 
                 className="upgrade-notification-btn"
