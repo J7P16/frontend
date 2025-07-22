@@ -33,6 +33,7 @@ const ResultsPage = () => {
 
   // Feature access  // // Debug logging for userPlan
   useEffect(() => {
+    console.log('Firing useEffect for userPlan');
      supabase.auth.getUser().then(({ data }) => {
        console.log('data.user from supabase.auth.getUser():', data?.user);
        setUser(data?.user || null);

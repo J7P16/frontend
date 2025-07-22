@@ -12,6 +12,7 @@ const modeList = [
   'Deep Research'
 ];
 
+  
 const ValidatePage = () => {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -196,7 +197,15 @@ const ValidatePage = () => {
       if (parsed?.title && parsed?.marketDemand && parsed?.competitors) {
         stopProgressSimulation();
         setLoading(false);
-        navigate('/results', { state: { analysis: parsed, input: message } });
+
+        navigate('/results', {
+          replace: true,
+          state: { analysis: parsed, input: message }
+        });
+
+  // Immediately hard-reload the browser on that new URL
+  // (this only happens once, right here)
+   window.location.reload();
       } else {
         stopProgressSimulation();
         setLoading(false);
