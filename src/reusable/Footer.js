@@ -16,7 +16,7 @@ const Footer = () => {
                     </div>
                     <p className="footer-desc">Validate your startup idea in seconds with AI-powered insights, competitor analysis, and MVP recommendations.</p>
                     <div className="footer-socials">
-                      <a href="https://www.instagram.com/validlyai/" className="footer-social"><FiInstagram /></a>
+                      <a href="https://www.instagram.com/getvalidly/" className="footer-social"><FiInstagram /></a>
                       <a href="https://www.youtube.com/channel/UCK3n67eeJ7oSLBL47lhUHaA" className="footer-social"><FiYoutube /></a>
                       <a href="https://www.linkedin.com/company/validlyai/" className="footer-social"><FiLinkedin /></a>
                     </div>
