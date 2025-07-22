@@ -17,34 +17,7 @@ const toggleShowMore = async (idx, compName) => {
 if (!alreadyVisible && !patentDataMap[idx]) {
   try {
     setLoadingMap(prev => ({ ...prev, [idx]: true }));
-    const response = await axios.get(
-      "https://search.patentsview.org/api/v1/patent/",
-      {
-        headers: {
-          "X-Api-Key": PATENTS_API_KEY
-        },
-        params: {
-          // use a full-text phrase match on the organization name
-          q: JSON.stringify({
-            "_text_phrase": {
-              "assignees.assignee_organization": compName
-            }
-          }),
-          // fields to return
-          f: JSON.stringify([
-            "patent_id",
-            "patent_title",
-            "patent_abstract",
-            "patent_type"
-          ]),
-          // pagination: first 20 results
-          o: JSON.stringify({
-            page: 1,
-            per_page: 20
-          })
-        }
-      }
-    );
+    const response = await axios.post('http://localhost:5000/patents', { companyName: compName });
     setPatentDataMap(prev => ({ ...prev, [idx]: response.data.patents }));
   } catch (error) {
     console.error("Error fetching patent data:", error);
