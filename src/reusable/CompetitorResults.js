@@ -5,7 +5,7 @@ import '../components/CompetitorResults.css';
 import axios from 'axios';
 
 const CompetitorResults = (props) => {
-  const { analysis, competitors, getScoreColor2, ensureArray } = props;
+  const { analysis, competitors, getScoreColor2, ensureArray} = props;
 
   const [showMoreMap, setShowMoreMap] = useState({});
   const [patentDataMap, setPatentDataMap] = useState({});
@@ -115,10 +115,10 @@ const CompetitorResults = (props) => {
                     ) : (
                       <>
                       <div className = "IP-results">
-                        <p>IP Strength Rating: {patentData.patent_ip_strength_rating}</p>
-                        <p>Patents Found: {patentIds.length}</p>
+                        <p><b>IP Strength Rating: {patentData.patent_ip_strength_rating}</b></p>
                         <p>{patentData.overall_patent_summary}</p>
-                        <p>Patent IDs:</p>
+                        <div className = "subsection-divider"></div>
+                        <p><b>Number of Patents: {patentIds.length}</b></p>
                         <ul className="patent-list">
                           {patentIds.map((id, i) => (
                             <li key={i}>{id}</li>

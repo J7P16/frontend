@@ -63,10 +63,3 @@
   margin-top: -2px;                 /* subtle optical alignment             */
 }
 
-/* emphasise the numeric rating without adding new markup */
-.IP-results p:first-child {
-  font-weight: 600;
-  color: #1e293b;
-  margin-bottom: 6px;
-}
-
