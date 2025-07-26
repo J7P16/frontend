@@ -62,6 +62,10 @@ const [page, setPage] = useState(0);
 const PAGE_SIZE = 20;
 const observerRef = useRef(null);
 
+// Idea comparison state
+const [isCompareMode, setIsCompareMode] = useState(false);
+const [selectedIdeas, setSelectedIdeas] = useState([]);
+
 // Derived, memoised
   
   // Feature access for idea storage limits
@@ -324,6 +328,37 @@ const visibleIdeas = useMemo(
       ...prev,
       [sectionName]: !prev[sectionName]
     }));
+  };
+
+  // Idea comparison functions
+  const handleIdeaSelection = (ideaId) => {
+    if (!isCompareMode) return;
+    
+    setSelectedIdeas(prev => {
+      if (prev.includes(ideaId)) {
+        return prev.filter(id => id !== ideaId);
+      } else if (prev.length < 2) {
+        return [...prev, ideaId];
+      }
+      return prev;
+    });
+  };
+
+  const handleCompareSubmit = () => {
+    if (selectedIdeas.length === 2) {
+      // Navigate to comparison page with selected ideas
+      navigate('/compare', { 
+        state: { 
+          ideaIds: selectedIdeas,
+          ideas: ideas.filter(idea => selectedIdeas.includes(idea.id))
+        }
+      });
+    }
+  };
+
+  const handleCancelCompare = () => {
+    setIsCompareMode(false);
+    setSelectedIdeas([]);
   };
 
   // This function is used for the manage plan button so that it either directs the user to the billing page (if they currently have a subscription) or the pricing page
@@ -626,6 +661,41 @@ const visibleIdeas = useMemo(
           <option value="title_asc">Title A-Z</option>
           <option value="title_desc">Title Z-A</option>
         </select>
+        <button
+    className="compare-ideas-btn"
+    onClick={() => setIsCompareMode(true)}
+  >
+    Compare Ideas
+  </button>
+        {isCompareMode && (
+          <div className="compare-controls">
+            <div className="compare-status">
+              {selectedIdeas.length === 0 && (
+                <span className="compare-instruction">Select 2 ideas to compare</span>
+              )}
+              {selectedIdeas.length === 1 && (
+                <span className="compare-instruction">Select 1 more idea</span>
+              )}
+              {selectedIdeas.length === 2 && (
+                <span className="compare-ready">Ready to compare!</span>
+              )}
+            </div>
+            {selectedIdeas.length === 2 && (
+              <button
+                className="compare-submit-btn"
+                onClick={handleCompareSubmit}
+              >
+                Submit Comparison
+              </button>
+            )}
+            <button
+              className="compare-cancel-btn"
+              onClick={handleCancelCompare}
+            >
+              Cancel
+            </button>
+          </div>
+        )}
       </div>
     </div>
           {ideasLoading ? (
@@ -641,8 +711,21 @@ const visibleIdeas = useMemo(
                 <div key={idea.id} className="idea-card">
                   <div className="idea-card-header" onClick={() => toggleIdea(idea.id)}>
                     <div className="idea-card-title-group">
-                      <h3>{idea.title}</h3>
-                      <span>{new Date(idea.created_at).toLocaleString()}</span>
+                      {isCompareMode && (
+                        <input
+                          type="checkbox"
+                          checked={selectedIdeas.includes(idea.id)}
+                          onChange={(e) => {
+                            e.stopPropagation();
+                            handleIdeaSelection(idea.id);
+                          }}
+                          className="idea-select-checkbox"
+                        />
+                      )}
+                      <div className="idea-card-title-content">
+                        <h3>{idea.title}</h3>
+                        <span>{new Date(idea.created_at).toLocaleString()}</span>
+                      </div>
                     </div>
                     <div className="idea-card-actions">
                       <button className="idea-delete-btn" onClick={(e) => { e.stopPropagation(); handleDeleteIdea(idea.id); }}>

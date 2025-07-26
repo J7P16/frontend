@@ -9,6 +9,7 @@ import SignUpPage from './components/SignUpPage';
 import SignInPage from './components/SignInPage';
 import PricingPage from './components/PricingPage';
 import ProfileDashboard from './components/ProfileDashboard';
+import ComparePage from './components/ComparePage';
 import ForgotPasswordPage from './components/ForgotPasswordPage';
 import ResetPasswordPage from './components/ResetPasswordPage';
 import UnderConstructionPage from './components/UnderConstruction';
@@ -42,6 +43,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/features" element={<FeaturesPage />} />
+        <Route path="/compare" element={<ComparePage />} />
         <Route path="/under-construction" element={<UnderConstructionPage/>} />
         <Route path="*" element={<NotFoundPage/>} />
       </Routes>
