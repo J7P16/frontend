@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import './ForgotPasswordPage.css';
 
 export default function ForgotPasswordPage() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -25,7 +27,7 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="forgot-password-wrapper">
-      <button className="forgot-back-link" onClick={() => window.location.href = '/'}>← Back to Home</button>
+      <button className="forgot-back-link" onClick={() => navigate('/')}>← Back to Home</button>
       <div className="auth-container">
         <form className="auth-card" onSubmit={handleReset}>
           <h2>Forgot Password</h2>

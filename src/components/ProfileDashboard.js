@@ -293,7 +293,7 @@ const visibleIdeas = useMemo(
 
       // 3. Sign out and redirect
       await supabase.auth.signOut();
-      window.location.href = '/';
+      navigate('/');
     } catch (err) {
       setDeleteError(err.message || 'Failed to delete account.');
     } finally {

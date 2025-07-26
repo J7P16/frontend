@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './PricingPage.css';
 import { supabase } from '../supabaseClient';
 import { FiUser, FiZap, FiCalendar, FiStar, FiCircle } from 'react-icons/fi';
@@ -19,6 +20,7 @@ const infoPoints = [
 ];
 
 export default function PricingPage() {
+  const navigate = useNavigate();
   const [billing, setBilling] = useState('monthly');
   const [userEmail, setUserEmail] = useState('');
   const [userId, setUserId] = useState('');
@@ -90,7 +92,7 @@ export default function PricingPage() {
   const handlePlanClick = (plan) => {
     if (plan.name === 'Free') {
       // Handle free plan - could redirect to sign up or dashboard
-      window.location.href = '/validate';
+      navigate('/validate');
       return;
     }
     
@@ -103,7 +105,7 @@ export default function PricingPage() {
   return (
     <div className="pricing-bg">
       <div className="pricing-container">
-        <a href="/" className="pricing-back">&larr; Back to Home</a>
+        <button onClick={() => navigate('/')} className="pricing-back">&larr; Back to Home</button>
         <h1 className="pricing-title">
           Choose Your <span className="pricing-gradient">Validation Journey</span>
         </h1>

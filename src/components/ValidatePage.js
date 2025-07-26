@@ -229,7 +229,7 @@ const ValidatePage = () => {
 
   return (
     <div className="validate-container">
-      <a className="back-link" href="/">← Back to Home</a>
+      <button className="back-link" onClick={() => navigate('/')}>← Back to Home</button>
       <div className="validate-card">
         <div className="validate-header">
           <div className="validate-icon">
