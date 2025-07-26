@@ -147,9 +147,7 @@ const observerRef = useRef(null);
     const q = searchTerm.toLowerCase();
     res = res.filter(i =>
       i.title?.toLowerCase().includes(q) ||
-      i.question?.toLowerCase().includes(q) ||
-      JSON.stringify(i.analysis).toLowerCase().includes(q)
-    );
+      i.question?.toLowerCase().includes(q)    );
   }
   // 2. Sort
   const [key, dir] = sortKey.split('_');
