@@ -410,7 +410,7 @@ const handleSaveIdea = async () => {
         </div>
       </div>
       <DemandResults analysis={analysis} painPoints={painPoints} timingTrends={timingTrends} getScoreColor={getScoreColor} />
-      <CompetitorResults analysis={analysis} competitors={competitors} getScoreColor2={getScoreColor2} ensureArray={ensureArray}/>
+      <CompetitorResults analysis={analysis} competitors={competitors} getScoreColor = {getScoreColor} getScoreColor2={getScoreColor2} ensureArray={ensureArray}/>
       <FounderResults analysis={analysis} getScoreColor={getScoreColor} ensureArray={ensureArray}/>
       <AudienceResults analysis={analysis} getScoreColor={getScoreColor} ensureArray={ensureArray} handleCopyPitch={handleCopyPitch}/>
       <RevenueModelResults analysis={analysis} ensureArray={ensureArray}/>

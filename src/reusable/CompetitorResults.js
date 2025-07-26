@@ -1,36 +1,37 @@
 import React, { useState } from 'react';
 import { FiTarget, FiCheckCircle, FiAlertCircle, FiChevronsUp, FiChevronsDown } from 'react-icons/fi';
 import '../components/ValidatePage.css';
+import '../components/CompetitorResults.css';
 import axios from 'axios';
-const PATENTS_API_KEY = "wvT5Gztw.mIIzBuLO0WLGzXoorkg6nwXmPiHuQJoo";
 
 const CompetitorResults = (props) => {
   const { analysis, competitors, getScoreColor2, ensureArray } = props;
-  const [showMoreMap, setShowMoreMap] = useState({});
-  const [patentDataMap, setPatentDataMap] = useState({}); // New state for fetched data
-  const [loadingMap, setLoadingMap] = useState({}); // Optional: loading indicator
 
-const toggleShowMore = async (idx, compName) => {
+  const [showMoreMap, setShowMoreMap] = useState({});
+  const [patentDataMap, setPatentDataMap] = useState({});
+  const [loadingMap, setLoadingMap] = useState({});
+  const [hasFetchedMap, setHasFetchedMap] = useState({});
+
+  const toggleShowMore = async (idx, compName) => {
     const alreadyVisible = showMoreMap[idx];
 
-    // If not already fetched and expanding, fetch data
-if (!alreadyVisible && !patentDataMap[idx]) {
-  try {
-    setLoadingMap(prev => ({ ...prev, [idx]: true }));
-    const response = await axios.post('http://localhost:5000/patents', { companyName: compName });
-    setPatentDataMap(prev => ({ ...prev, [idx]: response.data.patents }));
-  } catch (error) {
-    console.error("Error fetching patent data:", error);
-    setPatentDataMap(prev => ({
-      ...prev,
-      [idx]: { error: "Unable to load patent data." }
-    }));
-  } finally {
-    setLoadingMap(prev => ({ ...prev, [idx]: false }));
-  }
-}
+    if (!alreadyVisible && !hasFetchedMap[idx]) {
+      try {
+        setLoadingMap(prev => ({ ...prev, [idx]: true }));
+        const response = await axios.post('http://localhost:5000/patents', { companyName: compName });
+        setPatentDataMap(prev => ({ ...prev, [idx]: response.data }));
+      } catch (error) {
+        console.error("Error fetching patent data:", error);
+        setPatentDataMap(prev => ({
+          ...prev,
+          [idx]: { error: "Unable to load patent data.", patent_ids: [], patent_ip_strength_rating: null, overall_patent_summary: '' }
+        }));
+      } finally {
+        setLoadingMap(prev => ({ ...prev, [idx]: false }));
+        setHasFetchedMap(prev => ({ ...prev, [idx]: true }));
+      }
+    }
 
-    // Toggle show more
     setShowMoreMap(prev => ({ ...prev, [idx]: !alreadyVisible }));
   };
 
@@ -42,69 +43,97 @@ if (!alreadyVisible && !patentDataMap[idx]) {
         <span className={`score-badge ${getScoreColor2(analysis.feasibilityscore)}`}>{analysis.feasibilityscore}/10</span>
       </div>
 
-      {competitors.length > 0 ? (
-        competitors.map((comp, idx) => {
-          const showMore = !!showMoreMap[idx];
-          const loading = loadingMap[idx];
-          const patentData = patentDataMap[idx];
+      {competitors.length > 0 ? competitors.map((comp, idx) => {
+        const showMore = !!showMoreMap[idx];
+        const loading = loadingMap[idx];
+        const patentData = patentDataMap[idx] || {};
+        // **DEFAULT PATENT IDS TO AN EMPTY ARRAY**
+        const patentIds = patentData.patent_ids ?? [];
 
-          return (
-            <div className="competitor-card" key={idx}>
-              <div className="competitor-header">
-                <span className="competitor-name">{comp.name || 'Unknown'}</span>
-                <span className={`popularity-badge ${(comp.popularity || 'Low').toLowerCase()}`}>{comp.popularity || 'Low'} Popularity</span>
-              </div>
-              <div className="competitor-desc">{comp.description || 'No description available'}</div>
-              <div className="competitor-meta">{comp.locations || 'Unknown'} • {comp.pricing || 'Unknown'}</div>
 
-              <div className="button-wrapper">
-                <button className="dropdown-button" onClick={() => toggleShowMore(idx, comp.name)}>
-                  <b>Read {showMore ? 'Less' : 'More'}</b>
-                  {showMore ? <FiChevronsUp className="chevron-icon" /> : <FiChevronsDown className="chevron-icon" />}
-                </button>
-              </div>
+        return (
+          <div className="competitor-card" key={idx}>
+            <div className="competitor-header">
+              <span className="competitor-name">{comp.name || 'Unknown'}</span>
+              <span className={`popularity-badge ${(comp.popularity || 'Low').toLowerCase()}`}>{comp.popularity || 'Low'} Popularity</span>
+            </div>
+            <div className="competitor-desc">{comp.description || 'No description available'}</div>
+            <div className="competitor-meta">{comp.locations || 'Unknown'} • {comp.pricing || 'Unknown'}</div>
 
-              <div className={`expandable-wrapper ${showMore ? 'show' : ''}`}>
-                <div className="competitor-analysis">
-                  <div className="analysis-section">
-                    <h4>Strengths</h4>
-                    <ul className="analysis-list">
-                      {ensureArray(comp.pros).map((pro, proIdx) => (
-                        <li key={proIdx} className="pro-item">
-                          <FiCheckCircle className="pro-icon" />
-                          <span>{pro}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className="analysis-section">
-                    <h4>Weaknesses</h4>
-                    <ul className="analysis-list">
-                      {ensureArray(comp.weaknesses).map((weakness, weakIdx) => (
-                        <li key={weakIdx} className="weakness-item">
-                          <FiAlertCircle className="weakness-icon" />
-                          <span>{weakness}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+            <div className="button-wrapper">
+              <button className="dropdown-button" onClick={() => toggleShowMore(idx, comp.name)}>
+                <b>Read {showMore ? 'Less' : 'More'}</b>
+                {showMore ? <FiChevronsUp className="chevron-icon" /> : <FiChevronsDown className="chevron-icon" />}
+              </button>
+            </div>
+
+            <div className={`expandable-wrapper ${showMore ? 'show' : ''}`}>
+              <div className="competitor-analysis">
+                <div className="analysis-section">
+                  <h4>Strengths</h4>
+                  <ul className="analysis-list">
+                    {ensureArray(comp.pros).map((pro, i) => (
+                      <li key={i} className="pro-item">
+                        <FiCheckCircle className="pro-icon" />
+                        <span>{pro}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-
-                <div className="subsection-divider"></div>
-                <div className="patent-information">
-                  {loading && <p>Loading patent data...</p>}
-                  {!loading && patentData && (
-                    <div>
-                      {/* Render your patent data however you want */}
-                      <pre>{JSON.stringify(patentData, null, 2)}</pre>
-                    </div>
-                  )}
+                <div className="analysis-section">
+                  <h4>Weaknesses</h4>
+                  <ul className="analysis-list">
+                    {ensureArray(comp.weaknesses).map((weak, i) => (
+                      <li key={i} className="weakness-item">
+                        <FiAlertCircle className="weakness-icon" />
+                        <span>{weak}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
+              </div>
+
+              <div className="subsection-divider" />
+
+              <div className="patent-information">
+                {loading && <p>Loading patent data...</p>}
+                {!loading && patentData && (
+                  <div className="patent-header">
+                    <h4>
+                      Intellectual Property Assessment{' '}
+                      <span className="uspto-verified">
+                        <FiCheckCircle className="verified-icon" /> Sourced by{' '}
+                        <a href="https://ppubs.uspto.gov/pubwebapp/static/pages/ppubsbasic.html">
+                          USPTO
+                        </a>{' '}
+                        Data
+                      </span>
+                    </h4>
+
+                    {patentData.patent_ids?.length === 0 ? (
+                      <p>No patents could be found.</p>
+                    ) : (
+                      <>
+                      <div className = "IP-results">
+                        <p>IP Strength Rating: {patentData.patent_ip_strength_rating}</p>
+                        <p>Patents Found: {patentIds.length}</p>
+                        <p>{patentData.overall_patent_summary}</p>
+                        <p>Patent IDs:</p>
+                        <ul className="patent-list">
+                          {patentIds.map((id, i) => (
+                            <li key={i}>{id}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
-          );
-        })
-      ) : (
+          </div>
+        );
+      }) : (
         <p>No competitor information available.</p>
       )}
     </div>
