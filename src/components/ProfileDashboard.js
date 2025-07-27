@@ -359,6 +359,28 @@ const visibleIdeas = useMemo(
     }
   };
 
+  const [compareMode, setCompareMode] = useState(false);
+  const [selectedIdeas, setSelectedIdeas] = useState([]);
+
+  const handleCompareClick = () => {
+    setCompareMode(true);
+    setSelectedIdeas([]);
+  };
+
+  const handleIdeaSelect = (ideaId) => {
+    if (!compareMode) return;
+    if (selectedIdeas.includes(ideaId)) {
+      setSelectedIdeas(selectedIdeas.filter(id => id !== ideaId));
+    } else if (selectedIdeas.length < 2) {
+      setSelectedIdeas([...selectedIdeas, ideaId]);
+    }
+  };
+
+  const handleCompareSave = () => {
+    setCompareMode(false);
+    setSelectedIdeas([]);
+  };
+
   return (
     <div className="profile-bg">
       <div className="profile-container">
@@ -646,8 +668,12 @@ const visibleIdeas = useMemo(
           ) : (
             <div className="ideas-list">
               {visibleIdeas.map((idea, idx) => (
-                <div key={idea.id} className="idea-card">
-                  <div className="idea-card-header" onClick={() => toggleIdea(idea.id)}>
+                <div
+                  key={idea.id}
+                  className={`idea-card${compareMode && selectedIdeas.includes(idea.id) ? ' selected-for-compare' : ''}${compareMode ? ' compare-selectable' : ''}`}
+                  style={compareMode ? { cursor: 'pointer', border: selectedIdeas.includes(idea.id) ? '2.5px solid #2563eb' : '2px dashed #a5b4fc' } : {}}
+                >
+                  <div className="idea-card-header" onClick={() => compareMode ? handleIdeaSelect(idea.id) : toggleIdea(idea.id)}>
                     <div className="idea-card-title-group">
                       <h3>{idea.title}</h3>
                       <span>{new Date(idea.created_at).toLocaleString()}</span>
@@ -656,7 +682,9 @@ const visibleIdeas = useMemo(
                       <button className="idea-delete-btn" onClick={(e) => { e.stopPropagation(); handleDeleteIdea(idea.id); }}>
                         <FiTrash2 />
                       </button>
-                      {expandedIdea === idea.id ? <FiChevronUp /> : <FiChevronDown />}
+                      <div onClick={(e) => { e.stopPropagation(); toggleIdea(idea.id); }}>
+                        {expandedIdea === idea.id ? <FiChevronUp /> : <FiChevronDown />}
+                      </div>
                     </div>
                   </div>
                   {expandedIdea === idea.id && (
@@ -844,7 +872,20 @@ const visibleIdeas = useMemo(
             </div>
           )}
           {/* Compare Ideas button below all ideas */}
-          <button className="ideas-filter-btn" type="button">Compare Ideas</button>
+          {!compareMode && (
+            <button className="ideas-filter-btn" type="button" onClick={handleCompareClick}>Compare Ideas</button>
+          )}
+          {compareMode && (
+            <button
+              className="ideas-filter-btn"
+              type="button"
+              style={{ marginTop: '1.5rem', background: selectedIdeas.length === 2 ? 'linear-gradient(90deg, #2563eb 0%, #7c3aed 100%)' : '#cbd5e1', cursor: selectedIdeas.length === 2 ? 'pointer' : 'not-allowed' }}
+              onClick={selectedIdeas.length === 2 ? handleCompareSave : undefined}
+              disabled={selectedIdeas.length !== 2}
+            >
+              Save
+            </button>
+          )}
         </div>
       </div>
     </div>
