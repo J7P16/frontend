@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { useFeatureAccess } from '../hooks/useFeatureAccess';
 import './ProfileDashboard.css';
+
 import { getIdeaStorageLimit } from '../utils/featureAccess';
 import { FiChevronDown, FiChevronUp, FiTrash2, FiBriefcase, FiDollarSign, FiTrendingUp, FiTarget, FiUsers, FiMessageSquare, FiExternalLink, FiSearch } from 'react-icons/fi';
 import { useMemo, useCallback, useRef } from 'react';
@@ -31,6 +32,7 @@ export default function ProfileDashboard() {
   const [deleteError, setDeleteError] = useState('');
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [userPlan, setUserPlan] = useState('free');
   const [editForm, setEditForm] = useState({
     firstName: '',
     lastName: '',
@@ -65,10 +67,17 @@ const observerRef = useRef(null);
 // Derived, memoised
   
   // Feature access for idea storage limits
-  const { getIdeaStorageLimit, userPlan } = useFeatureAccess();
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUser(data?.user || null));
+     supabase.auth.getUser().then(({ data }) => {
+       console.log('data.user from supabase.auth.getUser():', data?.user);
+       setUser(data?.user || null);
+     });
+
+     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+       console.log(session?.user);
+     });
+     return () => { listener?.subscription.unsubscribe(); };
   }, []);
 
   useEffect(() => {
