@@ -32,7 +32,6 @@ export default function ProfileDashboard() {
   const [deleteError, setDeleteError] = useState('');
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [userPlan, setUserPlan] = useState('free');
   const [editForm, setEditForm] = useState({
     firstName: '',
     lastName: '',
@@ -147,7 +146,7 @@ const observerRef = useRef(null);
   const subscriptionId = profile?.subscription_id || 'No Subscription Yet';
 
   // Idea storage limits
-  const ideaStorageLimit = getIdeaStorageLimit(userPlan);
+  const ideaStorageLimit = getIdeaStorageLimit(plan);
   const currentIdeasCount = ideas.length;
   const filteredSortedIdeas = useMemo(() => {
   let res = [...ideas];
@@ -190,7 +189,7 @@ const visibleIdeas = useMemo(
     },
     pro: {
       label: 'Pro',
-      desc: 'Unlock advanced features, more searches, and personalized analysis.'
+      desc: 'Enjoy access to exclusive features and higher usage limits.'
     },
 
   };

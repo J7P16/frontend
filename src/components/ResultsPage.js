@@ -26,8 +26,9 @@ const ResultsPage = () => {
   const [saveError, setSaveError] = useState('');
   const [showUpgradeNotification, setShowUpgradeNotification] = useState(false);
   const [showStorageLimitModal, setShowStorageLimitModal] = useState(false);
-  const [userPlan, setUserPlan] = useState('free');
   const [ideaStorageLimit, setIdeaStorageLimit] = useState(0);
+  const [profile, setProfile] = useState(null);
+  
 
     // const { getIdeaStorageLimit, userPlan } = useFeatureAccess();
 
@@ -47,6 +48,20 @@ const ResultsPage = () => {
 
   }, []);
 
+    useEffect(() => {
+      const fetchProfile = async () => {
+        if (user?.id) {
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+          setProfile(profileData);
+        }
+      };
+      fetchProfile();
+    }, [user]);
+
   useEffect(() => {
   setSaveSuccess(false);
   setSaveError('');
@@ -56,9 +71,6 @@ const ResultsPage = () => {
 
 const handleSaveIdea = async () => {
   console.log('Save idea button clicked');
-  console.log('Save idea button clicked');
-  console.log(user);
-
 
 
   // We already have the user from the useEffect
@@ -78,9 +90,8 @@ const handleSaveIdea = async () => {
       .eq('user_id', user.id);
 
 
-  setUserPlan(user?.plan || 'free');
 
-  const limit = getIdeaStorageLimit(userPlan);
+  const limit = getIdeaStorageLimit(profile.plan);
 
   if ((count ?? 0) >= limit) {
       setShowStorageLimitModal(true);
