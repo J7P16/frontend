@@ -592,50 +592,50 @@ const visibleIdeas = useMemo(
 
         <div className="startup-ideas-section">
           <div className="ideas-controls">
-  <h2 className="startup-ideas-title">
-    Your Startup Ideas&nbsp;({visibleIdeas.length} / {ideaStorageLimit})
-  </h2>
-      {!canSaveMoreIdeas && (
-        <div className="storage-limit-notice">
-          <p>You've reached your idea storage limit ({ideaStorageLimit} ideas).</p>
-          <button 
-            className="upgrade-storage-btn"
-            onClick={() => navigate('/pricing')}
-          >
-            Upgrade Plan to Save More Ideas
-          </button>
-        </div>
-      )}
+            <h2 className="startup-ideas-title">
+              Your Startup Ideas&nbsp;({visibleIdeas.length} / {ideaStorageLimit})
+            </h2>
+            {!canSaveMoreIdeas && (
+              <div className="storage-limit-notice">
+                <p>You've reached your idea storage limit ({ideaStorageLimit} ideas).</p>
+                <button 
+                  className="upgrade-storage-btn"
+                  onClick={() => navigate('/pricing')}
+                >
+                  Upgrade Plan to Save More Ideas
+                </button>
+              </div>
+            )}
 
-      <div className="ideas-filter-bar">
-        <div className="search-box">
-          <FiSearch className="search-icon" />
-          <input
-            type="text"
-            placeholder="Search ideas…"
-            value={searchTerm}
-            onChange={e => {
-              setSearchTerm(e.target.value);
-              setPage(0);
-            }}
-          />
-        </div>
+            <div className="ideas-filter-bar">
+              <div className="search-box">
+                <FiSearch className="search-icon" />
+                <input
+                  type="text"
+                  placeholder="Search ideas…"
+                  value={searchTerm}
+                  onChange={e => {
+                    setSearchTerm(e.target.value);
+                    setPage(0);
+                  }}
+                />
+              </div>
 
-        <select
-          value={sortKey}
-          onChange={e => {
-            setSortKey(e.target.value);
-            setPage(0);
-          }}
-          className="sort-select"
-        >
-          <option value="createdAt_desc">Newest first</option>
-          <option value="createdAt_asc">Oldest first</option>
-          <option value="title_asc">Title A-Z</option>
-          <option value="title_desc">Title Z-A</option>
-        </select>
-      </div>
-    </div>
+              <select
+                value={sortKey}
+                onChange={e => {
+                  setSortKey(e.target.value);
+                  setPage(0);
+                }}
+                className="sort-select"
+              >
+                <option value="createdAt_desc">Newest first</option>
+                <option value="createdAt_asc">Oldest first</option>
+                <option value="title_asc">Title A-Z</option>
+                <option value="title_desc">Title Z-A</option>
+              </select>
+            </div>
+          </div>
           {ideasLoading ? (
             <p>Loading ideas...</p>
           ) : ideas.length === 0 ? (
@@ -843,6 +843,8 @@ const visibleIdeas = useMemo(
               ))}
             </div>
           )}
+          {/* Compare Ideas button below all ideas */}
+          <button className="ideas-filter-btn" type="button">Compare Ideas</button>
         </div>
       </div>
     </div>
