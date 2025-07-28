@@ -14,6 +14,7 @@ import ResetPasswordPage from './components/ResetPasswordPage';
 import UnderConstructionPage from './components/UnderConstruction';
 import NotFoundPage from './components/404';
 import FeaturesPage from './components/Features';
+import IdeaComparisonPage from './components/IdeaComparisonPage';
 import './App.css';
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
         <Route path="/signin" element={<SignInPage />} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/profile" element={<ProfileDashboard />} />
+        <Route path="/compare" element={<IdeaComparisonPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/features" element={<FeaturesPage />} />

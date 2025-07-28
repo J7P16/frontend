@@ -377,8 +377,13 @@ const visibleIdeas = useMemo(
   };
 
   const handleCompareSave = () => {
-    setCompareMode(false);
-    setSelectedIdeas([]);
+    // Get the full idea objects for the selected IDs
+    const selectedIdeaObjects = ideas.filter(idea => selectedIdeas.includes(idea.id));
+    
+    // Navigate to comparison page with the selected ideas
+    navigate('/compare', {
+      state: { selectedIdeas: selectedIdeaObjects }
+    });
   };
 
   return (
