@@ -353,4 +353,50 @@
     align-items: flex-start;
     gap: 0.5rem;
   }
+}
+
+/* Final Score Section Styles */
+.final-score-section {
+  text-align: center;
+  padding: 1rem;
+}
+
+.final-score-section h4 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 1rem;
+}
+
+.score-breakdown {
+  background: #f8fafc;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  border: 2px solid #e2e8f0;
+}
+
+.score-breakdown p {
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.final-score {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 2px solid #e2e8f0;
+}
+
+.final-score-value {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+.final-score-label {
+  display: block;
+  font-size: 0.9rem;
+  color: #64748b;
+  font-weight: 500;
 } 
