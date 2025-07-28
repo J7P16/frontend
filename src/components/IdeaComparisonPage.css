@@ -399,4 +399,27 @@
   font-size: 0.9rem;
   color: #64748b;
   font-weight: 500;
+}
+
+/* Winner highlighting */
+.score-breakdown.winner {
+  border-color: #10b981;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+  position: relative;
+}
+
+.score-breakdown.winner::before {
+  content: "🏆 Winner";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #10b981;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  z-index: 1;
 } 

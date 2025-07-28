@@ -319,7 +319,19 @@ const IdeaComparisonPage = () => {
             <div className="idea-content idea1">
               <div className="final-score-section">
                 <h4>Combined Score</h4>
-                <div className="score-breakdown">
+                <div className={`score-breakdown ${(() => {
+                  const demandScore1 = idea1.analysis?.score || 0;
+                  const competitivenessScore1 = idea1.analysis?.feasibilityscore || 0;
+                  const demandScore2 = idea2.analysis?.score || 0;
+                  const competitivenessScore2 = idea2.analysis?.feasibilityscore || 0;
+                  
+                  if (demandScore1 === 0 && competitivenessScore1 === 0 && demandScore2 === 0 && competitivenessScore2 === 0) return '';
+                  
+                  const combinedScore1 = (demandScore1 + competitivenessScore1) / 20;
+                  const combinedScore2 = (demandScore2 + competitivenessScore2) / 20;
+                  
+                  return combinedScore1 > combinedScore2 ? 'winner' : '';
+                })()}`}>
                   <p><strong>Market Demand:</strong> {idea1.analysis?.score || 'N/A'}/10</p>
                   <p><strong>Market Competitiveness:</strong> {idea1.analysis?.feasibilityscore || 'N/A'}/10</p>
                   <div className="final-score">
@@ -340,7 +352,19 @@ const IdeaComparisonPage = () => {
             <div className="idea-content idea2">
               <div className="final-score-section">
                 <h4>Combined Score</h4>
-                <div className="score-breakdown">
+                <div className={`score-breakdown ${(() => {
+                  const demandScore1 = idea1.analysis?.score || 0;
+                  const competitivenessScore1 = idea1.analysis?.feasibilityscore || 0;
+                  const demandScore2 = idea2.analysis?.score || 0;
+                  const competitivenessScore2 = idea2.analysis?.feasibilityscore || 0;
+                  
+                  if (demandScore1 === 0 && competitivenessScore1 === 0 && demandScore2 === 0 && competitivenessScore2 === 0) return '';
+                  
+                  const combinedScore1 = (demandScore1 + competitivenessScore1) / 20;
+                  const combinedScore2 = (demandScore2 + competitivenessScore2) / 20;
+                  
+                  return combinedScore2 > combinedScore1 ? 'winner' : '';
+                })()}`}>
                   <p><strong>Market Demand:</strong> {idea2.analysis?.score || 'N/A'}/10</p>
                   <p><strong>Market Competitiveness:</strong> {idea2.analysis?.feasibilityscore || 'N/A'}/10</p>
                   <div className="final-score">
