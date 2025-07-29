@@ -311,6 +311,55 @@ const IdeaComparisonPage = () => {
             </div>
           </div>
         </div>
+
+        {/* Final Comparison Score */}
+        <div className="comparison-section">
+          <h3>Final Comparison Score</h3>
+          <div className="comparison-content">
+            <div className="idea-content idea1">
+              <div className="final-score-section">
+                <h4>Combined Score</h4>
+                <div className="score-breakdown">
+                  <p><strong>Market Demand:</strong> {idea1.analysis?.score || 'N/A'}/10</p>
+                  <p><strong>Market Competitiveness:</strong> {idea1.analysis?.feasibilityscore || 'N/A'}/10</p>
+                  <div className="final-score">
+                    <span className="final-score-value">
+                      {(() => {
+                        const demandScore = idea1.analysis?.score || 0;
+                        const competitivenessScore = idea1.analysis?.feasibilityscore || 0;
+                        if (demandScore === 0 && competitivenessScore === 0) return 'N/A';
+                        const combinedScore = ((demandScore + competitivenessScore) / 20).toFixed(3);
+                        return combinedScore;
+                      })()}
+                    </span>
+                    <span className="final-score-label">Combined Score (0-1)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="idea-content idea2">
+              <div className="final-score-section">
+                <h4>Combined Score</h4>
+                <div className="score-breakdown">
+                  <p><strong>Market Demand:</strong> {idea2.analysis?.score || 'N/A'}/10</p>
+                  <p><strong>Market Competitiveness:</strong> {idea2.analysis?.feasibilityscore || 'N/A'}/10</p>
+                  <div className="final-score">
+                    <span className="final-score-value">
+                      {(() => {
+                        const demandScore = idea2.analysis?.score || 0;
+                        const competitivenessScore = idea2.analysis?.feasibilityscore || 0;
+                        if (demandScore === 0 && competitivenessScore === 0) return 'N/A';
+                        const combinedScore = ((demandScore + competitivenessScore) / 20).toFixed(3);
+                        return combinedScore;
+                      })()}
+                    </span>
+                    <span className="final-score-label">Combined Score (0-1)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
