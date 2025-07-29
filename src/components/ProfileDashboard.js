@@ -661,8 +661,45 @@ const visibleIdeas = useMemo(
                 <option value="title_asc">Title A-Z</option>
                 <option value="title_desc">Title Z-A</option>
               </select>
+
+              {!compareMode && (
+                <button className="ideas-filter-btn" type="button" onClick={handleCompareClick}>Compare Ideas</button>
+              )}
+              {compareMode && (
+                <div className="compare-buttons">
+                  <button
+                    className="ideas-filter-btn"
+                    type="button"
+                    style={{ background: selectedIdeas.length === 2 ? 'linear-gradient(90deg, #2563eb 0%, #7c3aed 100%)' : '#cbd5e1', cursor: selectedIdeas.length === 2 ? 'pointer' : 'not-allowed' }}
+                    onClick={selectedIdeas.length === 2 ? handleCompareSave : undefined}
+                    disabled={selectedIdeas.length !== 2}
+                  >
+                    Compare
+                  </button>
+                  <button
+                    className="ideas-filter-btn cancel-btn"
+                    type="button"
+                    onClick={() => {
+                      setCompareMode(false);
+                      setSelectedIdeas([]);
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              )}
             </div>
           </div>
+          
+          {compareMode && (
+            <div className="compare-instructions">
+              <div className="compare-instructions-content">
+                <span className="compare-instructions-icon">💡</span>
+                <span className="compare-instructions-text">Select two ideas from your list to compare!</span>
+              </div>
+            </div>
+          )}
+          
           {ideasLoading ? (
             <p>Loading ideas...</p>
           ) : ideas.length === 0 ? (
@@ -875,21 +912,6 @@ const visibleIdeas = useMemo(
                 </div>
               ))}
             </div>
-          )}
-          {/* Compare Ideas button below all ideas */}
-          {!compareMode && (
-            <button className="ideas-filter-btn" type="button" onClick={handleCompareClick}>Compare Ideas</button>
-          )}
-          {compareMode && (
-            <button
-              className="ideas-filter-btn"
-              type="button"
-              style={{ marginTop: '1.5rem', background: selectedIdeas.length === 2 ? 'linear-gradient(90deg, #2563eb 0%, #7c3aed 100%)' : '#cbd5e1', cursor: selectedIdeas.length === 2 ? 'pointer' : 'not-allowed' }}
-              onClick={selectedIdeas.length === 2 ? handleCompareSave : undefined}
-              disabled={selectedIdeas.length !== 2}
-            >
-              Save
-            </button>
           )}
         </div>
       </div>
