@@ -207,11 +207,10 @@ useEffect(() => {
 
 const handlePageChange = (newPage) => {
   setCurrentPage(newPage);
-  // Scroll to top of ideas section
-  const ideasSection = document.querySelector('.startup-ideas-section');
-  if (ideasSection) {
-    ideasSection.scrollIntoView({ behavior: 'smooth' });
-  }
+  // Scroll to bottom of page with a small delay to ensure content has updated
+  setTimeout(() => {
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  }, 100);
 };
 
   const handleEdit = () => {
