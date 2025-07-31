@@ -848,3 +848,123 @@
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(107, 114, 128, 0.15);
 }
+
+/* Pagination Styles */
+.pagination-container {
+  margin-top: 32px;
+  padding: 16px 24px;
+  background: #fff;
+  border-radius: 16px;
+  border: 1.5px solid #e5e7eb;
+  box-shadow: 0 4px 24px rgba(30,34,90,0.07);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.pagination-info {
+  color: #6b7280;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.pagination-btn {
+  background: #f3f4f6;
+  border: 1.5px solid #d1d5db;
+  color: #374151;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: #e5e7eb;
+  border-color: #9ca3af;
+  color: #111827;
+}
+
+.pagination-btn:disabled {
+  background: #f9fafb;
+  border-color: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.pagination-pages {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pagination-page-btn {
+  background: #fff;
+  border: 1.5px solid #d1d5db;
+  color: #374151;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 36px;
+  text-align: center;
+}
+
+.pagination-page-btn:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+  color: #111827;
+}
+
+.pagination-page-btn.active {
+  background: linear-gradient(90deg, #2563eb 0%, #7c3aed 100%);
+  border-color: #2563eb;
+  color: #fff;
+  font-weight: 600;
+}
+
+.pagination-page-btn.active:hover {
+  background: linear-gradient(90deg, #1d4ed8 0%, #6d28d9 100%);
+  border-color: #1d4ed8;
+}
+
+.pagination-ellipsis {
+  color: #6b7280;
+  font-weight: 500;
+  padding: 6px 4px;
+  user-select: none;
+}
+
+@media (max-width: 640px) {
+  .pagination-controls {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .pagination-pages {
+    order: 2;
+  }
+  
+  .pagination-btn {
+    order: 1;
+  }
+  
+  .pagination-info {
+    order: 3;
+  }
+}
