@@ -59,8 +59,8 @@ export default function ProfileDashboard() {
   // Search / sort / infinite scroll
 const [searchTerm, setSearchTerm] = useState('');
 const [sortKey, setSortKey] = useState('createdAt_desc');
-const [page, setPage] = useState(0);
-const PAGE_SIZE = 20;
+const [currentPage, setCurrentPage] = useState(1);
+const PAGE_SIZE = 5; // Show 5 ideas per page for better pagination visibility
 const observerRef = useRef(null);
 
 // Derived, memoised
@@ -176,8 +176,8 @@ const observerRef = useRef(null);
 }, [ideas, searchTerm, sortKey]);
 
 const visibleIdeas = useMemo(
-  () => filteredSortedIdeas.slice(0, (page + 1) * PAGE_SIZE),
-  [filteredSortedIdeas, page]
+  () => filteredSortedIdeas.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
+  [filteredSortedIdeas, currentPage]
 );
   const canSaveMoreIdeas = currentIdeasCount < ideaStorageLimit;
 
@@ -195,18 +195,24 @@ const visibleIdeas = useMemo(
   };
   const currentPlan = planDisplay[plan] || planDisplay.free;
 
-  const lastIdeaRef = useCallback(
-  node => {
-    if (observerRef.current) observerRef.current.disconnect();
-    observerRef.current = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && visibleIdeas.length < filteredSortedIdeas.length) {
-        setPage(prev => prev + 1);
-      }
-    });
-    if (node) observerRef.current.observe(node);
-  },
-  [visibleIdeas.length, filteredSortedIdeas.length]
-);
+  // Pagination calculations
+const totalPages = Math.ceil(filteredSortedIdeas.length / PAGE_SIZE);
+const startIndex = (currentPage - 1) * PAGE_SIZE;
+const endIndex = startIndex + PAGE_SIZE;
+
+// Reset to first page when filters change
+useEffect(() => {
+  setCurrentPage(1);
+}, [searchTerm, sortKey]);
+
+const handlePageChange = (newPage) => {
+  setCurrentPage(newPage);
+  // Scroll to top of ideas section
+  const ideasSection = document.querySelector('.startup-ideas-section');
+  if (ideasSection) {
+    ideasSection.scrollIntoView({ behavior: 'smooth' });
+  }
+};
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -643,7 +649,7 @@ const visibleIdeas = useMemo(
                   value={searchTerm}
                   onChange={e => {
                     setSearchTerm(e.target.value);
-                    setPage(0);
+                    setCurrentPage(1);
                   }}
                 />
               </div>
@@ -652,7 +658,7 @@ const visibleIdeas = useMemo(
                 value={sortKey}
                 onChange={e => {
                   setSortKey(e.target.value);
-                  setPage(0);
+                  setCurrentPage(1);
                 }}
                 className="sort-select"
               >
@@ -911,6 +917,59 @@ const visibleIdeas = useMemo(
                   )}
                 </div>
               ))}
+            </div>
+          )}
+          
+          {/* Pagination Component */}
+          {totalPages > 1 && (
+            <div className="pagination-container">
+              <div className="pagination-info">
+                Showing {startIndex + 1}-{Math.min(endIndex, filteredSortedIdeas.length)} of {filteredSortedIdeas.length} ideas
+              </div>
+              <div className="pagination-controls">
+                <button
+                  className="pagination-btn"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                >
+                  ← Previous
+                </button>
+                
+                <div className="pagination-pages">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => {
+                    const shouldShow = 
+                      pageNum === 1 || 
+                      pageNum === totalPages || 
+                      (pageNum >= currentPage - 1 && pageNum <= currentPage + 1);
+                    
+                    if (shouldShow) {
+                      return (
+                        <button
+                          key={pageNum}
+                          className={`pagination-page-btn ${pageNum === currentPage ? 'active' : ''}`}
+                          onClick={() => handlePageChange(pageNum)}
+                        >
+                          {pageNum}
+                        </button>
+                      );
+                    } else if (
+                      pageNum === currentPage - 2 || 
+                      pageNum === currentPage + 2
+                    ) {
+                      return <span key={pageNum} className="pagination-ellipsis">...</span>;
+                    }
+                    return null;
+                  })}
+                </div>
+                
+                <button
+                  className="pagination-btn"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                >
+                  Next →
+                </button>
+              </div>
             </div>
           )}
         </div>
