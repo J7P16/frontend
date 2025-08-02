@@ -157,14 +157,15 @@ const AudienceResults = ({ analysis, handleCopyPitch, getScoreColor, ensureArray
       </div>
 
       <div className="survey-btn-container">
-        <button
-          className="survey-btn"
-          onClick={handleGetSurvey}
-          disabled={loading}
-        >
-          {loading ? 'Processing…' : 'Get a Survey Link'}
-        </button>
-
+        {surveyLink ? null : (
+          <button
+            className="survey-btn"
+            onClick={handleGetSurvey}
+            disabled={loading}
+          >
+            {loading ? 'Processing…' : 'Get a Survey Link'}
+          </button>
+        )}
         {surveyLink && (
           <div className="survey-link">
             <a href={surveyLink} target="_blank" rel="noopener">
