@@ -416,14 +416,16 @@ const handleSaveIdea = async () => {
           <h2>Validation Results</h2>
           <div className="results-input">"{input}"</div>
         </div>
-        <div className="results-header-right">
+
+        {/* !! COME BACK TO LATER !!  */}
+        {/* <div className="results-header-right">
           {saveError && <div className="save-error-message">{saveError}</div>}
-        </div>
+        </div> */}
       </div>
       <DemandResults analysis={analysis} painPoints={painPoints} timingTrends={timingTrends} getScoreColor={getScoreColor} />
       <CompetitorResults analysis={analysis} competitors={competitors} getScoreColor = {getScoreColor} getScoreColor2={getScoreColor2} ensureArray={ensureArray}/>
       <FounderResults analysis={analysis} getScoreColor={getScoreColor} ensureArray={ensureArray}/>
-      <AudienceResults analysis={analysis} getScoreColor={getScoreColor} ensureArray={ensureArray} handleCopyPitch={handleCopyPitch}/>
+      <AudienceResults analysis={analysis} getScoreColor={getScoreColor} ensureArray={ensureArray} handleCopyPitch={handleCopyPitch} input={input}/>
       <RevenueModelResults analysis={analysis} ensureArray={ensureArray}/>
       <MVPResults analysis={analysis} ensureArray={ensureArray}/> 
       <div className="results-actions">
@@ -472,13 +474,14 @@ const handleSaveIdea = async () => {
           <h2>Validation Results</h2>
           <div className="results-input">"{input}"</div>
         </div>
-        <div className="results-header-right">
+        {/* !!! COME BACK TO LATER B/C WE PROBABLY WANT TO HANDLE SAVE ERROR BETTER  */}
+        {/* <div className="results-header-right">
           {saveError && <div className="save-error-message">{saveError}</div>}
-        </div>
+        </div> */}
       </div>
       <DemandResults analysis={analysis} painPoints={painPoints} timingTrends={timingTrends} getScoreColor={getScoreColor} />
       <CompetitorResults analysis={analysis} competitors={competitors} getScoreColor2={getScoreColor2} ensureArray={ensureArray}/>
-      <AudienceResults analysis={analysis} getScoreColor={getScoreColor} ensureArray={ensureArray} handleCopyPitch={handleCopyPitch}/>
+      <AudienceResults analysis={analysis} getScoreColor={getScoreColor} ensureArray={ensureArray} handleCopyPitch={handleCopyPitch} input={input}/>
       <RevenueModelResults analysis={analysis} ensureArray={ensureArray}/>
       <MVPResults analysis={analysis} ensureArray={ensureArray}/> 
       <div className="results-actions">
