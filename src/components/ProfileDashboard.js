@@ -625,7 +625,7 @@ const handlePageChange = (newPage) => {
         <div className="startup-ideas-section">
           <div className="ideas-controls">
             <h2 className="startup-ideas-title">
-              Your Startup Ideas&nbsp;({visibleIdeas.length} / {ideaStorageLimit})
+              Your Startup Ideas&nbsp;({ideas.length} / {ideaStorageLimit})
             </h2>
             {!canSaveMoreIdeas && (
               <div className="storage-limit-notice">
