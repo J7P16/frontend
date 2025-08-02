@@ -359,25 +359,7 @@ button.secondary:hover {
   word-break: break-word;
   box-sizing: border-box;
 }
-.download-btn {
-  background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
-  color: #fff;
-  border: none;
-  border-radius: 999px;
-  padding: 10px 32px;
-  font-size: 1.08rem;
-  font-weight: 600;
-  cursor: pointer;
-  margin-left: 12px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  transition: background 0.18s;
-  box-shadow: none;
-}
-.download-btn:hover:not(:disabled) {
-  background: linear-gradient(90deg, #6366f1 0%, #a78bfa 100%);
-}
+
 .results-section {
   background: #fff;
   border-radius: 14px;
@@ -479,20 +461,7 @@ button.secondary:hover {
   justify-content: center;
   margin-top: 32px;
 }
-.validate-another-btn {
-  background: #fff;
-  color: #22336b;
-  border: 1px solid #b7aaff;
-  border-radius: 8px;
-  padding: 10px 22px;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.validate-another-btn:hover {
-  background: #f6faff;
-}
+
 
 @media (max-width: 700px) {
   .homepage-container, .results-container, .validate-container {
@@ -1739,32 +1708,6 @@ input:checked + .slider:before {
   background-clip: unset;
 }
 
-.save-idea-btn {
-  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
-  color: #fff;
-  border: none;
-  border-radius: 999px;
-  padding: 10px 32px;
-  font-size: 1.08rem;
-  font-weight: 600;
-  cursor: pointer;
-  margin-left: 12px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  transition: background 0.18s;
-  box-shadow: none;
-}
-
-.save-idea-btn:hover:not(:disabled) {
-  background: linear-gradient(90deg, #34d399 0%, #10b981 100%);
-}
-
-.save-idea-btn:disabled {
-  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
-  cursor: default;
-  opacity: 0.8;
-}
 
 .save-idea-btn.saved {
   background: linear-gradient(90deg, #059669 0%, #047857 100%);
@@ -1885,34 +1828,46 @@ input:checked + .slider:before {
   text-align: center;
 }
 
+/* ──  “Get a Survey Link” BUTTON  ──────────────────────────────── */
+
 .survey-btn {
-  background: linear-gradient(90deg, #2563eb 0%, #4f46e5 100%);
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
-  padding: 14px 28px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.15);
+  /* base skeleton (matches other CTAs) */
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  padding: 12px 28px;
+  border-radius: 6px;
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  background: linear-gradient(90deg, #2563eb 0%, #4f46e5 100%);
+  box-shadow: 0 1px 4px rgba(30, 34, 90, 0.06);
+  transition:
+    background 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.1s ease;
 }
 
 .survey-btn:hover:not(:disabled) {
-  background: linear-gradient(90deg, #1d4ed8 0%, #4338ca 100%);
+  background: linear-gradient(90deg, #3b82f6 0%, #6366f1 100%);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  box-shadow: 0 3px 8px rgba(30, 34, 90, 0.10);
+}
+
+.survey-btn:active {
+  transform: scale(0.97);
 }
 
 .survey-btn:disabled {
-  background: linear-gradient(90deg, #6b7280 0%, #4b5563 100%);
+  opacity: 0.6;
   cursor: not-allowed;
-  transform: none;
   box-shadow: none;
+  transform: none;
 }
+
 
 .survey-link {
   margin-top: 16px;
@@ -1947,4 +1902,86 @@ input:checked + .slider:before {
   color: #dc2626;
   font-size: 0.9rem;
   text-align: center;
+}
+
+/* ──  UNIFIED CTA BUTTONS  ─────────────────────────────────────── */
+
+/* shared skeleton */
+.validate-another-btn,
+.save-idea-btn,
+.download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;                       /* room for icons */
+  padding: 12px 28px;             /* 40 px tall, matches dropdown-button rhythm */
+  border-radius: 6px;             /* same corner radius as dropdown-button */
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  box-shadow: 0 1px 4px rgba(30, 34, 90, 0.06);
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.1s ease;
+}
+
+/* interaction states (shared) */
+.validate-another-btn:hover:not(:disabled),
+.save-idea-btn:hover:not(:disabled),
+.download-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(30, 34, 90, 0.10);
+}
+.validate-another-btn:active,
+.save-idea-btn:active,
+.download-btn:active {
+  transform: scale(0.97);
+}
+.validate-another-btn:disabled,
+.save-idea-btn:disabled,
+.download-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ── individual colour treatments ───────── */
+
+/* 1. Outlined secondary */
+.validate-another-btn {
+  background: #ffffff;
+  color: #1e293b;
+  border-color: #d1d5db;
+}
+.validate-another-btn:hover:not(:disabled) {
+  background: #f6faff;
+  border-color: #b7aaff;
+}
+
+/* 2. Green gradient (Save Idea) */
+.save-idea-btn {
+  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+}
+.save-idea-btn:hover:not(:disabled) {
+  background: linear-gradient(90deg, #34d399 0%, #10b981 100%);
+}
+/* saved / disabled variant */
+.save-idea-btn.saved {
+  background: linear-gradient(90deg, #059669 0%, #047857 100%);
+  opacity: 0.85;
+  cursor: default;
+}
+
+/* 3. Purple gradient (Download) */
+.download-btn {
+  background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
+  color: #ffffff;
+}
+.download-btn:hover:not(:disabled) {
+  background: linear-gradient(90deg, #6366f1 0%, #a78bfa 100%);
 }
