@@ -21,67 +21,57 @@ export const useFeatureAccess = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get current user
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-      
-      if (user) {
-        // Get user profile with plan information
-        const { data: profileData } = await supabase
+    // initial user fetch
+    const fetchUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUser(data.user || null);
+      setLoading(false);
+    };
+    fetchUser();
+
+    // listen for auth changes
+    const { data: listener } = supabase.auth.onAuthStateChange((_, session) => {
+      setUser(session?.user || null);
+      setLoading(false);
+    });
+
+    return () => listener.subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    // fetch profile whenever user updates
+    const fetchProfile = async () => {
+      if (user?.id) {
+        const { data } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', user.id)
           .single();
-        
-        setProfile(profileData);
+        setProfile(data || null);
+      } else {
+        setProfile(null);
       }
-      
-      setLoading(false);
     };
-
-    getUser();
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setUser(session?.user || null);
-        if (session?.user) {
-          const { data: profileData } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', session.user.id)
-            .single();
-          setProfile(profileData);
-        } else {
-          setProfile(null);
-          //setUsage({ savedIdeas: 0 });
-        }
-        setLoading(false);
-      }
-    );
-
-    return () => subscription.unsubscribe();
-  }, []);
+    fetchProfile();
+  }, [user]);
 
   const userPlan = profile?.plan || 'free';
 
   return {
-    // User state
     user,
     profile,
     loading,
     userPlan,
-    
-    // Plan limits
+
+    // plan limits
     planLimits: getUserPlanLimits(userPlan),
-    
-    // Feature access checks
-    hasFeatureAccess: (feature) => hasFeatureAccess(userPlan, feature),
-    canAccessFeature: (feature) => canAccessFeature(userPlan, feature),
-    getUpgradeSuggestion: (feature) => getUpgradeSuggestion(userPlan, feature),
-    
-    // Specific feature helpers
+
+    // generic access checks
+    hasFeatureAccess: feature => hasFeatureAccess(userPlan, feature),
+    canAccessFeature: feature => canAccessFeature(userPlan, feature),
+    getUpgradeSuggestion: feature => getUpgradeSuggestion(userPlan, feature),
+
+    // specific feature helpers
     canUseDeepResearch: () => canUseDeepResearch(userPlan),
     canExportPDF: () => canExportPDF(userPlan),
     canUsePersonalizedAnalysis: () => canUsePersonalizedAnalysis(userPlan),
@@ -91,4 +81,4 @@ export const useFeatureAccess = () => {
     hasEarlyAccess: () => hasEarlyAccess(userPlan),
     getIdeaStorageLimit: () => getIdeaStorageLimit(userPlan),
   };
-}; 
+};

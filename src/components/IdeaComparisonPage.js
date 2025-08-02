@@ -327,8 +327,8 @@ const IdeaComparisonPage = () => {
                   
                   if (demandScore1 === 0 && competitivenessScore1 === 0 && demandScore2 === 0 && competitivenessScore2 === 0) return '';
                   
-                  const combinedScore1 = (demandScore1 + competitivenessScore1) / 20;
-                  const combinedScore2 = (demandScore2 + competitivenessScore2) / 20;
+                  const combinedScore1 = (demandScore1 + (10 - competitivenessScore1)) / 20;
+                  const combinedScore2 = (demandScore2 + (10 - competitivenessScore2)) / 20;
                   
                   return combinedScore1 > combinedScore2 ? 'winner' : '';
                 })()}`}>
@@ -340,7 +340,7 @@ const IdeaComparisonPage = () => {
                         const demandScore = idea1.analysis?.score || 0;
                         const competitivenessScore = idea1.analysis?.feasibilityscore || 0;
                         if (demandScore === 0 && competitivenessScore === 0) return 'N/A';
-                        const combinedScore = ((demandScore + competitivenessScore) / 20).toFixed(3);
+                        const combinedScore = ((demandScore + (10 - competitivenessScore)) / 20).toFixed(3);
                         return combinedScore;
                       })()}
                     </span>
@@ -360,8 +360,8 @@ const IdeaComparisonPage = () => {
                   
                   if (demandScore1 === 0 && competitivenessScore1 === 0 && demandScore2 === 0 && competitivenessScore2 === 0) return '';
                   
-                  const combinedScore1 = (demandScore1 + competitivenessScore1) / 20;
-                  const combinedScore2 = (demandScore2 + competitivenessScore2) / 20;
+                  const combinedScore1 = (demandScore1 + (10 - competitivenessScore1)) / 20;
+                  const combinedScore2 = (demandScore2 + (10 - competitivenessScore2)) / 20;
                   
                   return combinedScore2 > combinedScore1 ? 'winner' : '';
                 })()}`}>
@@ -373,7 +373,7 @@ const IdeaComparisonPage = () => {
                         const demandScore = idea2.analysis?.score || 0;
                         const competitivenessScore = idea2.analysis?.feasibilityscore || 0;
                         if (demandScore === 0 && competitivenessScore === 0) return 'N/A';
-                        const combinedScore = ((demandScore + competitivenessScore) / 20).toFixed(3);
+                        const combinedScore = ((demandScore + (10 -competitivenessScore)) / 20).toFixed(3);
                         return combinedScore;
                       })()}
                     </span>
