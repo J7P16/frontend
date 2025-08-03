@@ -29,6 +29,99 @@ const ResultsPage = () => {
   const [ideaStorageLimit, setIdeaStorageLimit] = useState(0);
   const [profile, setProfile] = useState(null);
   
+  // Calculate uniqueness score based on multiple factors
+  const calculateUniquenessScore = () => {
+    if (!analysis) return { overall: 0, factors: {} };
+    
+    // Factor 1: Market Demand (higher demand = higher uniqueness)
+    const demandScore = (analysis.score || 0) / 10; // Normalize to 0-1
+    
+    // Factor 2: Competitiveness (lower competitiveness = higher uniqueness)
+    const competitivenessScore = 1 - ((analysis.feasibilityscore || 0) / 10); // Invert and normalize
+    
+    // Factor 3: Competitor Analysis
+    const competitors = analysis.competitors || [];
+    let competitorScore = 1; // Start with perfect score
+    
+    if (competitors.length > 0) {
+      // Calculate weighted competitor threat based on popularity levels
+      const popularityWeights = { 'High': 0.8, 'Medium': 0.5, 'Low': 0.2 };
+      let totalThreat = 0;
+      
+      competitors.forEach(comp => {
+        const weight = popularityWeights[comp.popularity] || 0.2;
+        totalThreat += weight;
+      });
+      
+      // Average threat per competitor, then invert (lower threat = higher uniqueness)
+      const avgThreat = totalThreat / competitors.length;
+      competitorScore = Math.max(0, 1 - avgThreat);
+    }
+    
+    // Factor 4: LLM Sentiment Analysis
+    let sentimentScore = 0.5; // Default neutral score
+    
+    // Analyze text sentiment from summary, details, and pitch
+    const positiveKeywords = ['innovative', 'unique', 'disruptive', 'breakthrough', 'revolutionary', 'game-changing', 'promising', 'strong', 'excellent', 'outstanding', 'exceptional'];
+    const negativeKeywords = ['saturated', 'crowded', 'difficult', 'challenging', 'risky', 'uncertain', 'weak', 'limited', 'poor', 'concerning'];
+    
+    const textToAnalyze = [
+      analysis.summary || '',
+      analysis.details || '',
+      analysis.pitch || ''
+    ].join(' ').toLowerCase();
+    
+    let positiveCount = 0;
+    let negativeCount = 0;
+    
+    positiveKeywords.forEach(keyword => {
+      const regex = new RegExp(keyword, 'gi');
+      const matches = textToAnalyze.match(regex);
+      if (matches) positiveCount += matches.length;
+    });
+    
+    negativeKeywords.forEach(keyword => {
+      const regex = new RegExp(keyword, 'gi');
+      const matches = textToAnalyze.match(regex);
+      if (matches) negativeCount += matches.length;
+    });
+    
+    // Calculate sentiment score (0-1)
+    const totalKeywords = positiveCount + negativeCount;
+    if (totalKeywords > 0) {
+      sentimentScore = positiveCount / totalKeywords;
+    }
+    
+    // Weighted combination of all factors
+    const weights = {
+      demand: 0.25,        // 25% weight for market demand
+      competitiveness: 0.25, // 25% weight for competitiveness
+      competitors: 0.30,    // 30% weight for competitor analysis
+      sentiment: 0.20       // 20% weight for LLM sentiment
+    };
+    
+    const finalScore = (
+      demandScore * weights.demand +
+      competitivenessScore * weights.competitiveness +
+      competitorScore * weights.competitors +
+      sentimentScore * weights.sentiment
+    );
+    
+    return {
+      overall: Math.max(0, Math.min(1, finalScore)),
+      factors: {
+        demand: demandScore,
+        competitiveness: competitivenessScore,
+        competitors: competitorScore,
+        sentiment: sentimentScore
+      }
+    };
+  };
+
+  const uniquenessData = calculateUniquenessScore();
+  const uniquenessScore = uniquenessData.overall;
+  const uniquenessPercentage = Math.round(uniquenessScore * 100);
+
 
     // const { getIdeaStorageLimit, userPlan } = useFeatureAccess();
 
@@ -423,11 +516,79 @@ const handleSaveIdea = async () => {
         </div> */}
       </div>
       <DemandResults analysis={analysis} painPoints={painPoints} timingTrends={timingTrends} getScoreColor={getScoreColor} />
-      <CompetitorResults analysis={analysis} competitors={competitors} getScoreColor = {getScoreColor} getScoreColor2={getScoreColor2} ensureArray={ensureArray}/>
+      <CompetitorResults analysis={analysis} competitors={competitors} getScoreColor2={getScoreColor2} ensureArray={ensureArray}/>
       <FounderResults analysis={analysis} getScoreColor={getScoreColor} ensureArray={ensureArray}/>
       <AudienceResults analysis={analysis} getScoreColor={getScoreColor} ensureArray={ensureArray} handleCopyPitch={handleCopyPitch} input={input}/>
       <RevenueModelResults analysis={analysis} ensureArray={ensureArray}/>
       <MVPResults analysis={analysis} ensureArray={ensureArray}/> 
+      
+      {/* Uniqueness Feature */}
+      <div className="results-section uniqueness">
+        <div className="uniqueness-header">
+          <span className="uniqueness-icon-bg">
+            <FiTrendingUp className="uniqueness-icon" />
+          </span>
+          <h3>Idea Uniqueness Score</h3>
+          <span className={`score-badge ${uniquenessScore >= 0.7 ? 'score-badge-green' : uniquenessScore >= 0.4 ? 'score-badge-yellow' : 'score-badge-red'}`}>
+            {uniquenessPercentage}%
+          </span>
+        </div>
+        
+        <div className="uniqueness-content">
+          <p className="uniqueness-summary">
+            This uniqueness score evaluates your idea's competitive advantage based on market demand, 
+            competitive landscape, and AI analysis of your concept's potential.
+          </p>
+          
+          <div className="uniqueness-breakdown">
+            <h4>Score Breakdown:</h4>
+            <ul className="uniqueness-factors">
+              <li>
+                <strong>Market Demand:</strong> {Math.round(uniquenessData.factors.demand * 100)}% 
+                <span className="factor-description">(Higher demand increases uniqueness)</span>
+              </li>
+              <li>
+                <strong>Competitive Landscape:</strong> {Math.round(uniquenessData.factors.competitiveness * 100)}% 
+                <span className="factor-description">(Lower competition increases uniqueness)</span>
+              </li>
+              <li>
+                <strong>Competitor Analysis:</strong> {Math.round(uniquenessData.factors.competitors * 100)}% 
+                <span className="factor-description">(Based on {competitors.length} competitor{competitors.length !== 1 ? 's' : ''} and their threat levels)</span>
+              </li>
+              <li>
+                <strong>AI Sentiment:</strong> {Math.round(uniquenessData.factors.sentiment * 100)}% 
+                <span className="factor-description">(Analysis of AI's assessment of your idea)</span>
+              </li>
+            </ul>
+          </div>
+          
+          <div className="uniqueness-interpretation">
+            <h4>What This Means:</h4>
+            {uniquenessScore >= 0.8 ? (
+              <div className="interpretation-high">
+                <strong>Exceptional Uniqueness (80%+)</strong>
+                <p>Your idea shows strong differentiation potential with high market demand and limited competition. This suggests excellent positioning for market entry.</p>
+              </div>
+            ) : uniquenessScore >= 0.6 ? (
+              <div className="interpretation-good">
+                <strong>Good Uniqueness (60-79%)</strong>
+                <p>Your idea demonstrates solid competitive advantages with room for optimization. Consider refining your value proposition to increase uniqueness.</p>
+              </div>
+            ) : uniquenessScore >= 0.4 ? (
+              <div className="interpretation-moderate">
+                <strong>Moderate Uniqueness (40-59%)</strong>
+                <p>Your idea has some competitive advantages but faces significant competition. Focus on differentiation strategies and niche targeting.</p>
+              </div>
+            ) : (
+              <div className="interpretation-low">
+                <strong>Low Uniqueness (Below 40%)</strong>
+                <p>Your idea may need significant refinement to stand out in the market. Consider pivoting or finding a more specific niche.</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+      
       <div className="results-actions">
         <button className="validate-another-btn" onClick={() => navigate('/validate')}>Validate Another Idea</button>
         <button className={`save-idea-btn ${saveSuccess ? 'saved' : ''}`} onClick={handleSaveIdea} disabled={isSaving || saveSuccess}>
@@ -484,6 +645,74 @@ const handleSaveIdea = async () => {
       <AudienceResults analysis={analysis} getScoreColor={getScoreColor} ensureArray={ensureArray} handleCopyPitch={handleCopyPitch} input={input}/>
       <RevenueModelResults analysis={analysis} ensureArray={ensureArray}/>
       <MVPResults analysis={analysis} ensureArray={ensureArray}/> 
+      
+      {/* Uniqueness Feature */}
+      <div className="results-section uniqueness">
+        <div className="uniqueness-header">
+          <span className="uniqueness-icon-bg">
+            <FiTrendingUp className="uniqueness-icon" />
+          </span>
+          <h3>Idea Uniqueness Score</h3>
+          <span className={`score-badge ${uniquenessScore >= 0.7 ? 'score-badge-green' : uniquenessScore >= 0.4 ? 'score-badge-yellow' : 'score-badge-red'}`}>
+            {uniquenessPercentage}%
+          </span>
+        </div>
+        
+        <div className="uniqueness-content">
+          <p className="uniqueness-summary">
+            This uniqueness score evaluates your idea's competitive advantage based on market demand, 
+            competitive landscape, and AI analysis of your concept's potential.
+          </p>
+          
+          <div className="uniqueness-breakdown">
+            <h4>Score Breakdown:</h4>
+            <ul className="uniqueness-factors">
+              <li>
+                <strong>Market Demand:</strong> {Math.round(uniquenessData.factors.demand * 100)}% 
+                <span className="factor-description">(Higher demand increases uniqueness)</span>
+              </li>
+              <li>
+                <strong>Competitive Landscape:</strong> {Math.round(uniquenessData.factors.competitiveness * 100)}% 
+                <span className="factor-description">(Lower competition increases uniqueness)</span>
+              </li>
+              <li>
+                <strong>Competitor Analysis:</strong> {Math.round(uniquenessData.factors.competitors * 100)}% 
+                <span className="factor-description">(Based on {competitors.length} competitor{competitors.length !== 1 ? 's' : ''} and their threat levels)</span>
+              </li>
+              <li>
+                <strong>AI Sentiment:</strong> {Math.round(uniquenessData.factors.sentiment * 100)}% 
+                <span className="factor-description">(Analysis of AI's assessment of your idea)</span>
+              </li>
+            </ul>
+          </div>
+          
+          <div className="uniqueness-interpretation">
+            <h4>What This Means:</h4>
+            {uniquenessScore >= 0.8 ? (
+              <div className="interpretation-high">
+                <strong>Exceptional Uniqueness (80%+)</strong>
+                <p>Your idea shows strong differentiation potential with high market demand and limited competition. This suggests excellent positioning for market entry.</p>
+              </div>
+            ) : uniquenessScore >= 0.6 ? (
+              <div className="interpretation-good">
+                <strong>Good Uniqueness (60-79%)</strong>
+                <p>Your idea demonstrates solid competitive advantages with room for optimization. Consider refining your value proposition to increase uniqueness.</p>
+              </div>
+            ) : uniquenessScore >= 0.4 ? (
+              <div className="interpretation-moderate">
+                <strong>Moderate Uniqueness (40-59%)</strong>
+                <p>Your idea has some competitive advantages but faces significant competition. Focus on differentiation strategies and niche targeting.</p>
+              </div>
+            ) : (
+              <div className="interpretation-low">
+                <strong>Low Uniqueness (Below 40%)</strong>
+                <p>Your idea may need significant refinement to stand out in the market. Consider pivoting or finding a more specific niche.</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+      
       <div className="results-actions">
         <button className="validate-another-btn" onClick={() => navigate('/validate')}>Validate Another Idea</button>
         <button className={`save-idea-btn ${saveSuccess ? 'saved' : ''}`} onClick={handleSaveIdea} disabled={isSaving || saveSuccess}>
