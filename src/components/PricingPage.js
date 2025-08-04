@@ -23,6 +23,11 @@ export default function PricingPage() {
   const [userEmail, setUserEmail] = useState('');
   const [userId, setUserId] = useState('');
 
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const planData = (billing, userEmail = '') => ([
     {
       name: 'Free',
