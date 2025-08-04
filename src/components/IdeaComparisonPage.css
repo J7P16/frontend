@@ -2,8 +2,9 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
-  background: #f8fafc;
+  background: #f5f7fa;
   min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .comparison-header {
@@ -90,17 +91,18 @@
 .comparison-section {
   background: white;
   border-radius: 1rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   overflow: hidden;
+  border: 1px solid #e2e8f0;
 }
 
 .comparison-section h3 {
-  background: #f1f5f9;
+  background: #f8fafc;
   padding: 1.5rem;
   margin: 0;
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1e293b;
+  color: #374151;
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -108,22 +110,11 @@
 }
 
 .section-icon {
-  color: #64748b;
+  color: #6b7280;
+  font-size: 1.1rem;
 }
 
-.score-comparison {
-  margin-left: auto;
-  display: flex;
-  gap: 0.5rem;
-}
 
-.score-badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 1rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: white;
-}
 
 .comparison-content {
   display: grid;
@@ -133,34 +124,67 @@
 
 .idea-content {
   padding: 1.5rem;
-  border-right: 1px solid #e2e8f0;
+  border-right: 1px solid #f1f5f9;
 }
 
 .idea-content.idea2 {
   border-right: none;
-  border-left: 1px solid #e2e8f0;
+  border-left: 1px solid #f1f5f9;
 }
 
 .idea-content p {
   margin-bottom: 1rem;
   line-height: 1.6;
-  color: #374151;
+  color: #4b5563;
+  font-size: 0.95rem;
 }
 
 .idea-content strong {
-  color: #1e293b;
+  color: #374151;
+  font-weight: 600;
+}
+
+.score-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: black !important;
+  margin-left: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.score-badge.score-high {
+  background-color: #10b981 !important;
+  color: black !important;
+}
+
+.score-badge.score-medium {
+  background-color: #f59e0b !important;
+  color: black !important;
+}
+
+.score-badge.score-low {
+  background-color: #ef4444 !important;
+  color: black !important;
 }
 
 .subsection {
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid #f3f4f6;
+  background: #fafbfc;
+  padding: 1.25rem;
+  border-radius: 0.5rem;
+  margin-left: -0.5rem;
+  margin-right: -0.5rem;
 }
 
 .subsection h4 {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #1e293b;
+  color: #374151;
   margin-bottom: 0.75rem;
 }
 
@@ -174,10 +198,11 @@
 
 .competitor-item {
   margin-bottom: 1.5rem;
-  padding: 1rem;
-  background: #f8fafc;
-  border-radius: 0.5rem;
-  border-left: 3px solid #3b82f6;
+  padding: 1.25rem;
+  background: #f9fafb;
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .competitor-title {
@@ -198,16 +223,19 @@
 .popularity-badge.high {
   background: #dcfce7;
   color: #166534;
+  border: 1px solid #bbf7d0;
 }
 
 .popularity-badge.medium {
   background: #fef3c7;
   color: #92400e;
+  border: 1px solid #fde68a;
 }
 
 .popularity-badge.low {
   background: #fee2e2;
   color: #991b1b;
+  border: 1px solid #fecaca;
 }
 
 .idea-content ul {
@@ -216,8 +244,9 @@
 }
 
 .idea-content li {
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
   line-height: 1.5;
+  color: #4b5563;
 }
 
 .mvp-feature-list {
@@ -229,10 +258,17 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem;
-  background: #f8fafc;
-  border-radius: 0.5rem;
-  margin-bottom: 0.5rem;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 0.75rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s ease;
+}
+
+.mvp-feature-list li:hover {
+  background: #f3f4f6;
+  transform: translateX(2px);
 }
 
 .mvp-badges {
@@ -330,7 +366,7 @@
   .idea-content {
     border-right: none;
     border-left: none;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid #f1f5f9;
   }
   
   .idea-content.idea2 {
@@ -343,15 +379,17 @@
     gap: 1rem;
   }
   
-  .score-comparison {
-    margin-left: 0;
-    margin-top: 0.5rem;
-  }
+
   
   .comparison-section h3 {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
+  }
+  
+  .subsection {
+    margin-left: 0;
+    margin-right: 0;
   }
 }
 
