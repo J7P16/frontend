@@ -13,6 +13,7 @@ import FounderResults from '../reusable/FounderResults.js';
 import AudienceResults from '../reusable/AudienceResults.js';
 import RevenueModelResults from '../reusable/RevenueModelResults.js';
 import MVPResults from '../reusable/MVPResults.js';
+import ResultsOverview from './ResultsOverview.js';
 
 
 const ResultsPage = () => {
@@ -515,79 +516,13 @@ const handleSaveIdea = async () => {
           {saveError && <div className="save-error-message">{saveError}</div>}
         </div> */}
       </div>
+      <ResultsOverview analysis={analysis} getScoreColor={getScoreColor} />
       <DemandResults analysis={analysis} painPoints={painPoints} timingTrends={timingTrends} getScoreColor={getScoreColor} />
       <CompetitorResults analysis={analysis} competitors={competitors} getScoreColor2={getScoreColor2} ensureArray={ensureArray}/>
       <FounderResults analysis={analysis} getScoreColor={getScoreColor} ensureArray={ensureArray}/>
       <AudienceResults analysis={analysis} getScoreColor={getScoreColor} ensureArray={ensureArray} handleCopyPitch={handleCopyPitch} input={input}/>
       <RevenueModelResults analysis={analysis} ensureArray={ensureArray}/>
-      <MVPResults analysis={analysis} ensureArray={ensureArray}/> 
-      
-      {/* Uniqueness Feature */}
-      <div className="results-section uniqueness">
-        <div className="uniqueness-header">
-          <span className="uniqueness-icon-bg">
-            <FiTrendingUp className="uniqueness-icon" />
-          </span>
-          <h3>Idea Uniqueness Score</h3>
-          <span className={`score-badge ${uniquenessScore >= 0.7 ? 'score-badge-green' : uniquenessScore >= 0.4 ? 'score-badge-yellow' : 'score-badge-red'}`}>
-            {uniquenessPercentage}%
-          </span>
-        </div>
-        
-        <div className="uniqueness-content">
-          <p className="uniqueness-summary">
-            This uniqueness score evaluates your idea's competitive advantage based on market demand, 
-            competitive landscape, and AI analysis of your concept's potential.
-          </p>
-          
-          <div className="uniqueness-breakdown">
-            <h4>Score Breakdown:</h4>
-            <ul className="uniqueness-factors">
-              <li>
-                <strong>Market Demand:</strong> {Math.round(uniquenessData.factors.demand * 100)}% 
-                <span className="factor-description">(Higher demand increases uniqueness)</span>
-              </li>
-              <li>
-                <strong>Competitive Landscape:</strong> {Math.round(uniquenessData.factors.competitiveness * 100)}% 
-                <span className="factor-description">(Lower competition increases uniqueness)</span>
-              </li>
-              <li>
-                <strong>Competitor Analysis:</strong> {Math.round(uniquenessData.factors.competitors * 100)}% 
-                <span className="factor-description">(Based on {competitors.length} competitor{competitors.length !== 1 ? 's' : ''} and their threat levels)</span>
-              </li>
-              <li>
-                <strong>AI Sentiment:</strong> {Math.round(uniquenessData.factors.sentiment * 100)}% 
-                <span className="factor-description">(Analysis of AI's assessment of your idea)</span>
-              </li>
-            </ul>
-          </div>
-          
-          <div className="uniqueness-interpretation">
-            <h4>What This Means:</h4>
-            {uniquenessScore >= 0.8 ? (
-              <div className="interpretation-high">
-                <strong>Exceptional Uniqueness (80%+)</strong>
-                <p>Your idea shows strong differentiation potential with high market demand and limited competition. This suggests excellent positioning for market entry.</p>
-              </div>
-            ) : uniquenessScore >= 0.6 ? (
-              <div className="interpretation-good">
-                <strong>Good Uniqueness (60-79%)</strong>
-                <p>Your idea demonstrates solid competitive advantages with room for optimization. Consider refining your value proposition to increase uniqueness.</p>
-              </div>
-            ) : uniquenessScore >= 0.4 ? (
-              <div className="interpretation-moderate">
-                <strong>Moderate Uniqueness (40-59%)</strong>
-                <p>Your idea has some competitive advantages but faces significant competition. Focus on differentiation strategies and niche targeting.</p>
-              </div>
-            ) : (
-              <div className="interpretation-low">
-                <strong>Low Uniqueness (Below 40%)</strong>
-                <p>Your idea may need significant refinement to stand out in the market. Consider pivoting or finding a more specific niche.</p>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+      <MVPResults analysis={analysis} ensureArray={ensureArray}/>
       
       <div className="results-actions">
         <button className="validate-another-btn" onClick={() => navigate('/validate')}>Validate Another Idea</button>
@@ -640,78 +575,12 @@ const handleSaveIdea = async () => {
           {saveError && <div className="save-error-message">{saveError}</div>}
         </div> */}
       </div>
+      <ResultsOverview analysis={analysis} getScoreColor={getScoreColor} />
       <DemandResults analysis={analysis} painPoints={painPoints} timingTrends={timingTrends} getScoreColor={getScoreColor} />
       <CompetitorResults analysis={analysis} competitors={competitors} getScoreColor2={getScoreColor2} ensureArray={ensureArray}/>
       <AudienceResults analysis={analysis} getScoreColor={getScoreColor} ensureArray={ensureArray} handleCopyPitch={handleCopyPitch} input={input}/>
       <RevenueModelResults analysis={analysis} ensureArray={ensureArray}/>
-      <MVPResults analysis={analysis} ensureArray={ensureArray}/> 
-      
-      {/* Uniqueness Feature */}
-      <div className="results-section uniqueness">
-        <div className="uniqueness-header">
-          <span className="uniqueness-icon-bg">
-            <FiTrendingUp className="uniqueness-icon" />
-          </span>
-          <h3>Idea Uniqueness Score</h3>
-          <span className={`score-badge ${uniquenessScore >= 0.7 ? 'score-badge-green' : uniquenessScore >= 0.4 ? 'score-badge-yellow' : 'score-badge-red'}`}>
-            {uniquenessPercentage}%
-          </span>
-        </div>
-        
-        <div className="uniqueness-content">
-          <p className="uniqueness-summary">
-            This uniqueness score evaluates your idea's competitive advantage based on market demand, 
-            competitive landscape, and AI analysis of your concept's potential.
-          </p>
-          
-          <div className="uniqueness-breakdown">
-            <h4>Score Breakdown:</h4>
-            <ul className="uniqueness-factors">
-              <li>
-                <strong>Market Demand:</strong> {Math.round(uniquenessData.factors.demand * 100)}% 
-                <span className="factor-description">(Higher demand increases uniqueness)</span>
-              </li>
-              <li>
-                <strong>Competitive Landscape:</strong> {Math.round(uniquenessData.factors.competitiveness * 100)}% 
-                <span className="factor-description">(Lower competition increases uniqueness)</span>
-              </li>
-              <li>
-                <strong>Competitor Analysis:</strong> {Math.round(uniquenessData.factors.competitors * 100)}% 
-                <span className="factor-description">(Based on {competitors.length} competitor{competitors.length !== 1 ? 's' : ''} and their threat levels)</span>
-              </li>
-              <li>
-                <strong>AI Sentiment:</strong> {Math.round(uniquenessData.factors.sentiment * 100)}% 
-                <span className="factor-description">(Analysis of AI's assessment of your idea)</span>
-              </li>
-            </ul>
-          </div>
-          
-          <div className="uniqueness-interpretation">
-            <h4>What This Means:</h4>
-            {uniquenessScore >= 0.8 ? (
-              <div className="interpretation-high">
-                <strong>Exceptional Uniqueness (80%+)</strong>
-                <p>Your idea shows strong differentiation potential with high market demand and limited competition. This suggests excellent positioning for market entry.</p>
-              </div>
-            ) : uniquenessScore >= 0.6 ? (
-              <div className="interpretation-good">
-                <strong>Good Uniqueness (60-79%)</strong>
-                <p>Your idea demonstrates solid competitive advantages with room for optimization. Consider refining your value proposition to increase uniqueness.</p>
-              </div>
-            ) : uniquenessScore >= 0.4 ? (
-              <div className="interpretation-moderate">
-                <strong>Moderate Uniqueness (40-59%)</strong>
-                <p>Your idea has some competitive advantages but faces significant competition. Focus on differentiation strategies and niche targeting.</p>
-              </div>
-            ) : (
-              <div className="interpretation-low">
-                <strong>Low Uniqueness (Below 40%)</strong>
-                <p>Your idea may need significant refinement to stand out in the market. Consider pivoting or finding a more specific niche.</p>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+      <MVPResults analysis={analysis} ensureArray={ensureArray}/>
       
       <div className="results-actions">
         <button className="validate-another-btn" onClick={() => navigate('/validate')}>Validate Another Idea</button>

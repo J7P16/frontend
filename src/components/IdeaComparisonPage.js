@@ -75,37 +75,89 @@ const IdeaComparisonPage = () => {
 
         {/* Final Comparison Score */}
         <div className="comparison-section">
-          <h3>Final Comparison Score</h3>
+          <h3>Overall Comparison Score</h3>
           <div className="comparison-content">
             <div className="idea-content idea1">
               <div className="final-score-section">
                 <h4>Combined Score</h4>
                 <div className={`score-breakdown ${(() => {
-                  const demandScore1 = idea1.analysis?.score || 0;
-                  const competitivenessScore1 = idea1.analysis?.feasibilityscore || 0;
-                  const demandScore2 = idea2.analysis?.score || 0;
-                  const competitivenessScore2 = idea2.analysis?.feasibilityscore || 0;
+                  // Calculate overall score using same logic as ResultsOverview
+                  const calculateOverallScore = (analysis) => {
+                    if (!analysis) return 0;
+                    
+                    // Get individual scores and normalize to 0-1
+                    const demandScore = (analysis.score || 0) / 10;
+                    const competitivenessScore = (analysis.feasibilityscore || 0) / 10;
+                    
+                    // Invert competitiveness score since lower competition is better
+                    const invertedCompetitivenessScore = 1 - competitivenessScore;
+                    
+                    // Check if personalized status is active before including founder score
+                    const isPersonalized = analysis.personalizedstatus;
+                    const founderScore = isPersonalized ? (analysis.founderfitscore || 0) / 10 : 0;
+                    
+                    // Calculate weighted average based on whether personalized status is active
+                    let overallScore;
+                    if (isPersonalized) {
+                      // With founder fit: 40% demand, 40% competitiveness (inverted), 20% founder fit
+                      overallScore = (demandScore * 0.4 + invertedCompetitivenessScore * 0.4 + founderScore * 0.2);
+                    } else {
+                      // Without founder fit: 50% demand, 50% competitiveness (inverted)
+                      overallScore = (demandScore * 0.5 + invertedCompetitivenessScore * 0.5);
+                    }
+                    
+                    return Math.round(overallScore * 10) / 10; // Round to 1 decimal place
+                  };
                   
-                  if (demandScore1 === 0 && competitivenessScore1 === 0 && demandScore2 === 0 && competitivenessScore2 === 0) return '';
+                  const score1 = calculateOverallScore(idea1.analysis);
+                  const score2 = calculateOverallScore(idea2.analysis);
                   
-                  const combinedScore1 = (demandScore1 + (10 - competitivenessScore1)) / 20;
-                  const combinedScore2 = (demandScore2 + (10 - competitivenessScore2)) / 20;
+                  if (score1 === 0 && score2 === 0) return '';
                   
-                  return combinedScore1 > combinedScore2 ? 'winner' : '';
+                  return score1 > score2 ? 'winner' : '';
                 })()}`}>
                   <p><strong>Market Demand:</strong> {idea1.analysis?.score || 'N/A'}/10</p>
                   <p><strong>Market Competitiveness:</strong> {idea1.analysis?.feasibilityscore || 'N/A'}/10</p>
+                  {idea1.analysis?.personalizedstatus && (
+                    <p><strong>Founder Fit:</strong> {idea1.analysis?.founderfitscore || 'N/A'}/10</p>
+                  )}
                   <div className="final-score">
                     <span className="final-score-value">
                       {(() => {
-                        const demandScore = idea1.analysis?.score || 0;
-                        const competitivenessScore = idea1.analysis?.feasibilityscore || 0;
-                        if (demandScore === 0 && competitivenessScore === 0) return 'N/A';
-                        const combinedScore = ((demandScore + (10 - competitivenessScore)) / 20).toFixed(3);
-                        return combinedScore;
+                        // Calculate overall score using same logic as ResultsOverview
+                        const calculateOverallScore = (analysis) => {
+                          if (!analysis) return 0;
+                          
+                          // Get individual scores and normalize to 0-1
+                          const demandScore = (analysis.score || 0) / 10;
+                          const competitivenessScore = (analysis.feasibilityscore || 0) / 10;
+                          
+                          // Invert competitiveness score since lower competition is better
+                          const invertedCompetitivenessScore = 1 - competitivenessScore;
+                          
+                          // Check if personalized status is active before including founder score
+                          const isPersonalized = analysis.personalizedstatus;
+                          const founderScore = isPersonalized ? (analysis.founderfitscore || 0) / 10 : 0;
+                          
+                          // Calculate weighted average based on whether personalized status is active
+                          let overallScore;
+                          if (isPersonalized) {
+                            // With founder fit: 40% demand, 40% competitiveness (inverted), 20% founder fit
+                            overallScore = (demandScore * 0.4 + invertedCompetitivenessScore * 0.4 + founderScore * 0.2);
+                          } else {
+                            // Without founder fit: 50% demand, 50% competitiveness (inverted)
+                            overallScore = (demandScore * 0.5 + invertedCompetitivenessScore * 0.5);
+                          }
+                          
+                          return Math.round(overallScore * 10) / 10; // Round to 1 decimal place
+                        };
+                        
+                        const score = calculateOverallScore(idea1.analysis);
+                        if (score === 0) return 'N/A';
+                        return score.toFixed(1);
                       })()}
                     </span>
-                    <span className="final-score-label">Combined Score (0-1)</span>
+                    <span className="final-score-label">Overall Score (0-1)</span>
                   </div>
                 </div>
               </div>
@@ -114,31 +166,83 @@ const IdeaComparisonPage = () => {
               <div className="final-score-section">
                 <h4>Combined Score</h4>
                 <div className={`score-breakdown ${(() => {
-                  const demandScore1 = idea1.analysis?.score || 0;
-                  const competitivenessScore1 = idea1.analysis?.feasibilityscore || 0;
-                  const demandScore2 = idea2.analysis?.score || 0;
-                  const competitivenessScore2 = idea2.analysis?.feasibilityscore || 0;
+                  // Calculate overall score using same logic as ResultsOverview
+                  const calculateOverallScore = (analysis) => {
+                    if (!analysis) return 0;
+                    
+                    // Get individual scores and normalize to 0-1
+                    const demandScore = (analysis.score || 0) / 10;
+                    const competitivenessScore = (analysis.feasibilityscore || 0) / 10;
+                    
+                    // Invert competitiveness score since lower competition is better
+                    const invertedCompetitivenessScore = 1 - competitivenessScore;
+                    
+                    // Check if personalized status is active before including founder score
+                    const isPersonalized = analysis.personalizedstatus;
+                    const founderScore = isPersonalized ? (analysis.founderfitscore || 0) / 10 : 0;
+                    
+                    // Calculate weighted average based on whether personalized status is active
+                    let overallScore;
+                    if (isPersonalized) {
+                      // With founder fit: 40% demand, 40% competitiveness (inverted), 20% founder fit
+                      overallScore = (demandScore * 0.4 + invertedCompetitivenessScore * 0.4 + founderScore * 0.2);
+                    } else {
+                      // Without founder fit: 50% demand, 50% competitiveness (inverted)
+                      overallScore = (demandScore * 0.5 + invertedCompetitivenessScore * 0.5);
+                    }
+                    
+                    return Math.round(overallScore * 10) / 10; // Round to 1 decimal place
+                  };
                   
-                  if (demandScore1 === 0 && competitivenessScore1 === 0 && demandScore2 === 0 && competitivenessScore2 === 0) return '';
+                  const score1 = calculateOverallScore(idea1.analysis);
+                  const score2 = calculateOverallScore(idea2.analysis);
                   
-                  const combinedScore1 = (demandScore1 + (10 - competitivenessScore1)) / 20;
-                  const combinedScore2 = (demandScore2 + (10 - competitivenessScore2)) / 20;
+                  if (score1 === 0 && score2 === 0) return '';
                   
-                  return combinedScore2 > combinedScore1 ? 'winner' : '';
+                  return score2 > score1 ? 'winner' : '';
                 })()}`}>
                   <p><strong>Market Demand:</strong> {idea2.analysis?.score || 'N/A'}/10</p>
                   <p><strong>Market Competitiveness:</strong> {idea2.analysis?.feasibilityscore || 'N/A'}/10</p>
+                  {idea2.analysis?.personalizedstatus && (
+                    <p><strong>Founder Fit:</strong> {idea2.analysis?.founderfitscore || 'N/A'}/10</p>
+                  )}
                   <div className="final-score">
                     <span className="final-score-value">
                       {(() => {
-                        const demandScore = idea2.analysis?.score || 0;
-                        const competitivenessScore = idea2.analysis?.feasibilityscore || 0;
-                        if (demandScore === 0 && competitivenessScore === 0) return 'N/A';
-                        const combinedScore = ((demandScore + (10 -competitivenessScore)) / 20).toFixed(3);
-                        return combinedScore;
+                        // Calculate overall score using same logic as ResultsOverview
+                        const calculateOverallScore = (analysis) => {
+                          if (!analysis) return 0;
+                          
+                          // Get individual scores and normalize to 0-1
+                          const demandScore = (analysis.score || 0) / 10;
+                          const competitivenessScore = (analysis.feasibilityscore || 0) / 10;
+                          
+                          // Invert competitiveness score since lower competition is better
+                          const invertedCompetitivenessScore = 1 - competitivenessScore;
+                          
+                          // Check if personalized status is active before including founder score
+                          const isPersonalized = analysis.personalizedstatus;
+                          const founderScore = isPersonalized ? (analysis.founderfitscore || 0) / 10 : 0;
+                          
+                          // Calculate weighted average based on whether personalized status is active
+                          let overallScore;
+                          if (isPersonalized) {
+                            // With founder fit: 40% demand, 40% competitiveness (inverted), 20% founder fit
+                            overallScore = (demandScore * 0.4 + invertedCompetitivenessScore * 0.4 + founderScore * 0.2);
+                          } else {
+                            // Without founder fit: 50% demand, 50% competitiveness (inverted)
+                            overallScore = (demandScore * 0.5 + invertedCompetitivenessScore * 0.5);
+                          }
+                          
+                          return Math.round(overallScore * 10) / 10; // Round to 1 decimal place
+                        };
+                        
+                        const score = calculateOverallScore(idea2.analysis);
+                        if (score === 0) return 'N/A';
+                        return score.toFixed(1);
                       })()}
                     </span>
-                    <span className="final-score-label">Combined Score (0-1)</span>
+                    <span className="final-score-label">Overall Score (0-1)</span>
                   </div>
                 </div>
               </div>
@@ -148,7 +252,7 @@ const IdeaComparisonPage = () => {
 
         {/* Original Questions */}
         <div className="comparison-section">
-          <h3>Original Question</h3>
+          <h3>Original Idea</h3>
           <div className="comparison-content">
             <div className="idea-content idea1">
               <p>"{idea1.question}"</p>
