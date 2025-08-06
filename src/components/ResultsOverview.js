@@ -148,15 +148,13 @@ const ResultsOverview = ({ analysis }) => {
   return (
     <div className="results-overview">
       <div className="results-overview-header">
-        <span className="results-overview-icon-bg">
-          <FiTrendingUp className="results-overview-icon" />
-        </span>
-        <h3>Overall Idea Score</h3>
-        {getScoreBadge(overallScore)}
+
+        <h3>Overall Idea Score&nbsp;&nbsp; {getScoreBadge(overallScore)}</h3>
+
       </div>
       
       <div className="results-overview-content">
-        <p className="overview-summary">
+        <p className="market-demand-summary">
           This overall score evaluates your idea's potential based on market demand and market competitiveness, 
           {isPersonalized ? ' and your founder fit.' : '.'}
         </p>
