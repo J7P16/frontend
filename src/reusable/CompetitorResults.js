@@ -5,12 +5,14 @@ import '../components/CompetitorResults.css';
 import axios from 'axios';
 
 const CompetitorResults = (props) => {
-  const { analysis, competitors, getScoreColor2, ensureArray} = props;
+  const { analysis, input, competitors, getScoreColor2, ensureArray} = props;
 
   const [showMoreMap, setShowMoreMap] = useState({});
   const [patentDataMap, setPatentDataMap] = useState({});
   const [loadingMap, setLoadingMap] = useState({});
   const [hasFetchedMap, setHasFetchedMap] = useState({});
+
+  const userInput = input;
 
   const toggleShowMore = async (idx, compName) => {
     const alreadyVisible = showMoreMap[idx];
@@ -18,7 +20,7 @@ const CompetitorResults = (props) => {
     if (!alreadyVisible && !hasFetchedMap[idx]) {
       try {
         setLoadingMap(prev => ({ ...prev, [idx]: true }));
-        const response = await axios.post('http://localhost:5000/patents', { companyName: compName });
+        const response = await axios.post('http://localhost:5000/patents', { companyName: compName, input: userInput });
         setPatentDataMap(prev => ({ ...prev, [idx]: response.data }));
       } catch (error) {
         console.error("Error fetching patent data:", error);
