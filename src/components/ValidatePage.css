@@ -413,8 +413,8 @@ body {
   }
 
   .mvp-features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    display: flex;
+    flex-direction: column;
     gap: 20px;
     margin-top: 20px;
   }
@@ -564,7 +564,6 @@ body {
     font-style: italic;
     background: #f9fafb;
     border-radius: 8px;
-    grid-column: 1 / -1;
   }
 
   .mvp-feature-details-toggle {
@@ -627,7 +626,7 @@ body {
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .mvp-features-grid {
-      grid-template-columns: 1fr;
+      gap: 16px;
     }
     
     .mvp-feature-header {
@@ -657,7 +656,7 @@ body {
 
   @media (max-width: 480px) {
     .mvp-features-grid {
-      gap: 16px;
+      gap: 12px;
     }
 
     .mvp-feature-card {
