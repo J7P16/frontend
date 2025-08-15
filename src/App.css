@@ -32,25 +32,28 @@ body, html, #root {
 
 .homepage-hero {
   text-align: center;
-  margin-bottom: 192px;
-  height: 70vh;
+  /* reduce excessive bottom spacing to avoid layout jump on zoom */
+  margin-bottom: 32px;
+  /* avoid fixed heights; allow natural growth while keeping a comfortable viewport presence */
+  min-height: clamp(420px, 70vh, 900px);
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-top: 50px;
-  padding-bottom: 50px;
-  min-height: 70vh;
+  padding-top: 10px;
+  padding-bottom: 6px;
 }
 
 .homepage-hero h1 {
-  font-size: 4rem;
+  /* scale smoothly across viewports and zoom */
+  font-size: clamp(2rem, 4.5vw, 4rem);
   font-weight: 800;
   color: #111827;
   margin-bottom: 16px;
+  line-height: 1.15;
 }
 
 .homepage-hero p {
-  font-size: 1.5rem;
+  font-size: clamp(1rem, 2.2vw, 1.5rem);
   color: #6b7280;
   margin-bottom: 32px;
   max-width: 700px;
@@ -67,6 +70,7 @@ body, html, #root {
 
 .gradient-text {
   background: linear-gradient(90deg, #4d50ff, #9c32ff);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline;
@@ -79,6 +83,7 @@ button.primary {
   border-radius: 6px;
   padding: 12px 24px;
   font-size: 1rem;
+  font-family: var(--font-primary);
   font-weight: 600;
   cursor: pointer;
   transition: background 0.3s ease;
@@ -95,6 +100,7 @@ button.secondary {
   border-radius: 6px;
   padding: 12px 24px;
   font-size: 1rem;
+  font-family: var(--font-primary);
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -469,7 +475,13 @@ button.secondary:hover {
   }
 
   .homepage-hero h1 {
-    font-size: 2.2rem;
+    font-size: clamp(1.9rem, 6vw, 2.3rem);
+  }
+  .homepage-hero {
+    margin-bottom: 16px;
+    padding-top: 8px;
+    padding-bottom: 4px;
+    min-height: unset; /* allow content to size naturally on small screens */
   }
   .homepage-hero-buttons {
     flex-direction: column;
@@ -1229,21 +1241,33 @@ button.secondary:hover {
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 .revenue-models-item {
   display: flex;
-  align-items: center;
+  align-items: center; /* center icon vertically with text block */
+  gap: 12px;
   font-size: 1.08rem;
   color: #334155;
-  font-family: --var(--font-primary);
+  font-family: var(--font-primary);
   font-weight: 500;
+  line-height: 1.5;
   margin-bottom: 0;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px 16px;
+  box-shadow: 0 1px 4px rgba(30, 34, 90, 0.04);
+}
+
+/* Ensure text within item matches summary font size */
+.revenue-models-item span {
+  font-size: 1.08rem;
 }
 .revenue-models-check {
   color: #22c55e;
   font-size: 1.18em;
-  margin-right: 10px;
+  flex-shrink: 0;
 }
 
 .results-section.mvp-features {
@@ -1723,13 +1747,13 @@ input:checked + .slider:before {
 }
 
 .validly-banner-container {
-  margin-bottom: 32px;
-  margin-top: 100px;
+  margin-bottom: 24px;
   width: 100%;
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 100px;
+  /* responsive top spacing that works with sticky navbar and zoom */
+  margin-top: clamp(0px, 0.75vh, 8px);
 }
 
 .validly-banner {
@@ -1741,7 +1765,7 @@ input:checked + .slider:before {
 
 @media (max-width: 768px) {
   .validly-banner-container {
-    max-width: 90%;
+    max-width: 92%;
   }
   
   .validly-banner {
@@ -1984,4 +2008,40 @@ input:checked + .slider:before {
 }
 .download-btn:hover:not(:disabled) {
   background: linear-gradient(90deg, #6366f1 0%, #a78bfa 100%);
+}
+
+.build-version {
+  /* new compact pill badge */
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 6px rgba(30, 34, 90, 0.06);
+  color: #111827;
+  font-weight: 600;
+  font-size: clamp(0.8rem, 1.6vw, 0.95rem);
+  margin: 20px auto 0 auto;
+}
+
+.build-version .build-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981; /* green indicates healthy */
+  box-shadow: 0 0 0 3px rgba(16,185,129,0.18);
+}
+
+.build-version .build-label {
+  color: #2563eb;
+  font-weight: 700;
+}
+
+.build-version .build-number {
+  color: #475569;
+  font-weight: 600;
 }

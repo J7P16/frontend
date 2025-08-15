@@ -33,50 +33,20 @@ const HomePage = () => {
           <h1>
            Validate Your Business Idea<br />In <span className="gradient-text">Minutes</span>, Not Months.
           </h1>
-          <p>Validate your crazy startup ideas in real-time to improve growth, deliverability, reduce competition, and take over markets.</p>
+          <p>Validate your crazy business ideas in real-time to improve growth, deliverability, reduce competition, and take over markets.</p>
           <div className="homepage-hero-buttons">
             <button className="primary" onClick={() => user ? navigate('/validate') : navigate('/signup')}>Get started →</button>
             <button className="secondary" onClick= {() => navigate('/under-construction')}>Learn more →</button>
           </div>
-        </div>
-
-        {/* Features Section */}
-        <div className="homepage-features-section">
-          <h2>Everything You Need To Validate Your Startup</h2>
-          <p>Comprehensive validation tools powered by data and market intelligence</p>
-          <div className="homepage-features-grid">
-            <div className="feature-card">
-              <div className="feature-icon"><FiTrendingUp color="#2563eb" /></div>
-              <h3>Market Analysis</h3>
-              <p>Get comprehensive market research and trend analysis for your startup idea in seconds.</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon"><FiUsers color="#16a34a" /></div>
-              <h3>Competitor Intelligence</h3>
-              <p>Discover your competition, their strengths, weaknesses, and market positioning.</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon"><FiUserCheck color="#9333ea" /></div>
-              <h3>Target Audience Insights</h3>
-              <p>Identify and understand your ideal customers with detailed demographic analysis.</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon"><FiZap color="#eab308" /></div>
-              <h3>MVP Roadmap</h3>
-              <p>Get a prioritized feature list and development roadmap for your minimum viable product.</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon"><FiShield color="#dc2626" /></div>
-              <h3>Risk Assessment</h3>
-              <p>Understand potential challenges and risks before you invest time and money.</p>
-            </div>
-            <div className="feature-card">
-              <div className="feature-icon"><FiBarChart2 color="#6366f1" /></div>
-              <h3>Validation Score</h3>
-              <p>Receive a comprehensive score based on market demand, competition, and feasibility.</p>
-            </div>
+          <div className="build-version" role="status" aria-label="Current build version">
+            <span className="build-dot" aria-hidden="true"></span>
+            <span className="build-label">Early Access</span>
+            <span className="build-number">Build v1.00</span>
           </div>
         </div>
+
+
+
 
       </div>
 

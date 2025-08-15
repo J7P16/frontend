@@ -14,7 +14,7 @@ const Footer = () => {
                       <img src={logo} alt="Validly Logo" className="footer-logo" />
                       <span className="footer-title">Validly</span>
                     </div>
-                    <p className="footer-desc">Validate your startup idea in seconds with AI-powered insights, competitor analysis, and MVP recommendations.</p>
+                    <p className="footer-desc">Validate your business ideas in seconds with AI-powered insights, competitor analysis, and MVP recommendations.</p>
                     <div className="footer-socials">
                       <a href="https://www.instagram.com/getvalidly/" className="footer-social"><FiInstagram /></a>
                       <a href="https://www.youtube.com/channel/UCK3n67eeJ7oSLBL47lhUHaA" className="footer-social"><FiYoutube /></a>
