@@ -16,6 +16,8 @@ import NotFoundPage from './components/404';
 import FeaturesPage from './components/Features';
 import IdeaComparisonPage from './components/IdeaComparisonPage';
 import './App.css';
+import PrivacyPolicy from './components/PrivacyPolicy';
+import TOS from './components/TOS';
 
 function App() {
 
@@ -46,6 +48,8 @@ function App() {
         <Route path="/features" element={<FeaturesPage />} />
         <Route path="/under-construction" element={<UnderConstructionPage/>} />
         <Route path="*" element={<NotFoundPage/>} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/tos" element={<TOS />} />
       </Routes>
     </Router>
   );
